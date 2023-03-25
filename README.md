@@ -42,6 +42,38 @@ git clone git@github.com:vitorfs/colossus.git
 
 Ideally, create a [virtualenv](https://docs.python-guide.org/dev/virtualenvs/) and install the projects dependencies:
 
+## **Install PYENV**
+for Python 3.6.6 Requirement
+```commandline
+pip install pyenv-win --target %USERPROFILE%\\.pyenv
+```
+## **Add System Settings**
+
+It's a easy way to use PowerShell here
+
+1. Adding PYENV, PYENV_HOME and PYENV_ROOT to your Environment Variables
+
+   ```pwsh
+   [System.Environment]::SetEnvironmentVariable('PYENV',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+
+   [System.Environment]::SetEnvironmentVariable('PYENV_ROOT',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+
+   [System.Environment]::SetEnvironmentVariable('PYENV_HOME',$env:USERPROFILE + "\.pyenv\pyenv-win\","User")
+   ```
+
+2. Now adding the following paths to your USER PATH variable in order to access the pyenv command
+
+   ```pwsh
+   [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
+   ```
+```commandline
+pyenv install 3.6.6
+```
+Set Global or Local based on your choice with repo
+```commandline
+pyenv local|global 3.6.6
+```
+
 ```commandline
 pip install -r requirements/development.txt
 ```
@@ -62,6 +94,16 @@ Open your browser and access the setup page to create an admin account:
 
 ```commandline
 http://127.0.0.1:8000/setup/
+```
+
+Docker Commands For PostGresql and Rabbit MQ
+
+```commandline
+docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+```
+
+```commandline
+docker run -d --hostname my-rabbit --name some-rabbit rabbitmq:3
 ```
 
 PS: Campaign scheduling will not work out-of-the-box. You need to install a message broker and [setup Celery](https://simpleisbetterthancomplex.com/tutorial/2017/08/20/how-to-use-celery-with-django.html) properly.
