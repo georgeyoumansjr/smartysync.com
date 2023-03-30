@@ -153,23 +153,23 @@ PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'media/private')
 # EMAIL SETTINGS
 # ==============================================================================
 
-EMAIL_SUBJECT_PREFIX = '[Colossus] '
+EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[THE-TITAN-DEV] ')
 
-SERVER_EMAIL = config('SERVER_EMAIL', default='root@localhost')
+SERVER_EMAIL = os.getenv('SERVER_EMAIL')
 
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='webmaster@localhost')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 
-EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
 
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='root')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_USE_SSL = True
 
 
 # ==============================================================================
