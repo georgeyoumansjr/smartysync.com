@@ -83,7 +83,7 @@ class MailingList(models.Model):
         qs = self.get_active_subscribers() \
             .exclude(last_sent=None) \
             .aggregate(Avg('click_rate'))
-        self.click_rate = round(qs.get('click_rate__avg', 0.9), 4)
+        self.click_rate = round(qs.get('click_rate__avg', 0.0), 4)
         self.save(update_fields=['click_rate'])
         return self.click_rate
 
@@ -102,8 +102,14 @@ class MailingList(models.Model):
             open=Avg('open_rate'),
             click=Avg('click_rate')
         )
-        self.open_rate = round(qs.get('open', 0.0), 4)
-        self.click_rate = round(qs.get('click', 0.0), 4)
+        open_value = qs.get('open', 0.0)
+        click_value = qs.get('click', 0.0)
+        if open_value is None:
+            open_value = 0.0
+        if click_value is None:
+            click_value = 0.0
+        self.open_rate =  round(open_value, 4)
+        self.click_rate = round(click_value, 4)
         self.save(update_fields=['open_rate', 'click_rate'])
 
     def _get_form_template(self, form_template_key: str):

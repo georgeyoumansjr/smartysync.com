@@ -6,8 +6,9 @@ from django.contrib.messages import constants as messages_constants
 import dj_database_url
 from celery.schedules import crontab
 from decouple import Csv, config
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # ==============================================================================
@@ -122,6 +123,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'colossus/locale'),
 )
 
+SESSION_COOKIE_AGE = 3600 # in seconds: 600 = 10min, 3600 = 1hr 
 
 # ==============================================================================
 # STATIC FILES SETTINGS
@@ -129,7 +131,7 @@ LOCALE_PATHS = (
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'colossus/static'),
@@ -142,9 +144,9 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media/public')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/public')
 
-PRIVATE_MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media/private')
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'media/private')
 
 
 # ==============================================================================
@@ -220,7 +222,7 @@ GEOIP_PATH = os.path.join(BASE_DIR, 'bin/GeoLite2')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='amqp://localhost')
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost')
 
 CELERY_BEAT_SCHEDULE = {
     'send-scheduled-campaigns': {
