@@ -26,8 +26,8 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}">{% trans 'Campaigns' %}</a></li>
+    <ol class="breadcrumb alert-dark">
+      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}" class="text-dark">{% trans 'Campaigns' %}</a></li>
       {% if campaign %}
         <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}">{{ campaign.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% spaceless %}
@@ -59,11 +59,11 @@
         {% csrf_token %}
         {{ form|crispy }}
         {% if campaign %}
-          <button type="submit" class="btn btn-success" role="button">{% trans 'Save changes' %}</button>
-          <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
+          <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         {% else %}
-          <button type="submit" class="btn btn-success" role="button">{% trans 'Create campaign' %}</button>
-          <a href="{% url 'campaigns:campaigns' %}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Create campaign' %}</button>
+          <a href="{% url 'campaigns:campaigns' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         {% endif %}
       </form>
     </div>

@@ -7,13 +7,13 @@
 {% block main %}
 <div class="container-fluid">
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Campaigns' %}</li>
     </ol>
   </nav>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">{% trans 'Campaigns' %}</h2>
-    <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-primary" role="button">{% trans 'Create campaign' %}</a>
+    <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Create campaign' %}</a>
   </div>
   <div class="row">
     <div class="col-3">
@@ -35,17 +35,17 @@
         <div class="card-body">
           <div class="row">
             <div class="col-6">
-              <form method="get">
+              <form method="get" class="rounded-pill overflow-hidden">
                 <input type="hidden" name="status" value="{{ status }}">
                 <div class="input-group">
                   <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
                   <div class="input-group-append">
                     {% if query %}
-                      <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-primary" role="button">
+                      <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-dark" role="button">
                         {% trans 'Clear' %}
                       </a>
                     {% endif %}
-                    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+                    <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
                   </div>
                 </div>
               </form>
@@ -96,11 +96,11 @@
 
                 <div class="btn-group">
                   {% if campaign.can_edit %}
-                    <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-primary">{% trans 'Edit' %}</a>
+                    <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-dark">{% trans 'Edit' %}</a>
                   {% else %}
-                    <a href="{% url 'campaigns:campaign_reports' campaign.pk %}" class="btn btn-outline-primary">{% trans 'View Report' %}</a>
+                    <a href="{% url 'campaigns:campaign_reports' campaign.pk %}" class="btn btn-outline-dark">{% trans 'View Report' %}</a>
                   {% endif %}
-                  <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
                   </button>
                   <div class="dropdown-menu dropdown-menu-right">

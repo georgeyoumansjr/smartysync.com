@@ -5,8 +5,9 @@
 {% block title %}{{ campaign.name }}{% endblock %}
 
 {% block content %}
+dfasdhkjfhlskjadfhdgskhads
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}">{% trans 'Campaigns' %}</a></li>
       {% block breadcrumb %}
       {% endblock %}
@@ -22,7 +23,7 @@
     </div>
     {{ campaign|campaign_status_badge }}
   </div>
-
+<h1>Dummy Text</h1>
   {% block maincontent %}
     <div class="card mb-3">
       <div class="card-header">

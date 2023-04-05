@@ -2,7 +2,8 @@ body {
     background-color: #f9f9f9;
 }
 
-nav.navbar .navbar-brand, .logo {
+nav.navbar .navbar-brand,
+.logo {
     font-family: 'Goudy Bookletter 1911', serif;
 }
 
@@ -24,4 +25,22 @@ form small.form-text ul {
 .pagination .page-item {
     min-width: 38px;
     text-align: center;
+}
+.user-form .card{
+    border-radius: 25px;
+}
+input:not(input[type="checkbox"]){
+    border-radius: 25px;
+}
+.notification-icon{
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+.list-group-item.active{
+    background-color: #343a40;
+    border: none !important;
 }
