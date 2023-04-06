@@ -29,8 +29,8 @@ form small.form-text ul {
 .user-form .card{
     border-radius: 25px;
 }
-input:not(input[type="checkbox"]){
-    border-radius: 25px;
+input:not(input[type="checkbox"]),textarea,select{
+    border-radius: 25px !important;
 }
 .notification-icon{
     height: 30px;
