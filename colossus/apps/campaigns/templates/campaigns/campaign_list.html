@@ -38,7 +38,7 @@
               <form method="get" class="rounded-pill overflow-hidden">
                 <input type="hidden" name="status" value="{{ status }}">
                 <div class="input-group">
-                  <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
+                  <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
                   <div class="input-group-append">
                     {% if query %}
                       <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-dark" role="button">
