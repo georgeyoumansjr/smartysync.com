@@ -6,6 +6,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 import html2text
 
@@ -71,7 +72,14 @@ def send_campaign_email(email, context, to, connection=None, is_test=False):
         connection=connection,
         headers=headers
     )
-    message.attach_alternative(rich_text_message, 'text/html')
+
+    #attachment_name = 'Recipe-Lead-Magnet.pdf'
+    #attachment_path = settings.BASE_DIR / attachment_name
+    #with open(attachment_path, 'rb') as file:
+    #    attachment_content = file.read()
+    #    message.attach(attachment_name, attachment_content, 'application/pdf')
+    
+    #message.attach_alternative(rich_text_message, 'text/html')
 
     try:
         message.send(fail_silently=False)
