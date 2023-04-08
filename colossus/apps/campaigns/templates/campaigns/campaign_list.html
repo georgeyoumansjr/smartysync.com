@@ -77,7 +77,7 @@
                     <i data-feather="layers" class="text-muted mr-3"></i>
                     {% endif %}
                     <div>
-                      <a class="lead d-block" href="{{ campaign.get_absolute_url }}">{{ campaign.name }}</a>
+                      <a class="lead d-block text-info" href="{{ campaign.get_absolute_url }}">{{ campaign.name }}</a>
                       <small class="d-block">{{ campaign.get_campaign_type_display }} ・ {{ campaign.mailing_list.name }}</small>
                       {% if campaign.status == campaign_status.DRAFT %}
                         <small class="d-block text-muted">Edited <strong>{{ campaign.update_date }}</strong></small>

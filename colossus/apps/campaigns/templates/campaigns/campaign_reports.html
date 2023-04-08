@@ -20,7 +20,7 @@
           <span>{{ campaign.open_rate|percentage }}%</span>
         </div>
         <div class="progress mb-2">
-          <div class="progress-bar"
+          <div class="progress-bar bg-dark"
                role="progressbar"
                style="width: {{ campaign.open_rate|percentage|unlocalize }}%"
                aria-valuenow="{{ campaign.open_rate|percentage|unlocalize }}"
@@ -46,7 +46,7 @@
           <span>{{ campaign.click_rate|percentage }}%</span>
         </div>
         <div class="progress mb-2">
-          <div class="progress-bar"
+          <div class="progress-bar bg-dark"
                role="progressbar"
                style="width: {{ campaign.click_rate|percentage|unlocalize }}%"
                aria-valuenow="{{ campaign.click_rate|percentage|unlocalize }}"
@@ -104,7 +104,7 @@
     <div class="card-body">
       {% for link in links %}
         <p class="card-text d-flex justify-content-between">
-          <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" class="text-truncate">{{ link.url }}</a>
+          <a href="{{ link.url }}" target="_blank" rel="nofollow noopener" class="text-truncate text-info">{{ link.url }}</a>
           <span>{{ link.total_clicks_count|intcomma }}</span>
         </p>
       {% empty %}
@@ -150,7 +150,7 @@
     </div>
     <div class="card-footer">
       <p class="card-text">
-        <a href="{% url 'campaigns:campaign_reports_locations' campaign.pk %}">{% trans 'View more' %}</a>
+        <a href="{% url 'campaigns:campaign_reports_locations' campaign.pk %}" class="text-info">{% trans 'View more' %}</a>
       </p>
     </div>
   </div>
