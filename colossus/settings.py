@@ -155,21 +155,21 @@ PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'media/private')
 
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[THE-TITAN-DEV] ')
 
-SERVER_EMAIL = os.getenv('SERVER_EMAIL')
+SERVER_EMAIL = 'coboaccess@gmail.com' # os.getenv('SERVER_EMAIL')
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = 'coboaccess@gmail.com' # os.getenv('DEFAULT_FROM_EMAIL')
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # os.getenv('EMAIL_BACKEND')
 
-EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST = 'smtp.gmail.com' # os.getenv('EMAIL_HOST')
 
-EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_PORT = '587' # os.getenv('EMAIL_PORT')
 
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'coboaccess@gmail.com' # os.getenv('EMAIL_HOST_USER')
 
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'uqbilavmkdfxpenv' # os.getenv('EMAIL_HOST_PASSWORD')
 
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
 
 
 # ==============================================================================

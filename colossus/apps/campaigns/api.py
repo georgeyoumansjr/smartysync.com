@@ -79,7 +79,7 @@ def send_campaign_email(email, context, to, connection=None, is_test=False):
     #    attachment_content = file.read()
     #    message.attach(attachment_name, attachment_content, 'application/pdf')
     
-    #message.attach_alternative(rich_text_message, 'text/html')
+    message.attach_alternative(rich_text_message, 'text/html')
 
     try:
         message.send(fail_silently=False)
