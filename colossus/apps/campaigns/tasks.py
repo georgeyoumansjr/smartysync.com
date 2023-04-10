@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
-def send_campaign_task(campaign_id):
+def send_campaign_task(campaign_id, **kwargs):
     Campaign = apps.get_model('campaigns', 'Campaign')
     try:
         campaign = Campaign.objects.get(pk=campaign_id)
         if campaign.status == CampaignStatus.QUEUED:
-            send_campaign(campaign)
+            send_campaign(campaign, **kwargs)
             mail_managers('Mailing campaign has been sent',
                           'Your campaign "%s" is on its way to your subscribers!' % campaign.email.subject)
         else:

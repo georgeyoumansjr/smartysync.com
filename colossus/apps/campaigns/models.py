@@ -23,6 +23,10 @@ from colossus.apps.templates.utils import get_template_blocks
 from .constants import CampaignStatus, CampaignTypes
 from .tasks import send_campaign_task, update_rates_after_campaign_deletion
 
+#class PDF(models.Model):
+#    name = models.CharField(max_length=100)
+#    path = models.FilePathField()
+#    campaign_uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
 class Campaign(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
@@ -119,7 +123,7 @@ class Campaign(models.Model):
             queryset = queryset.filter(tags=self.tag)
         return queryset
 
-    def send(self):
+    def send(self , **kwargs):
         with transaction.atomic():
             self.recipients_count = self.get_recipients().count()
             self.send_date = timezone.now()
@@ -130,7 +134,7 @@ class Campaign(models.Model):
                     email.template.last_used_campaign_id = self.pk
                     email.template.save()
             self.save()
-        send_campaign_task.delay(self.pk)
+        send_campaign_task.delay(self.pk, **kwargs)
 
     @transaction.atomic
     def replicate(self):
