@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Images {% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="image">Upload Image</label>
+    <input type="file" name="image" id="image">
+    <button type="submit"> Submit </button>
+</form>
+{% for image_file in image_files %}
+<button onclick="copy('{{image_file}}')" >
+    <img width="180px" src="{% static 'email_imgs/' %}{{ image_file }}" alt="{{ image_file }}">
+</button>
+{% endfor %}
+
+<script>
+    function copy(id){
+        
+        let link = 'https://www.thetitandev.com.tnh-labs.com/static/email_imgs/'+ id
+        let img_link = '<img src="'+ link +'" alt="" width="600px">'
+        navigator.clipboard.writeText(img_link);
+    }
+</script>
+
+{% endblock %}

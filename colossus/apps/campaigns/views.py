@@ -31,6 +31,8 @@ from .forms import (
 from .mixins import CampaignMixin
 from .models import Campaign, Email, Link
 
+import os
+import glob
 
 @method_decorator(login_required, name='dispatch')
 class CampaignListView(CampaignMixin, ListView):
@@ -481,3 +483,25 @@ def replicate_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     replicated_campaign = campaign.replicate()
     return redirect(replicated_campaign)
+
+@login_required
+def images(request):
+    
+    email_images_folder = settings.STATIC_ROOT + '/email_imgs/'
+
+    if request.method == 'POST':
+        if 'image' in request.FILES:
+            uploaded_img = request.FILES['image']
+            with open(email_images_folder + uploaded_img.name, 'wb+') as destination:
+                for chunk in uploaded_img.chunks():
+                    destination.write(chunk)
+
+
+    png_files = glob.glob(os.path.join(email_images_folder, '*.png'))
+    jpg_files = glob.glob(os.path.join(email_images_folder, '*.jpg'))
+    jpeg_files = glob.glob(os.path.join(email_images_folder, '*.jpeg'))
+    image_files = png_files + jpg_files + jpeg_files
+    image_files = [os.path.basename(image_file) for image_file in image_files]
+    context = {'image_files': image_files}
+
+    return render(request, 'campaigns/images.html', context)

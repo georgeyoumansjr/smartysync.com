@@ -33,5 +33,7 @@ urlpatterns = [
     path('<int:pk>/delete/', views.CampaignDeleteView.as_view(), name='delete_campaign'),
     path('<int:pk>/schedule/', views.ScheduleCampaignView.as_view(), name='schedule_campaign'),
 
+    path('images/', views.images, name='images'),
+
     path('ajax/load-list-tags/', views.load_list_tags, name='load_list_tags'),
 ]

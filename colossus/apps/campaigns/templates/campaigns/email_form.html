@@ -86,6 +86,7 @@
         <h3 class="m-0">{% trans 'Design Email' %}</h3>
         <nav>
           <a href="{% url 'campaigns:campaign_edit_template' campaign.pk %}" class="btn btn-link text-warning">{% trans 'Change template' %}</a>
+          <a href="{% url 'campaigns:images' %}" class="btn btn-outline-dark rounded-pill">{% trans 'Images' %}</a>
           <button type="submit" name="action" value="save_changes" class="btn btn-outline-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
           <button type="submit" name="action" value="save_and_close" class="btn btn-dark rounded-pill" role="button">{% trans 'Save and close' %}</button>
         </nav>
