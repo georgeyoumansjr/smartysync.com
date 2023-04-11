@@ -7,9 +7,10 @@ import dj_database_url
 from celery.schedules import crontab
 from decouple import Csv, config
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(dotenv_path=os.path.join(BASE_DIR,".env"))
 
 # ==============================================================================
 # CORE SETTINGS
@@ -222,7 +223,7 @@ GEOIP_PATH = os.path.join(BASE_DIR, 'bin/GeoLite2')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost')
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/0')
 
 CELERY_BEAT_SCHEDULE = {
     'send-scheduled-campaigns': {
