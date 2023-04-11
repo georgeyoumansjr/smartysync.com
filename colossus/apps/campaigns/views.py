@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.conf import settings
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -30,6 +31,8 @@ from .forms import (
 from .mixins import CampaignMixin
 from .models import Campaign, Email, Link
 
+import os
+import glob
 
 @method_decorator(login_required, name='dispatch')
 class CampaignListView(CampaignMixin, ListView):
@@ -365,6 +368,7 @@ class ScheduleCampaignView(CampaignMixin, UpdateView):
     def get_context_data(self, **kwargs):
         kwargs['time'] = timezone.now()
         return super().get_context_data(**kwargs)
+    
 
 
 @method_decorator(login_required, name='dispatch')
@@ -454,12 +458,19 @@ def campaign_preview_email(request, pk):
 @login_required
 def send_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
-
     if campaign.status == CampaignStatus.SENT or not campaign.can_send:
         return redirect(campaign.get_absolute_url())
 
     if request.method == 'POST':
-        campaign.send()
+        pdf_path = pdf_name = None
+        if 'pdf' in request.FILES:
+            pdf_file = request.FILES['pdf']
+            pdf_name = pdf_file.name
+            pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
+            with open( pdf_path , "wb+") as destination: # save the pdf
+                for chunk in pdf_file.chunks():
+                    destination.write(chunk)
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
         return redirect('campaigns:send_campaign_complete', pk=pk)
 
     return render(request, 'campaigns/send_campaign.html', {
@@ -467,10 +478,31 @@ def send_campaign(request, pk):
         'campaign': campaign
     })
 
-
 @require_GET
 @login_required
 def replicate_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     replicated_campaign = campaign.replicate()
     return redirect(replicated_campaign)
+
+@login_required
+def images(request):
+    
+    email_images_folder = settings.STATIC_ROOT + '/email_imgs/'
+
+    if request.method == 'POST':
+        if 'image' in request.FILES:
+            uploaded_img = request.FILES['image']
+            with open(email_images_folder + uploaded_img.name, 'wb+') as destination:
+                for chunk in uploaded_img.chunks():
+                    destination.write(chunk)
+
+
+    png_files = glob.glob(os.path.join(email_images_folder, '*.png'))
+    jpg_files = glob.glob(os.path.join(email_images_folder, '*.jpg'))
+    jpeg_files = glob.glob(os.path.join(email_images_folder, '*.jpeg'))
+    image_files = png_files + jpg_files + jpeg_files
+    image_files = [os.path.basename(image_file) for image_file in image_files]
+    context = {'image_files': image_files}
+
+    return render(request, 'campaigns/images.html', context)

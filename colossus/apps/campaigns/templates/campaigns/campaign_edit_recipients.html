@@ -26,9 +26,9 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}">{% trans 'Campaigns' %}</a></li>
-      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}">{{ campaign.name }}</a></li>
+    <ol class="breadcrumb alert-dark">
+      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}" class="text-dark">{% trans 'Campaigns' %}</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}" class="text-dark">{{ campaign.name }}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Recipients' %}</li>
     </ol>
   </nav>
@@ -45,8 +45,8 @@
             {{ form.tag|as_crispy_field }}
           </div>
         </div>
-        <button type="submit" class="btn btn-success" role="button">{% trans 'Save changes' %}</button>
-        <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
+        <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
+        <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
       </form>
     </div>
   </div>

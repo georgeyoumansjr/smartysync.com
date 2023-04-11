@@ -92,7 +92,10 @@ class ScheduleCampaignForm(forms.ModelForm):
 
     def clean_send_date(self):
         send_date = self.cleaned_data.get('send_date')
-        if send_date <= timezone.now():
+        if not send_date:
+            no_date_error = ValidationError(gettext('Invalid date. This field is required.'), code='no_date_error' )
+            self.add_error('send_date', no_date_error)
+        elif send_date <= timezone.now():
             past_date_error = ValidationError(
                 gettext('Invalid date. Scheduled send date must be a future date.'),
                 code='past_date_error'

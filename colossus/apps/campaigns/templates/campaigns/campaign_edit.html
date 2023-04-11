@@ -6,8 +6,8 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}">{% trans 'Campaigns' %}</a></li>
+    <ol class="breadcrumb alert-dark">
+      <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}" class="text-dark">{% trans 'Campaigns' %}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ campaign.name }}</li>
     </ol>
   </nav>
@@ -17,7 +17,6 @@
       {{ campaign|campaign_status_badge }}
     </div>
     <ul class="list-group list-group-flush">
-
       <li class="list-group-item d-flex justify-content-between align-items-center">
         {% if campaign.mailing_list %}
           <div class="d-flex align-items-center">
@@ -27,7 +26,7 @@
               <p class="mb-1">
                 {% if campaign.tag %}
                   {% blocktrans trimmed with campaign.mailing_list.name as name and campaign.tag.name as tag_name %}
-                    Subscribers in the list <strong>{{ name }}</strong> with tag <span class="badge badge-primary">{{ tag_name }}</span>.
+                    Subscribers in the list <strong>{{ name }}</strong> with tag <span class="badge badge-warning">{{ tag_name }}</span>.
                   {% endblocktrans %}
                 {% else %}
                   {% blocktrans trimmed with campaign.mailing_list.name as name %}
@@ -40,7 +39,7 @@
               </p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_recipients' campaign.pk %}" role="button" class="btn btn-outline-secondary">{% trans 'Edit recipients' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_recipients' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit recipients' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -49,7 +48,7 @@
               <p class="text-muted font-italic mb-0">{% trans 'Who are you sending this campaign to?' %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_recipients' campaign.pk %}" role="button" class="btn btn-secondary">{% trans 'Add recipients' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_recipients' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Add recipients' %}</a>
         {% endif %}
       </li>
 
@@ -62,7 +61,7 @@
               <p class="mb-0">{{ campaign.email.get_from }}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_from' campaign.pk %}" role="button" class="btn btn-outline-secondary">{% trans 'Edit from' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_from' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit from' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -71,7 +70,7 @@
               <p class="text-muted font-italic mb-0">{% trans 'Who is sending this campaign?' %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_from' campaign.pk %}" role="button" class="btn btn-secondary">{% trans 'Add from' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_from' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Add from' %}</a>
         {% endif %}
       </li>
 
@@ -85,7 +84,7 @@
               {% if campaign.email.preview %}<small class="text-muted">Preview: {{ campaign.email.preview }}</small>{% endif %}
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-outline-secondary">{% trans 'Edit subject' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit subject' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -94,7 +93,7 @@
               <p class="text-muted font-italic mb-0">{% trans "What's the subject line for this campaign?" %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-secondary">{% trans 'Add subject' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Add subject' %}</a>
         {% endif %}
       </li>
 
@@ -105,9 +104,9 @@
             <div>
               <h5 class="mb-1">{% trans 'Content' %}</h5>
               <div>
-                <a href="javascript:void(0);" data-toggle="modal" data-target="#previewEmailModal">{% trans 'Preview Email' %}</a>
+                <a href="javascript:void(0);" data-toggle="modal" data-target="#previewEmailModal" class="text-success">{% trans 'Preview Email' %}</a>
                 ・
-                <a href="javascript:void(0);" data-toggle="modal" data-target="#sendTestEmailModal">{% trans 'Send Test Email' %}</a>
+                <a href="javascript:void(0);" data-toggle="modal" data-target="#sendTestEmailModal" class="text-info">{% trans 'Send Test Email' %}</a>
               </div>
             </div>
           </div>
@@ -124,7 +123,7 @@
                 </small>
               </p>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-outline-secondary">{% trans 'Edit design' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit design' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -133,7 +132,7 @@
               <p class="text-muted font-italic mb-0">{% trans 'Design the content for your email.' %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-secondary">{% trans 'Design email' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Design email' %}</a>
         {% endif %}
       </li>
 
@@ -141,15 +140,15 @@
     <div class="card-footer d-flex justify-content-between">
       <div>
         {% if campaign.can_send %}
-          <a href="{% url 'campaigns:send_campaign' campaign.pk %}" class="btn btn-primary" role="button">{% trans 'Send campaign' %}</a>
-          <a href="{% url 'campaigns:schedule_campaign' campaign.pk %}" class="btn btn-outline-primary" role="button">{% trans 'Schedule' %}</a>
+          <a href="{% url 'campaigns:send_campaign' campaign.pk %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Send campaign' %}</a>
+          <a href="{% url 'campaigns:schedule_campaign' campaign.pk %}" class="btn btn-outline-dark rounded-pill" role="button">{% trans 'Schedule' %}</a>
         {% else %}
-          <a href="#" class="btn btn-primary disabled" tabindex="-1" role="button" aria-disabled="true">{% trans 'Send campaign' %}</a>
-          <a href="#" class="btn btn-outline-primary disabled" tabindex="-1" role="button" aria-disabled="true">{% trans 'Schedule' %}</a>
+          <a href="#" class="btn btn-dark rounded-pill disabled" tabindex="-1" role="button" aria-disabled="true">{% trans 'Send campaign' %}</a>
+          <a href="#" class="btn btn-outline-dark rounded-pill disabled" tabindex="-1" role="button" aria-disabled="true">{% trans 'Schedule' %}</a>
         {% endif %}
-        <a href="{% url 'campaigns:campaigns' %}" class="btn btn-outline-secondary" role="button">{% trans 'Finish later' %}</a>
+        <a href="{% url 'campaigns:campaigns' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Finish later' %}</a>
       </div>
-      <a href="{% url 'campaigns:delete_campaign' campaign.pk %}" class="btn btn-outline-danger" role="button">{% trans 'Discard' %}</a>
+      <a href="{% url 'campaigns:delete_campaign' campaign.pk %}" class="btn btn-outline-danger rounded-pill" role="button">{% trans 'Discard' %}</a>
     </div>
   </div>
 
@@ -160,7 +159,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="sendTestEmailModalLabel">{% trans 'Send test email' %}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+            <button type="button" class="close text-danger" data-dismiss="modal" aria-label="{% trans 'Close' %}">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -168,8 +167,8 @@
             {{ test_email_form|crispy }}
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Never mind' %}</button>
-            <button type="submit" class="btn btn-success">{% trans 'Send email' %}</button>
+            <button type="button" class="btn btn-outline-warning rounded-pill" data-dismiss="modal">{% trans 'Never mind' %}</button>
+            <button type="submit" class="btn btn-dark rounded-pill">{% trans 'Send email' %}</button>
           </div>
         </div>
       </div>
@@ -181,11 +180,11 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="previewEmailMdalLabel">{% trans 'Preview email' %}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+          <button type="button" class="close text-danger" data-dismiss="modal" aria-label="{% trans 'Close' %}">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body p-0">
+        <div class="modal-body p-1">
           <iframe src="{% url 'campaigns:campaign_preview_email' campaign.pk %}" class="w-100" style="min-height:500px; border: 0 none;"></iframe>
         </div>
       </div>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Images {% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="image">Upload Image</label>
+    <input type="file" name="image" id="image">
+    <button type="submit"> Submit </button>
+</form>
+{% for image_file in image_files %}
+<button onclick="copy('{{image_file}}')" >
+    <img width="180px" src="{% static 'email_imgs/' %}{{ image_file }}" alt="{{ image_file }}">
+</button>
+{% endfor %}
+
+<script>
+    function copy(id){
+        var hostname = window.location.hostname;
+        if (hostname.match(/^www\./)) {
+        // hostname starts with www.
+            hostname = hostname.replace('www.','');
+        } else {
+        // hostname does not start with www.
+            hostname = 'www.'+hostname;
+        }
+        id = id.replace(' ', '%20');
+        let link = 'https://'+hostname+'/static/email_imgs/'+ id;
+        let img_link = '<img src="'+ link +'" alt="" width="100%">';
+        navigator.clipboard.writeText(img_link);
+    }
+</script>
+
+{% endblock %}

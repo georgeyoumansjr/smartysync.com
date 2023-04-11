@@ -9,12 +9,12 @@ register = template.Library()
 @register.filter
 def campaign_status_badge(campaign):
     css_classes = {
-        CampaignStatus.SENT: 'badge-primary',
+        CampaignStatus.SENT: 'badge-success',
         CampaignStatus.SCHEDULED: 'badge-warning',
-        CampaignStatus.DRAFT: 'badge-secondary',
-        CampaignStatus.QUEUED: 'badge-dark',
-        CampaignStatus.DELIVERING: 'badge-success',
-        CampaignStatus.PAUSED: 'badge-warning',
+        CampaignStatus.DRAFT: 'badge-warning',
+        CampaignStatus.QUEUED: 'badge-info',
+        CampaignStatus.DELIVERING: 'badge-dark',
+        CampaignStatus.PAUSED: 'badge-danger',
     }
     badge_class = css_classes[campaign.status]
     badge_text = campaign.get_status_display()

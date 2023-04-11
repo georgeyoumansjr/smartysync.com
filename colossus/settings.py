@@ -16,6 +16,8 @@ load_dotenv(dotenv_path=os.path.join(BASE_DIR,".env"))
 # CORE SETTINGS
 # ==============================================================================
 
+PROD = config('PROD', default=False, cast=bool)
+
 SECRET_KEY = config('SECRET_KEY', default=string.ascii_letters)
 
 DEBUG = config('DEBUG', default=True, cast=bool)
@@ -153,25 +155,40 @@ PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'media/private')
 # ==============================================================================
 # EMAIL SETTINGS
 # ==============================================================================
+if PROD:
+    EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[THE-TITAN-DEV] ')
 
-EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[THE-TITAN-DEV] ')
+    SERVER_EMAIL = os.getenv('SERVER_EMAIL')
 
-SERVER_EMAIL = os.getenv('SERVER_EMAIL')
+    DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # os.getenv('EMAIL_BACKEND')
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
 
-EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
 
-EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_SSL = True
+else:
+    SERVER_EMAIL = 'coboaccess@gmail.com' # os.getenv('SERVER_EMAIL')
 
-EMAIL_USE_SSL = True
+    DEFAULT_FROM_EMAIL = 'coboaccess@gmail.com' # os.getenv('DEFAULT_FROM_EMAIL')
 
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # os.getenv('EMAIL_BACKEND')
+
+    EMAIL_HOST = 'smtp.gmail.com' # os.getenv('EMAIL_HOST')
+
+    EMAIL_PORT = '587' # os.getenv('EMAIL_PORT')
+
+    EMAIL_HOST_USER = 'coboaccess@gmail.com' # os.getenv('EMAIL_HOST_USER')
+
+    EMAIL_HOST_PASSWORD = 'uqbilavmkdfxpenv' # os.getenv('EMAIL_HOST_PASSWORD')
+
+    EMAIL_USE_TLS = True
 
 # ==============================================================================
 # AUTHENTICATION AND AUTHORIZATION SETTINGS
@@ -223,7 +240,7 @@ GEOIP_PATH = os.path.join(BASE_DIR, 'bin/GeoLite2')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/0')
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379')
 
 CELERY_BEAT_SCHEDULE = {
     'send-scheduled-campaigns': {
