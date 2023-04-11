@@ -73,11 +73,10 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
         headers=headers
     )
 
-    pdf_name = kwargs['pdf_name']
-    pdf_path = kwargs['pdf_path']
+    
+    pdf_name = kwargs.get('pdf_name', None)
+    pdf_path = kwargs.get('pdf_path', None)
     if pdf_name and pdf_path:
-        print(pdf_name)
-        print(pdf_path)
 
         with open(pdf_path, 'rb') as file:
             attachment_content = file.read()
