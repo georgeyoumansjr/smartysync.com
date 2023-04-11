@@ -466,11 +466,11 @@ def send_campaign(request, pk):
         if 'pdf' in request.FILES:
             pdf_file = request.FILES['pdf']
             pdf_name = pdf_file.name
-            pdf_path = str(settings.BASE_DIR / 'media/PDFs/') + '/' + pdf_name
+            pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
             with open( pdf_path , "wb+") as destination: # save the pdf
                 for chunk in pdf_file.chunks():
                     destination.write(chunk)
-        campaign.send(pdf_name=pdf_name,pdf_path=pdf_path)
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
         return redirect('campaigns:send_campaign_complete', pk=pk)
 
     return render(request, 'campaigns/send_campaign.html', {
