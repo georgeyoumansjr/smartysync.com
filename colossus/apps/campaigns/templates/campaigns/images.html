@@ -17,9 +17,17 @@
 
 <script>
     function copy(id){
-        
-        let link = 'https://www.thetitandev.com.tnh-labs.com/static/email_imgs/'+ id
-        let img_link = '<img src="'+ link +'" alt="" width="600px">'
+        var hostname = window.location.hostname;
+        if (hostname.match(/^www\./)) {
+        // hostname starts with www.
+            hostname = hostname.replace('www.','');
+        } else {
+        // hostname does not start with www.
+            hostname = 'www.'+hostname;
+        }
+        id = id.replace(' ', '%20');
+        let link = 'https://'+hostname+'/static/email_imgs/'+ id;
+        let img_link = '<img src="'+ link +'" alt="" width="100%">';
         navigator.clipboard.writeText(img_link);
     }
 </script>
