@@ -42,8 +42,12 @@ git clone git@github.com:vitorfs/colossus.git
 
 Ideally, create a [virtualenv](https://docs.python-guide.org/dev/virtualenvs/) and install the projects dependencies:
 
+## **For the Scheduling error which caused by connection error**
+https://github.com/django/django/blob/c6581a40be3bb4c1e13861f0adbb3fe01f09107f/django/core/servers/basehttp.py#L55
+update accoridngly to the django library
+
 ## **Install PYENV**
-for Python 3.6.6 Requirement
+for Python 3.7.5 Requirement
 ```commandline
 pip install pyenv-win --target %USERPROFILE%\\.pyenv
 ```
@@ -67,11 +71,11 @@ It's a easy way to use PowerShell here
    [System.Environment]::SetEnvironmentVariable('path', $env:USERPROFILE + "\.pyenv\pyenv-win\bin;" + $env:USERPROFILE + "\.pyenv\pyenv-win\shims;" + [System.Environment]::GetEnvironmentVariable('path', "User"),"User")
    ```
 ```commandline
-pyenv install 3.6.6
+pyenv install 3.7.5
 ```
 Set Global or Local based on your choice with repo
 ```commandline
-pyenv local|global 3.6.6
+pyenv local|global 3.7.5
 ```
 
 ```commandline
@@ -110,7 +114,7 @@ PS: Campaign scheduling will not work out-of-the-box. You need to install a mess
 
 ## Tech Specs
 
-* Python 3.6
+* Python 3.7.5
 * Django 2.1
 * PostgreSQL 10
 * Celery 4.2

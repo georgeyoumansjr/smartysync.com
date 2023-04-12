@@ -35,6 +35,9 @@ raven==6.10.0
 redis==4.5.4
 requests==2.21.0
 six==1.16.0
+importlib-metadata==4.13.0
+python-dotenv
+redis
 soupsieve==2.4
 sqlparse==0.4.3
 tzdata==2023.3
