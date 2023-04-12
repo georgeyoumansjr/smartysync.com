@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'crispy_forms',
+    'django_celery_beat',
 
     'colossus.apps.accounts',
     'colossus.apps.campaigns',
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ROOT_URLCONF = 'colossus.urls'
 
