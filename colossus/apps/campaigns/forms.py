@@ -89,7 +89,6 @@ class ScheduleCampaignForm(forms.ModelForm):
                 }
             )
         }
-
     def clean_send_date(self):
         send_date = self.cleaned_data.get('send_date')
         if not send_date:
@@ -110,7 +109,6 @@ class ScheduleCampaignForm(forms.ModelForm):
             campaign.update_date = timezone.now()
             campaign.save()
         return campaign
-
 
 class CampaignTestEmailForm(forms.Form):
     email = forms.EmailField(label=_('Email address'))
