@@ -23,13 +23,15 @@
   <div class="card mb-3">
     <div class="card-body">
       <h2 class="card-title">{% trans 'Schedule campaign' %}</h2>
-      <form method="post" novalidate>
+      <form method="post" novalidate enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <div class="form-group">
           {% get_current_timezone as TIME_ZONE %}
           <small class="text-muted">Current time: {{ time|localtime }}<br>Current time zone: {{ TIME_ZONE }}</small>
         </div>
+        <label for="pdf">Upload PDF</label>
+        <input name="pdf" id="pdf" type="file">
         <button type="submit" class="btn btn-success" role="button">{% trans 'Schedule' %}</button>
         <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
       </form>

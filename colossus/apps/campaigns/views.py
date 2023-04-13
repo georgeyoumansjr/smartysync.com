@@ -369,6 +369,23 @@ class ScheduleCampaignView(CampaignMixin, UpdateView):
         kwargs['time'] = timezone.now()
         return super().get_context_data(**kwargs)
     
+    def post(self, request, **kwargs):
+        
+        if 'pdf' in self.request.FILES:
+            campaign = Campaign.objects.get(pk=kwargs['pk'])
+            campaign_uuid = str(campaign.uuid)
+            pdf_file = self.request.FILES['pdf']
+            pdf_name = pdf_file.name
+            pdf_dir = settings.STATIC_ROOT + f'/PDFs/{campaign_uuid}/'
+            pdf_path = pdf_dir + pdf_name
+ 
+            os.makedirs(pdf_dir, exist_ok=True) # create the dir
+
+            with open( pdf_path, "wb+") as destination: # save the pdf
+                for chunk in pdf_file.chunks():
+                    destination.write(chunk)
+        return super().post(request, **kwargs)
+    
 
 
 @method_decorator(login_required, name='dispatch')

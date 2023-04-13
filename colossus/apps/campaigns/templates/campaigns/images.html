@@ -25,7 +25,7 @@
         // hostname does not start with www.
             hostname = 'www.'+hostname;
         }
-        id = id.replace(' ', '%20');
+        id = id.replace(/ /g, '%20');
         let link = 'https://'+hostname+'/static/email_imgs/'+ id;
         let img_link = '<img src="'+ link +'" alt="" width="100%">';
         navigator.clipboard.writeText(img_link);

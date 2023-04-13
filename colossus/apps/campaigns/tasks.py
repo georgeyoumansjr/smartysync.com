@@ -3,6 +3,10 @@ import logging
 from django.apps import apps
 from django.core.mail import mail_managers
 from django.utils import timezone
+from django.conf import settings
+
+import glob
+import os
 
 from celery import shared_task
 
@@ -34,6 +38,17 @@ def send_scheduled_campaigns_task():
     campaigns = Campaign.objects.filter(status=CampaignStatus.SCHEDULED, send_date__gte=timezone.now())
     if campaigns.exists():
         for campaign in campaigns:
+
+            # check if there is a pdf file for this campaign
+            pdf_path = settings.STATIC_ROOT + '/PDFs/' + str(campaign.uuid) + '/'
+            if os.path.isdir(pdf_path): 
+                pdf_files = glob.glob(os.path.join(pdf_path, '*.pdf'))
+                if pdf_files:
+                    pdf_files = pdf_files[0]
+                    pdf_name = os.path.basename(pdf_files)
+                    campaign.send(pdf_name=pdf_name, pdf_path=pdf_path + pdf_name)
+            
+            
             campaign.send()
 
 
