@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
+
+body {
+    background-color: #f9f9f9;
+    font-family: 'Rubik', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Jost', sans-serif;
+}
+
+nav.navbar .navbar-brand,
+.logo {
+    font-family: 'Goudy Bookletter 1911', serif;
+}
+
+nav.navbar .navbar-brand {
+    font-size: 1.4rem;
+}
+
+.table-sm {
+    font-size: 87.5%;
+}
+
+.alert ul,
+form small.form-text ul {
+    margin-bottom: 0;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination .page-item {
+    min-width: 38px;
+    text-align: center;
+}
+
+.user-form .card {
+    border-radius: 25px;
+}
+
+input:not(input[type="checkbox"], input[type="radio"]),
+textarea,
+select {
+    border-radius: 25px !important;
+}
+
+form input.round-r-0 {
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+.notification-icon {
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+
+.list-group-item.active {
+    background-color: #343a40;
+    border: none !important;
+}
+
+.card-header-tabs .nav-link {
+    color: #ffffff;
+}
+.breadcrumb a{
+    color: #343a40 !important;
+}
+.dropdown-item.active, .dropdown-item:active,.dropdown-item:focus, .dropdown-item:hover{
+    background-color: #343a40;
+    color: #ffffff;
+}

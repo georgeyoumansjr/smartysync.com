@@ -7,6 +7,7 @@ import dj_database_url
 from celery.schedules import crontab
 from decouple import Csv, config
 from pathlib import Path
+import pytz
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -115,7 +116,7 @@ TEMPLATES = [
 
 LANGUAGE_CODE = config('LANGUAGE_CODE', default='en-us')
 
-TIME_ZONE = config('TIME_ZONE', default='UTC')
+TIME_ZONE = config('TIME_ZONE', default='America/New_York')
 
 USE_I18N = True
 
