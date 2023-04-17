@@ -386,7 +386,7 @@ class Email(models.Model):
             # will be processed during the sending campaign (including the `subscriber_uuid`)
             # With the `{{ uuid }}` we are introducing an extra django template variable
             # which will be later used to replace with the subscriber's uuid.
-            track_url = '%s://%s/track/click/%s/{{uuid}}/' % (protocol, domain, link.uuid)
+            track_url = '%s://%s/click/%s/{{uuid}}/' % (protocol, domain, link.uuid)
             html = html.replace('%s%s' % (href, url), '%s%s' % (href, track_url), 1)
             index += 1
         return html, index
@@ -402,7 +402,7 @@ class Email(models.Model):
         current_site = get_current_site(request=None)
         protocol = 'http'
         domain = current_site.domain
-        track_url = '%s://%s/track/open/%s/{{uuid}}/' % (protocol, domain, self.uuid)
+        track_url = '%s://%s/open/%s/{{uuid}}/' % (protocol, domain, self.uuid)
         soup = BeautifulSoup(self.template_content, 'html.parser')
         img_tag = soup.new_tag('img', src=track_url, height='1', width='1')
         body = soup.find('body')

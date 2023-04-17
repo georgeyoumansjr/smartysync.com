@@ -6,7 +6,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.conf import settings
 
 import html2text
 
@@ -41,7 +40,7 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
     plain_text_message = html2text.html2text(rich_text_message, bodywidth=2000)
 
     # Remove track open from plain text version
-    plain_text_message = re.sub(r'(!\[\]\(https?://.*/track/open/.*/\)\n\n)', '', plain_text_message, 1)
+    plain_text_message = re.sub(r'(!\[\]\(https?://.*/open/.*/\)\n\n)', '', plain_text_message, 1)
 
     headers = dict()
     if not is_test:
