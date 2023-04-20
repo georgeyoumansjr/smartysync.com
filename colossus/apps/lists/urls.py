@@ -9,6 +9,7 @@ app_name = 'mailing'
 
 urlpatterns = [
     path('', views.MailingListListView.as_view(), name='lists'),
+    path('search/', views.PasteEmailsSearchSubscribersView.as_view(), name='search'),
     path('add/', views.MailingListCreateView.as_view(), name='new_list'),
     path('<int:pk>/', views.MailingListDetailView.as_view(), name='list'),
     path('<int:pk>/locations/<str:country_code>/', views.MailingListCountryReportView.as_view(), name='country_report'),

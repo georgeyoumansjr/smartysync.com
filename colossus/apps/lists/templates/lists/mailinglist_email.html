@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags i18n %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Search' %}</li>
+    </ol>
+  </nav>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h3 class="card-title">{% trans 'Search Emails' %}</h3>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-10 col-lg-6">
+            {{ form|crispy }}
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success" role="button">{% trans 'Search' %}</button>
+        <a href="{% url 'lists:lists' %}" class="btn btn-outline-secondary" role="button">{% trans 'Go Back' %}</a>
+      </form>
+    </div>
+  </div>
+  {% if mailing_lists %}
+  <div>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+            <tr style="background-color: #ccc;">
+                <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
+                <th style="padding: 10px; border: 1px solid #000;">Emails</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name, email_list in mailing_lists.items %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #000;">{{ name }}</td>
+                <td style="padding: 10px; border: 1px solid #000;">
+                {% for email in email_list %}
+                    {{ email }} <br>
+                {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+  </div>
+{% endif %}
+{% endblock %}

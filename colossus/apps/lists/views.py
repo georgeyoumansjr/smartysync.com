@@ -1,6 +1,9 @@
 import datetime
 from typing import Any, Dict
 
+from colossus.apps.subscribers.fields import MultipleEmailField
+
+from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -35,7 +38,7 @@ from .charts import (
 )
 from .forms import (
     BulkTagForm, ConfirmSubscriberImportForm, MailingListSMTPForm,
-    PasteImportSubscribersForm,
+    PasteImportSubscribersForm, PasteSearchSubscribersForm,
 )
 from .mixins import FormTemplateMixin, MailingListMixin
 from .models import MailingList, SubscriberImport
@@ -52,8 +55,7 @@ class MailingListListView(ListView):
         kwargs['menu'] = 'lists'
         kwargs['total_count'] = MailingList.objects.count()
         return super().get_context_data(**kwargs)
-
-
+    
 @method_decorator(login_required, name='dispatch')
 class MailingListCreateView(CreateView):
     model = MailingList
@@ -234,6 +236,22 @@ class PasteEmailsImportSubscribersView(MailingListMixin, FormView):
             return redirect('lists:subscribers', pk=mailing_list_id)
         except MailingList.DoesNotExist:
             raise Http404
+        
+@method_decorator(login_required, name='dispatch')
+class PasteEmailsSearchSubscribersView(FormView):
+    template_name = 'lists/mailinglist_email.html'
+    form_class = PasteSearchSubscribersForm
+    extra_context = {'title': _('Paste Emails')}
+
+    def form_valid(self, form):
+        context = {}
+        context['mailing_lists'] = form.search_subscribers()
+        print(context)
+        return render( self.request, 'lists/mailinglist_email.html', context )
+    
+    def get(self, request):
+
+        return super().get(request)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -535,3 +553,25 @@ def download_subscriber_import(request, pk, import_pk):
     response = HttpResponse(subscriber_import.file.read(), content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
+from django.shortcuts import render
+@login_required
+def search_subscribers(request):
+    context = {}
+
+
+    emails = MultipleEmailField(
+        label=_('Paste email addresses'),
+        help_text=_('One email per line, or separated by comma. Duplicate emails will be suppressed.'),
+    )
+
+    with transaction.atomic():
+        for email in emails:
+
+            try:
+                subscriber = Subscriber.objects.get( email__iexact=email )
+                if not subscriber.mailing_list.name in mailing_lists:
+                    mailing_lists[subscriber.mailing_list.name] = [email]
+                (mailing_lists[subscriber.mailing_list.name]).append(email)
+            except Subscriber.DoesNotExist:
+                continue
+    return HttpResponse( render(request, 'search_subscribers.html', context) )

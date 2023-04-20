@@ -192,6 +192,30 @@ class PasteImportSubscribersForm(forms.Form):
                 subscriber.save()
             mailing_list.update_subscribers_count()
 
+class PasteSearchSubscribersForm(forms.Form):
+    emails = MultipleEmailField(
+        label=_('Paste email addresses'),
+        help_text=_('One email per line, or separated by comma. Duplicate emails will be suppressed.'),
+    )
+
+    def search_subscribers(self):
+        emails = self.cleaned_data.get('emails')
+
+        mailing_lists = dict()
+
+        with transaction.atomic():
+            for email in emails:
+
+                subscribers = Subscriber.objects.filter( email=email )
+                if subscribers.exists():
+                    for subscriber in subscribers:
+                        if not subscriber.mailing_list.name in mailing_lists:
+                            mailing_lists[subscriber.mailing_list.name] = [email]
+                        else:
+                            (mailing_lists[subscriber.mailing_list.name]).append(email)
+        print(mailing_lists)
+        return mailing_lists
+
 
 class MailingListSMTPForm(forms.ModelForm):
     class Meta:
