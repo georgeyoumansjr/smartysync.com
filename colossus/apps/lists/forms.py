@@ -201,20 +201,39 @@ class PasteSearchSubscribersForm(forms.Form):
     def search_subscribers(self):
         emails = self.cleaned_data.get('emails')
 
-        mailing_lists = dict()
+        campaign_subscribers = dict()
+        campaign_not_subscribers = dict()
+        multiple_campaign_subscribers = dict()
+        alone_subscribers = list()
 
         with transaction.atomic():
             for email in emails:
 
                 subscribers = Subscriber.objects.filter( email=email )
                 if subscribers.exists():
-                    for subscriber in subscribers:
-                        if not subscriber.mailing_list.name in mailing_lists:
-                            mailing_lists[subscriber.mailing_list.name] = [email]
+
+                    if subscribers.count() > 1: # if exists in more than one campaign
+                        multiple_campaign_subscribers[email] = []
+                        for sub in subscribers:
+                            (multiple_campaign_subscribers[email]).append(sub.mailing_list.name)
+
+                    for subscriber in subscribers: 
+
+                        if not subscriber.mailing_list.name in campaign_subscribers:
+                            campaign_subscribers[subscriber.mailing_list.name] = [email]
                         else:
-                            (mailing_lists[subscriber.mailing_list.name]).append(email)
-        print(mailing_lists)
-        return mailing_lists
+                            (campaign_subscribers[subscriber.mailing_list.name]).append(email)
+                else:
+                    alone_subscribers.append(email)
+            for sub_email in emails:
+
+                campaign_not_subscribers[sub_email] = []
+                for campaign, camp_emails in campaign_subscribers.items():
+
+                    if sub_email not in camp_emails:
+                        (campaign_not_subscribers[sub_email]).append(campaign)
+
+        return campaign_subscribers, campaign_not_subscribers, multiple_campaign_subscribers, alone_subscribers
 
 
 class MailingListSMTPForm(forms.ModelForm):
