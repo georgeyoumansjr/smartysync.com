@@ -244,14 +244,17 @@ class PasteEmailsSearchSubscribersView(FormView):
     extra_context = {'title': _('Paste Emails')}
 
     def form_valid(self, form):
+        context = {}
         campaign_subscribers, campaign_not_subscribers, multiple_campaign_subscribers, alone_subscribers = form.search_subscribers()
-        context = {
-            'campaign_subscribers':campaign_subscribers,
-            'campaign_not_subscribers':campaign_not_subscribers,
-            'multiple_campaign_subscribers':multiple_campaign_subscribers,
-            'alone_subscribers':alone_subscribers
-            
-        }
+        if len(campaign_subscribers) != 0:
+            context['campaign_subscribers'] = campaign_subscribers
+        if len(campaign_not_subscribers) != 0:
+            context['campaign_not_subscribers'] = campaign_not_subscribers
+        if len(multiple_campaign_subscribers):
+            context['multiple_campaign_subscribers'] = multiple_campaign_subscribers
+        if len(alone_subscribers):
+            context['alone_subscribers'] = alone_subscribers
+
         return render( self.request, 'lists/mailinglist_email.html', context )
     
     def get(self, request):

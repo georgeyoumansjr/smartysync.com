@@ -232,6 +232,8 @@ class PasteSearchSubscribersForm(forms.Form):
 
                     if sub_email not in camp_emails:
                         (campaign_not_subscribers[sub_email]).append(campaign)
+                if not campaign_not_subscribers[sub_email]:
+                    campaign_not_subscribers.pop(sub_email)
 
         return campaign_subscribers, campaign_not_subscribers, multiple_campaign_subscribers, alone_subscribers
 

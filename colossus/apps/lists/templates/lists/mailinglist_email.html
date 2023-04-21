@@ -25,30 +25,32 @@
       </form>
     </div>
   </div>
-  {% if campaign_subscribers %}
   <div>
+    {% if campaign_subscribers %}
     <h2>Campaign Subscribers</h2>
-
-      <table style="border-collapse: collapse; width: 100%; color: green;">
-        <thead>
-            <tr style="background-color: #ccc;">
-                <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
-                <th style="padding: 10px; border: 1px solid #000;">Emails</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for name, email_list in campaign_subscribers.items %}
-            <tr>
-                <td style="padding: 10px; border: 1px solid #000;">{{ name }}</td>
-                <td style="padding: 10px; border: 1px solid #000;">
-                {% for email in email_list %}
-                    {{ email }} <br>
-                {% endfor %}
-                </td>
-            </tr>
+    
+    <table style="border-collapse: collapse; width: 100%; color: green;">
+      <thead>
+        <tr style="background-color: #ccc;">
+          <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
+          <th style="padding: 10px; border: 1px solid #000;">Emails</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, email_list in campaign_subscribers.items %}
+        <tr>
+          <td style="padding: 10px; border: 1px solid #000;">{{ name }}</td>
+          <td style="padding: 10px; border: 1px solid #000;">
+            {% for email in email_list %}
+            {{ email }} <br>
             {% endfor %}
-        </tbody>
-      </table>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+    {% if campaign_not_subscribers %}
       <h2>Campaign not Subscribers</h2>
       <table style="border-collapse: collapse; width: 100%; color: rgb(255, 183, 0);">
         <thead>
@@ -72,6 +74,10 @@
             {% endfor %}
         </tbody>
       </table>
+    {% endif %}
+
+    {% if multiple_campaign_subscribers %}
+
       <h2>Multiple Campaign Subscribers</h2>
       <table style="border-collapse: collapse; width: 100%; color: red;">
         <thead>
@@ -93,6 +99,10 @@
             {% endfor %}
         </tbody>
       </table>
+    {% endif %}
+
+    {% if alone_subscribers %}
+
       <table style="border-collapse: collapse; width: 100%;">
         <thead>
             <tr style="background-color: #ccc;">
@@ -107,6 +117,7 @@
             {% endfor %}
         </tbody>
       </table>
+    {% endif %}
+
   </div>
-{% endif %}
 {% endblock %}
