@@ -26,51 +26,20 @@
     </div>
   </div>
   <div>
-    {% if campaign_subscribers %}
-    <h2>Campaign Subscribers</h2>
-    
-    <table style="border-collapse: collapse; width: 100%; color: green;">
-      <thead>
-        <tr style="background-color: #ccc;">
-          <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
-          <th style="padding: 10px; border: 1px solid #000;">Emails</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for name, email_list in campaign_subscribers.items %}
-        <tr>
-          <td style="padding: 10px; border: 1px solid #000;">{{ name }}</td>
-          <td style="padding: 10px; border: 1px solid #000;">
-            {% for email in email_list %}
-            {{ email }} <br>
-            {% endfor %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-    {% if campaign_not_subscribers %}
-      <h2>Campaign not Subscribers</h2>
-      <table style="border-collapse: collapse; width: 100%; color: rgb(255, 183, 0);">
+    {% if alone_subscribers %}
+
+    <h2>Not Subscribed to Any Campaign(s)</h2>
+      <table style="border-collapse: collapse; width: 100%;">
         <thead>
             <tr style="background-color: #ccc;">
               <th style="padding: 10px; border: 1px solid #000;">Emails</th>
-                <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
             </tr>
         </thead>
         <tbody>
-            {% for email, campaigns in campaign_not_subscribers.items %}
-              {% if campaigns %}
+            {% for email in alone_subscribers %}
               <tr>
                   <td style="padding: 10px; border: 1px solid #000;">{{ email }}</td>
-                  <td style="padding: 10px; border: 1px solid #000;">
-                  {% for campaign in campaigns %}
-                      {{ campaign }} <br>
-                  {% endfor %}
-                  </td>
               </tr>
-              {% endif %}
             {% endfor %}
         </tbody>
       </table>
@@ -78,7 +47,7 @@
 
     {% if multiple_campaign_subscribers %}
 
-      <h2>Multiple Campaign Subscribers</h2>
+      <h2>Subscribed to Multiple Campaigns</h2>
       <table style="border-collapse: collapse; width: 100%; color: red;">
         <thead>
             <tr style="background-color: #ccc;">
@@ -101,19 +70,77 @@
       </table>
     {% endif %}
 
-    {% if alone_subscribers %}
+    {% if multiple_campaign_subscribers_all %}
 
-      <table style="border-collapse: collapse; width: 100%;">
+      <h2>Subscribed to Multiple Campaigns (all)</h2>
+      <table style="border-collapse: collapse; width: 100%; color: red;">
         <thead>
             <tr style="background-color: #ccc;">
-              <th style="padding: 10px; border: 1px solid #000;">Alone Emails</th>
+              <th style="padding: 10px; border: 1px solid #000;">Emails</th>
+                <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
             </tr>
         </thead>
         <tbody>
-            {% for email in alone_subscribers %}
+            {% for email, campaigns in multiple_campaign_subscribers_all.items %}
               <tr>
                   <td style="padding: 10px; border: 1px solid #000;">{{ email }}</td>
+                  <td style="padding: 10px; border: 1px solid #000;">
+                  {% for campaign in campaigns %}
+                      {{ campaign }} <br>
+                  {% endfor %}
+                  </td>
               </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if campaign_subscribers %}
+    <h2>Campaigns Subscribed to</h2>
+    
+    <table style="border-collapse: collapse; width: 100%; color: green;">
+      <thead>
+        <tr style="background-color: #ccc;">
+          <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
+          <th style="padding: 10px; border: 1px solid #000;">Emails</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, email_list in campaign_subscribers.items %}
+        <tr>
+          <td style="padding: 10px; border: 1px solid #000;">{{ name }}</td>
+          <td style="padding: 10px; border: 1px solid #000;">
+            {% for email in email_list %}
+            {{ email }} <br>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if campaign_not_subscribers %}
+      <h2>Subscribers Not Subscribed to These Campaigns</h2>
+      <table style="border-collapse: collapse; width: 100%; color: rgb(255, 183, 0);">
+        <thead>
+            <tr style="background-color: #ccc;">
+              <th style="padding: 10px; border: 1px solid #000;">Emails</th>
+              <th style="padding: 10px; border: 1px solid #000;">Mailing List</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for email, campaigns in campaign_not_subscribers.items %}
+              {% if campaigns %}
+              <tr>
+                  <td style="padding: 10px; border: 1px solid #000;">{{ email }}</td>
+                  <td style="padding: 10px; border: 1px solid #000;">
+                  {% for campaign in campaigns %}
+                      {{ campaign }} <br>
+                  {% endfor %}
+                  </td>
+              </tr>
+              {% endif %}
             {% endfor %}
         </tbody>
       </table>

@@ -254,6 +254,8 @@ class PasteEmailsSearchSubscribersView(FormView):
             context['multiple_campaign_subscribers'] = multiple_campaign_subscribers
         if len(alone_subscribers):
             context['alone_subscribers'] = alone_subscribers
+        #if len(multiple_campaign_subscribers_all):
+        #    context['multiple_campaign_subscribers_all'] = multiple_campaign_subscribers_all
 
         return render( self.request, 'lists/mailinglist_email.html', context )
     
