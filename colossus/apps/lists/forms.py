@@ -202,12 +202,28 @@ class PasteSearchSubscribersForm(forms.Form):
         emails = self.cleaned_data.get('emails')
 
         campaign_subscribers = dict()
-        campaign_not_subscribers = dict()
         multiple_campaign_subscribers = dict()
         multiple_campaign_subscribers_all = dict()
         alone_subscribers = list()
 
         with transaction.atomic():
+            # multiple campaign subscribers # all of them
+            all_subscribers = Subscriber.objects.all()
+            emails_and_campaigns = {subscriber.email: [] for subscriber in all_subscribers}
+            campaigns_and_subscribers = {subscriber.mailing_list.name: [] for subscriber in all_subscribers}
+
+            for sub in all_subscribers:
+                emails_and_campaigns.setdefault(sub.email, []).append(sub.mailing_list.name)
+                campaigns_and_subscribers.setdefault(sub.mailing_list.name, []).append(sub.email)
+
+            multiple_campaign_subscribers_all = {email: campaigns for email, campaigns in emails_and_campaigns.items() if len(set(campaigns)) > 1}
+            #alone_subscribers = [email for email, campaigns in emails_and_campaigns.items() if len(set(campaigns)) == 0]
+
+            #campaign_subscribers = {campaign: emails for campaign, emails in emails_and_campaigns.items()}
+            
+            #subscribers = all_subscribers.filter(email_in=emails)
+
+            # given emails
             for email in emails:
 
                 subscribers = Subscriber.objects.filter( email=email )
@@ -227,36 +243,8 @@ class PasteSearchSubscribersForm(forms.Form):
 
                 else:
                     alone_subscribers.append(email)
-            for sub_email in emails:
 
-                # alone subscribers
-                campaign_not_subscribers[sub_email] = [] # alone subscribers
-                for campaign, camp_emails in campaign_subscribers.items():
-
-                    if sub_email not in camp_emails:
-                        (campaign_not_subscribers[sub_email]).append(campaign)
-                if not campaign_not_subscribers[sub_email]:
-                    campaign_not_subscribers.pop(sub_email)
-
-            # multiple campaign subscribers # all of them
-            #all_subscribers = Subscriber.objects.all()
-            #for subscriber in all_subscribers:
-
-                #if subscriber.email in multiple_campaign_subscribers_all:
-                #    multiple_campaign_subscribers_all[subscriber.email] = [] 
-                #    (multiple_campaign_subscribers_all[subscriber.email]).append(subscriber.mailing_list.name)
-                #    if not subscriber.mailing_list.name in multiple_campaign_subscribers_all.values():
-
-
-            #for subscriber in all_subscribers:
-                    
-            #    if len(multiple_campaign_subscribers_all[subscriber.email]) == 1:
-            #        multiple_campaign_subscribers_all.pop(subscriber.email)
-
-                
-
-
-        return campaign_subscribers, campaign_not_subscribers, multiple_campaign_subscribers, alone_subscribers #, multiple_campaign_subscribers_all
+        return campaign_subscribers, multiple_campaign_subscribers, alone_subscribers , multiple_campaign_subscribers_all
 
 
 class MailingListSMTPForm(forms.ModelForm):
