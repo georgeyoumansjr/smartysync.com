@@ -45,7 +45,10 @@ def get(collection: Any, key: Any):
 
 @register.filter
 def percentage(value):
-    return round(value * 100, 1)
+    try:
+        return round(value * 100, 1)
+    except:
+        return 0
 
 
 @register.filter

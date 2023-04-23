@@ -12,7 +12,7 @@ from django.db.models import Count, Q
 from django.forms import modelform_factory
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext, gettext_lazy as _
@@ -106,7 +106,25 @@ class MailingListDetailView(DetailView):
         kwargs['summary_last_30_days'] = summary_last_30_days
         kwargs['domains'] = domains
         return super().get_context_data(**kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        obj = self.object.delete()
+        return super().delete(request, *args, **kwargs)
 
+@method_decorator(login_required, name='dispatch')
+class MailingListDeleteView(DeleteView):
+    model = MailingList
+    pk_url_kwarg = 'mailing_list'
+    context_object_name = 'mailing_list'
+    template_name = 'lists/mailing_list_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse('lists:lists')
+    
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        return self.model.objects.get(pk=pk)
+    
 
 @method_decorator(login_required, name='dispatch')
 class MailingListCountryReportView(MailingListMixin, DetailView):

@@ -12,6 +12,7 @@ urlpatterns = [
     path('search/', views.PasteEmailsSearchSubscribersView.as_view(), name='search'),
     path('add/', views.MailingListCreateView.as_view(), name='new_list'),
     path('<int:pk>/', views.MailingListDetailView.as_view(), name='list'),
+    path('<int:pk>/delete/', views.MailingListDeleteView.as_view(), name='delete'),
     path('<int:pk>/locations/<str:country_code>/', views.MailingListCountryReportView.as_view(), name='country_report'),
     path('<int:pk>/subscribers/', views.SubscriberListView.as_view(), name='subscribers'),
     path('<int:pk>/subscribers/add/', views.SubscriberCreateView.as_view(), name='new_subscriber'),

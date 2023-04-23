@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'debug_toolbar',
-    'crispy_forms',
     'django_celery_beat',
+    'crispy_forms',
 
     'colossus.apps.accounts',
     'colossus.apps.campaigns',

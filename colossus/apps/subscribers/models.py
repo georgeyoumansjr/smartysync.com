@@ -104,7 +104,7 @@ class Subscriber(models.Model):
         related_name='subscribers'
     )
     name = models.CharField(_('name'), max_length=150, blank=True)
-    mailing_list = models.ForeignKey(MailingList, on_delete=models.PROTECT, related_name='subscribers')
+    mailing_list = models.ForeignKey(MailingList, on_delete=models.CASCADE, related_name='subscribers')
     open_rate = models.FloatField(_('opens'), default=0.0, editable=False)
     click_rate = models.FloatField(_('clicks'), default=0.0, editable=False)
     update_date = models.DateTimeField(_('updated'), default=timezone.now)

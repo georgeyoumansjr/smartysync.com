@@ -48,6 +48,7 @@
           <th style="width:15%;">{% trans 'Subscribers' %}</th>
           <th style="width:15%;">{% trans 'Opens' %}</th>
           <th style="width:15%;">{% trans 'Clicks' %}</th>
+          <th style="width:15%;">{% trans 'Delete' %}</th>
         </tr>
       </thead>
       <tbody>
@@ -57,6 +58,7 @@
             <td>{{ mailing_list.subscribers_count }}</td>
             <td>{{ mailing_list.open_rate|percentage }}%</td>
             <td>{{ mailing_list.click_rate|percentage }}%</td>
+            <td><a href="{% url 'lists:delete' mailing_list.pk %}"><i class="fa fa-trash" style="color: red;" aria-hidden="true"></i></a></td>
           </tr>
         {% endfor %}
       </tbody>
