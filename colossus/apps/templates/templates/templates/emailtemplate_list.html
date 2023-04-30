@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Templates' %}</li>
     </ol>
   </nav>
@@ -14,23 +14,23 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-0">{% trans 'Templates' %}</h2>
-        <a href="{% url 'templates:emailtemplate_add' %}" class="btn btn-primary" role="button">{% trans 'Create template' %}</a>
+        <a href="{% url 'templates:emailtemplate_add' %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Create template' %}</a>
       </div>
     </div>
     <div class="list-group list-group-flush">
       <div class="list-group-item">
         <div class="row">
           <div class="col-6">
-            <form method="get">
+            <form method="get" class="overflow-hidden rounded-pill">
               <div class="input-group">
-                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search templates' %}" aria-label="{% trans 'Search templates' %}">
+                <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search templates' %}" aria-label="{% trans 'Search templates' %}">
                 <div class="input-group-append">
                   {% if query %}
-                    <a href="?" class="btn btn-outline-primary" role="button">
+                    <a href="?" class="btn btn-outline-dark" role="button">
                       {% trans 'Clear' %}
                     </a>
                   {% endif %}
-                  <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+                  <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
                 </div>
               </div>
             </form>
@@ -51,7 +51,7 @@
       <tbody>
         {% for template in templates %}
           <tr>
-            <td><a href="{{ template.get_absolute_url }}">{{ template.name }}</a></td>
+            <td><a href="{{ template.get_absolute_url }}" class="text-info">{{ template.name }}</a></td>
             <td>{{ template.update_date }}</td>
             <td>{% spaceless %}
               {% if template.last_used_campaign %}

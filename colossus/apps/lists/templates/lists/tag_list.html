@@ -13,23 +13,23 @@
   <div class="card-body">
     <div class="row">
       <div class="col-6">
-        <form method="get">
+        <form method="get" class="rounded-pill overflow-hidden">
           <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search tags' %}" aria-label="{% trans 'Search tags' %}">
+            <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search tags' %}" aria-label="{% trans 'Search tags' %}">
             <div class="input-group-append">
               {% if query %}
-                <a href="{% url 'lists:tags' mailing_list.pk %}" class="btn btn-outline-primary" role="button">
+                <a href="{% url 'lists:tags' mailing_list.pk %}" class="btn btn-outline-dark" role="button">
                   {% trans 'Clear' %}
                 </a>
               {% endif %}
-              <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+              <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-6 text-right">
-        <a href="{% url 'lists:bulk_tag' mailing_list.pk %}" class="btn btn-outline-primary" role="button">{% trans 'Bulk tag subscribers' %}</a>
-        <a href="{% url 'lists:new_tag' mailing_list.pk %}" class="btn btn-primary" role="button">{% trans 'Add tag' %}</a>
+        <a href="{% url 'lists:bulk_tag' mailing_list.pk %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Bulk tag subscribers' %}</a>
+        <a href="{% url 'lists:new_tag' mailing_list.pk %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Add tag' %}</a>
       </div>
     </div>
   </div>
@@ -55,8 +55,8 @@
           <td class="align-middle">{{ tag.subscribers_count }}</td>
           <td class="align-middle text-right">
             <div class="btn-group">
-              <a href="{% url 'lists:subscribers' mailing_list.pk %}?tags__in={{ tag.pk }}" class="btn btn-outline-primary">{% trans 'View' %}</a>
-              <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="{% url 'lists:subscribers' mailing_list.pk %}?tags__in={{ tag.pk }}" class="btn btn-outline-dark">{% trans 'View' %}</a>
+              <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
               </button>
               <div class="dropdown-menu dropdown-menu-right">

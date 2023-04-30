@@ -18,7 +18,7 @@
     <small class="text-muted">{{ mailing_list.get_active_subscribers.count }}</small>
   </h2>
   <div class="card mb-3">
-    <div class="card-header">
+    <div class="card-header bg-dark">
       <ul class="nav nav-tabs card-header-tabs">
         <li class="nav-item">
           <a class="nav-link{% if submenu == 'details' %} active{% endif %}" href="{% url 'lists:list' mailing_list.pk %}">
