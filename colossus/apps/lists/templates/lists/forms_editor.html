@@ -5,7 +5,7 @@
 {% block content %}
 
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
+      <ol class="breadcrumb alert-dark">
         <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'lists:list' mailing_list.pk %}">{{ mailing_list.name }}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'lists:subscription_forms' mailing_list.pk %}">{% trans 'Subscription Forms' %}</a></li>
@@ -51,7 +51,7 @@
                 </div>
                 <div>
                   <h5 class="mb-1">
-                    <a href="{% url 'lists:edit_form_template' mailing_list.pk key %}">
+                    <a href="{% url 'lists:edit_form_template' mailing_list.pk key %}" class="text-info">
                       {{ template_keys.LABELS|get:key }}
                     </a>
                   </h5>
@@ -59,7 +59,7 @@
                 </div>
               </div>
               <div class="ml-3">
-                <a href="{% url 'lists:edit_form_template' mailing_list.pk key %}" class="btn btn-primary" role="button">{% trans 'Customize' %}</a>
+                <a href="{% url 'lists:edit_form_template' mailing_list.pk key %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Customize' %}</a>
               </div>
             </div>
         {% endfor %}

@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Mailing Lists' %}</li>
     </ol>
   </nav>
@@ -15,9 +15,9 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-0">{% trans 'Mailing Lists' %}</h2>
         <div>
-          <a href="{% url 'lists:list_campaigns' %}" class="btn btn-primary" role="button">{% trans 'List with Campaigns' %}</a>
-          <a href="{% url 'lists:search' %}" class="btn btn-primary" role="button">{% trans 'Search Email' %}</a>
-          <a href="{% url 'lists:new_list' %}" class="btn btn-primary" role="button">{% trans 'Create list' %}</a>
+          <a href="{% url 'lists:list_campaigns' %}" class="btn btn-primary rounded-pill" role="button">{% trans 'List with Campaigns' %}</a>
+          <a href="{% url 'lists:search' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Search Email' %}</a>
+          <a href="{% url 'lists:new_list' %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Create list' %}</a>
         </div>
       </div>
     </div>
@@ -25,16 +25,16 @@
       <div class="list-group-item">
         <div class="row">
           <div class="col-6">
-            <form method="get">
+            <form method="get" class="rounded-pill overflow-hidden">
               <div class="input-group">
-                <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search lists' %}" aria-label="{% trans 'Search lists' %}" aria-describedby="basic-addon2">
+                <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search lists' %}" aria-label="{% trans 'Search lists' %}" aria-describedby="basic-addon2">
                 <div class="input-group-append">
                   {% if query %}
-                    <a href="?" class="btn btn-outline-primary" role="button">
+                    <a href="?" class="btn btn-outline-dark" role="button">
                       {% trans 'Clear' %}
                     </a>
                   {% endif %}
-                  <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+                  <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
                 </div>
               </div>
             </form>
@@ -55,11 +55,11 @@
       <tbody>
         {% for mailing_list in mailing_lists %}
           <tr>
-            <td><a href="{{ mailing_list.get_absolute_url }}">{{ mailing_list.name }}</a></td>
+            <td><a href="{{ mailing_list.get_absolute_url }}" class="text-info">{{ mailing_list.name }}</a></td>
             <td>{{ mailing_list.subscribers_count }}</td>
             <td>{{ mailing_list.open_rate|percentage }}%</td>
             <td>{{ mailing_list.click_rate|percentage }}%</td>
-            <td><a href="{% url 'lists:delete' mailing_list.pk %}"><i class="fa fa-trash" style="color: red;" aria-hidden="true"></i></a></td>
+            <td><a href="{% url 'lists:delete' mailing_list.pk %}"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a></td>
           </tr>
         {% endfor %}
       </tbody>

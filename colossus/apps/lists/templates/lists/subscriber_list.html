@@ -11,28 +11,28 @@
   <div class="card-body">
     <div class="row">
       <div class="col-6">
-        <form method="get">
+        <form method="get" class="rounded-pill overflow-hidden">
           <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="{% trans 'Search subscribers' %}" aria-label="Search subscribers" aria-describedby="basic-addon2">
+            <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search subscribers' %}" aria-label="Search subscribers" aria-describedby="basic-addon2">
             <div class="input-group-append">
               {% if query %}
-                <a href="?" class="btn btn-outline-primary" role="button">
+                <a href="?" class="btn btn-outline-dark" role="button">
                   {% trans 'Clear' %}
                 </a>
               {% endif %}
-              <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+              <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-6 text-right">
-        <a href="{% url 'lists:import_subscribers' mailing_list.pk %}" class="btn btn-outline-primary" role="button">{% trans 'Import subscribers' %}</a>
-        <a href="{% url 'lists:new_subscriber' mailing_list.pk %}" class="btn btn-primary" role="button">{% trans 'Add subscriber' %}</a>
+        <a href="{% url 'lists:import_subscribers' mailing_list.pk %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Import subscribers' %}</a>
+        <a href="{% url 'lists:new_subscriber' mailing_list.pk %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Add subscriber' %}</a>
       </div>
     </div>
   </div>
   <table class="table table-sm table-striped mb-0">
-    <thead class="thead-light">
+    <thead class="thead-dark">
       <tr>
         <th>{% trans 'Email address' %}</th>
         <th>{% trans 'Status' %}</th>
@@ -44,7 +44,7 @@
     <tbody>
       {% for subscriber in subscribers %}
         <tr>
-          <td><a href="{% url 'lists:subscriber' mailing_list.pk subscriber.pk %}">{{ subscriber.email }}</a></td>
+          <td><a href="{% url 'lists:subscriber' mailing_list.pk subscriber.pk %}" class="text-info">{{ subscriber.email }}</a></td>
           <td>{{ subscriber|status_badge }}</td>
           <td>{{ subscriber.open_rate|percentage }}%</td>
           <td>{{ subscriber.click_rate|percentage }}%</td>
