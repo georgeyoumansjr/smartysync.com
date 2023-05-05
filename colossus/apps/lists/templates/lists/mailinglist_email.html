@@ -4,7 +4,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Search' %}</li>
     </ol>
@@ -16,12 +16,12 @@
       <form method="post">
         {% csrf_token %}
         <div class="row">
-          <div class="col-md-10 col-lg-6">
+          <div class="col">
             {{ form|crispy }}
           </div>
         </div>
-        <button type="submit" class="btn btn-success" role="button">{% trans 'Search' %}</button>
-        <a href="{% url 'lists:lists' %}" class="btn btn-outline-secondary" role="button">{% trans 'Go Back' %}</a>
+        <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Search' %}</button>
+        <a href="{% url 'lists:lists' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Go Back' %}</a>
       </form>
     </div>
   </div>

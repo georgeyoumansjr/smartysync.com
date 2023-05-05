@@ -78,3 +78,9 @@ form input.round-r-0 {
     background-color: #343a40;
     color: #ffffff;
 }
+table a{
+    color: #17a2b8;
+}
+label span{
+    color: #dc3545;
+}

@@ -4,7 +4,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
       <li class="breadcrumb-item"><a href="{% url 'lists:list' mailing_list.pk %}">{{ mailing_list.name }}</a></li>
       <li class="breadcrumb-item"><a href="{% url 'lists:subscribers' mailing_list.pk %}">{% trans 'Subscribers' %}</a></li>
@@ -32,11 +32,11 @@
           </div>
         </div>
         {% if object %}
-          <button type="submit" class="btn btn-success" role="button">{% trans 'Save changes' %}</button>
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
           <a href="{% url 'lists:subscriber' mailing_list.pk object.pk %}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
           <a href="{% url 'lists:delete_subscriber' mailing_list.pk object.pk %}" class="btn btn-outline-danger" role="button">{% trans 'Delete' %}</a>
         {% else %}
-          <button type="submit" class="btn btn-success" role="button">{% trans 'Create subscriber' %}</button>
+          <button type="submit" class="btn btn-warning rounded-pill" role="button">{% trans 'Create subscriber' %}</button>
           <a href="{% url 'lists:subscribers' mailing_list.pk %}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
         {% endif %}
       </form>

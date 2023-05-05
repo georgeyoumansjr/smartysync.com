@@ -11,8 +11,10 @@
   <link rel="stylesheet" type="text/css" href="{% static 'vendor/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}">
   <link href="https://fonts.googleapis.com/css?family=Goudy+Bookletter+1911" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/charts.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'notifications/css/notifications.css' %}">
   <title>{% block title %}Smarty{% endblock %}</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   {% block stylesheet %}
   {% endblock %}
 </head>
@@ -103,6 +105,7 @@
 <script src="{% static 'vendor/feather-icons-4.7.3/feather.min.js' %}"></script>
 <script src="{% static 'vendor/moment/moment.min.js' %}"></script>
 <script src="{% static 'vendor/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
 <script>
   $(function () {
     feather.replace();
