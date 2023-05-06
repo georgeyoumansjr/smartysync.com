@@ -43,6 +43,22 @@ from .forms import (
 from .mixins import FormTemplateMixin, MailingListMixin
 from .models import MailingList, SubscriberImport
 
+from colossus.apps.campaigns.models import Campaign
+
+def MailingListCampaignListView(request):
+    context = {}
+    mls_and_cmps = {}
+
+    campaigns = Campaign.objects.all()
+    mailinglists = MailingList.objects.all()
+
+    for mailinglist in mailinglists:
+        mls_and_cmps[mailinglist.name] = campaigns.filter(mailing_list=mailinglist).values('name')
+    
+    context['mls_and_cmps'] = mls_and_cmps
+
+    return render(request, 'lists/mailinglist_campaignlist.html', context)
+
 
 @method_decorator(login_required, name='dispatch')
 class MailingListListView(ListView):

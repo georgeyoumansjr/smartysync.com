@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load colossus i18n %}
+
+{% block title %}{% trans 'Campaign Mailing Lists' %}{% endblock %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">{% trans 'Campaign Mailing Lists' %}</li>
+    </ol>
+  </nav>
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">{% trans 'Campaign Mailing Lists' %}</h2>
+        <div>
+          <a href="{% url 'lists:lists' %}" class="btn btn-primary" role="button">{% trans 'Go back' %}</a>
+        </div>
+      </div>
+    </div>
+    <table class="table table-striped mb-0">
+      <thead class="thead-light">
+        <tr>
+          <th>{% trans 'Mailing List' %}</th>
+          <th>{% trans 'Campaign' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mailing_list, campaigns in mls_and_cmps.items %}
+          <tr>
+            <td>{{ mailing_list }}</td>
+            <td>
+                {% for campaign in campaigns %}
+                    {{ campaign.name }} <br>
+                {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
