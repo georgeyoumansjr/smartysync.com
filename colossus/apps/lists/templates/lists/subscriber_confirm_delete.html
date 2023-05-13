@@ -18,8 +18,8 @@
       <p>You are about to delete the subscriber <strong>{{ subscriber.email }}</strong> from the list.</p>
       <form method="post" novalidate>
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" role="button">{% trans 'Confirm deletion' %}</button>
-        <a href="{% url 'lists:edit_subscriber' mailing_list.pk subscriber.pk %}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
+        <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion' %}</button>
+        <a href="{% url 'lists:edit_subscriber' mailing_list.pk subscriber.pk %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
       </form>
     </div>
   </div>

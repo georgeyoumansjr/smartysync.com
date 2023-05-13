@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Campaign Mailing Lists' %}</li>
     </ol>
   </nav>
@@ -15,29 +15,31 @@
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-0">{% trans 'Campaign Mailing Lists' %}</h2>
         <div>
-          <a href="{% url 'lists:lists' %}" class="btn btn-primary" role="button">{% trans 'Go back' %}</a>
+          <a href="{% url 'lists:lists' %}" class="btn btn-warning rounded-pill" role="button">{% trans 'Go back' %}</a>
         </div>
       </div>
     </div>
-    <table class="table table-striped mb-0">
-      <thead class="thead-light">
-        <tr>
-          <th>{% trans 'Mailing List' %}</th>
-          <th>{% trans 'Campaign' %}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for mailing_list, campaigns in mls_and_cmps.items %}
+    <div class="responsive-table">
+      <table class="table table-striped mb-0">
+        <thead class="thead-light">
           <tr>
-            <td>{{ mailing_list }}</td>
-            <td>
-                {% for campaign in campaigns %}
-                    {{ campaign.name }} <br>
-                {% endfor %}
-            </td>
+            <th>{% trans 'Mailing List' %}</th>
+            <th>{% trans 'Campaign' %}</th>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {% for mailing_list, campaigns in mls_and_cmps.items %}
+            <tr>
+              <td>{{ mailing_list }}</td>
+              <td>
+                  {% for campaign in campaigns %}
+                      {{ campaign.name }} <br>
+                  {% endfor %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 {% endblock %}

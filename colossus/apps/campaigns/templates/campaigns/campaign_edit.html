@@ -17,7 +17,7 @@
       {{ campaign|campaign_status_badge }}
     </div>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item d-flex justify-content-between align-items-center">
+      <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         {% if campaign.mailing_list %}
           <div class="d-flex align-items-center">
             <i data-feather="check-circle" class="mr-3 text-success"></i>
@@ -52,7 +52,7 @@
         {% endif %}
       </li>
 
-      <li class="list-group-item d-flex justify-content-between align-items-center">
+      <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         {% if campaign.email.from_email %}
           <div class="d-flex align-items-center">
             <i data-feather="check-circle" class="mr-3 text-success"></i>
@@ -74,7 +74,7 @@
         {% endif %}
       </li>
 
-      <li class="list-group-item d-flex justify-content-between align-items-center">
+      <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         {% if campaign.email.subject %}
           <div class="d-flex align-items-center">
             <i data-feather="check-circle" class="mr-3 text-success"></i>
@@ -84,7 +84,7 @@
               {% if campaign.email.preview %}<small class="text-muted">Preview: {{ campaign.email.preview }}</small>{% endif %}
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit subject' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn m-1 btn-outline-dark rounded-pill">{% trans 'Edit subject' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -93,11 +93,11 @@
               <p class="text-muted font-italic mb-0">{% trans "What's the subject line for this campaign?" %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Add subject' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_subject' campaign.pk %}" role="button" class="btn m-1 btn-dark rounded-pill">{% trans 'Add subject' %}</a>
         {% endif %}
       </li>
 
-      <li class="list-group-item d-flex justify-content-between align-items-center">
+      <li class="list-group-item d-flex justify-content-between flex-wrap align-items-center">
         {% if campaign.email.content %}
           <div class="d-flex align-items-center">
             <i data-feather="check-circle" class="mr-3 text-success"></i>
@@ -123,7 +123,7 @@
                 </small>
               </p>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-outline-dark rounded-pill">{% trans 'Edit design' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn m-1 btn-outline-dark rounded-pill">{% trans 'Edit design' %}</a>
         {% else %}
           <div class="d-flex align-items-center">
             <i data-feather="circle" class="mr-3 text-muted"></i>
@@ -132,7 +132,7 @@
               <p class="text-muted font-italic mb-0">{% trans 'Design the content for your email.' %}</p>
             </div>
           </div>
-          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn btn-dark rounded-pill">{% trans 'Design email' %}</a>
+          <a href="{% url 'campaigns:campaign_edit_content' campaign.pk %}" role="button" class="btn m-1 btn-dark rounded-pill">{% trans 'Design email' %}</a>
         {% endif %}
       </li>
 

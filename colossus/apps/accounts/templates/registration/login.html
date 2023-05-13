@@ -1,10 +1,30 @@
+
 {% extends 'registration/base.html' %}
+
+{% load static %}
 
 {% load crispy_forms_tags i18n %}
 
+{% block stylesheet %}
+<style>
+  body {
+    background: left center no-repeat;
+    background-image: url("{% static 'img/titan-dev-bg.jpg' %}");
+    background-blend-mode: darken;
+    background-color: #0000005e !important;
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+  }
+  .logo{
+    color: white !important;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="col-sm-8 col-md-6 col-lg-5 user-form">
-  <div class="card my-2">
+  <div class="card my-2 d-block">
     <div class="card-body p-5">
       <h4 class="card-title text-center">{% trans 'Log in to your account' %}</h4>
       <form method="post">
@@ -18,7 +38,8 @@
     </div>
   </div>
   <div class="text-center">
-    <a href="{% url 'password_reset' %}" class="btn text-dark">{% trans 'Forgot your password?' %}</a>
+    <a href="{% url 'password_reset' %}" class="btn text-light">{% trans 'Forgot your password?' %}</a>
   </div>
 </div>
+
 {% endblock %}

@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item"><a href="{% url 'templates:emailtemplates' %}">{% trans 'Templates' %}</a></li>
       <li class="breadcrumb-item"><a href="{% url 'templates:emailtemplate_editor' email_template.pk %}">{{ email_template.name }}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete' %}</li>
@@ -18,8 +18,8 @@
       <p>You are about to delete the template <strong>{{ email_template.name }}</strong>.</p>
       <form method="post" novalidate>
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger" role="button">{% trans 'Confirm deletion' %}</button>
-        <a href="{% url 'templates:emailtemplate_editor' email_template.pk %}" class="btn btn-outline-secondary" role="button">{% trans 'Never mind' %}</a>
+        <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion' %}</button>
+        <a href="{% url 'templates:emailtemplate_editor' email_template.pk %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
       </form>
     </div>
   </div>

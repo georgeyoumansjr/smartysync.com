@@ -12,7 +12,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb alert-dark">
       <li class="breadcrumb-item"><a href="{% url 'templates:emailtemplates' %}">{% trans 'Templates' %}</a></li>
       {% if email_template %}
         <li class="breadcrumb-item"><a href="{% url 'templates:emailtemplate_editor' email_template.pk %}">{{ email_template.name }}</a></li>

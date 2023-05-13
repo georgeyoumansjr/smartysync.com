@@ -3,8 +3,8 @@
 {% load i18n %}
 
 {% block content %}
-  <div class="d-flex justify-content-between align-items-center mb-3 py-4">
-    <h2 class="mb-0">{% trans 'Dashboard' %}</h2>
+  <div class="d-flex justify-content-between align-items-center mb-3 py-2">
+    <h2 class="mb-0 title">{% trans 'Dashboard' %}</h2>
     <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
       <div class="dropdown">
         <button class="btn btn-outline-warning dropdown-toggle rounded-pill" type="button" id="draftsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,30 +23,32 @@
       <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-dark rounded-pill ml-2" role="button">{% trans 'Create campaign' %}</a>
     </div>
   </div>
+  <hr class="mt-2">
 
-<div class="row pb-3">
-  <div class="col-3">
+
+<div class="cards-grid">
+  <div class="dashboard-card">
     <h3 class="h6 font-weight-normal">CAMPAIGN SENT</h3>
     <div class="d-flex align-items-center h3 text-warning">
         <i class="fas fa-rocket"></i>
         <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">197</span>
     </div>
   </div>
-  <div class="col-3">
+  <div class="dashboard-card">
     <h3 class="h6 font-weight-normal">ANNUAL PROFIT</h3>
     <div class="d-flex align-items-center h3 text-warning">
       <i class="fas fa-dollar-sign"></i>
         <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">350k</span>
     </div>
   </div>
-  <div class="col-3">
+  <div class="dashboard-card">
     <h3 class="h6 font-weight-normal">LEAD COVERSATION</h3>
     <div class="d-flex align-items-center h3 text-warning">
       <i class="fas fa-chart-line"></i>
         <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">32%</span>
     </div>
   </div>
-  <div class="col-3">
+  <div class="dashboard-card">
     <h3 class="h6 font-weight-normal">DAILY AVERAGE INCOME</h3>
     <div class="d-flex align-items-center h3 text-warning">
       <i class="fas fa-trophy"></i>
@@ -56,37 +58,40 @@
 </div>
 
 <div id="chart" class="my-4 py-2 border-0 shadow-none"></div>
-
-<table class="table table-striped py-3">
-  <thead class="bg-dark text-light">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>Mark</td>
-      <td>Otto@gmail.c</td>
-      <td>22 Apr, 2022</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Mark</td>
-      <td>Otto@gmail.c</td>
-      <td>22 Apr, 2022</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Mark</td>
-      <td>Otto@gmail.c</td>
-      <td>22 Apr, 2022</td>
-    </tr>
-  </tbody>
-</table>
+<h3>{% trans 'Recent Subscribers' %}</h3>
+  <hr class="mt-2">
+<div class="responsive-table">
+  <table class="table table-striped py-3">
+    <thead class="bg-dark text-light">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>1</th>
+        <td>Mark</td>
+        <td>Otto@gmail.c</td>
+        <td>22 Apr, 2022</td>
+      </tr>
+      <tr>
+        <th>2</th>
+        <td>Mark</td>
+        <td>Otto@gmail.c</td>
+        <td>22 Apr, 2022</td>
+      </tr>
+      <tr>
+        <th>3</th>
+        <td>Mark</td>
+        <td>Otto@gmail.c</td>
+        <td>22 Apr, 2022</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <h3>{% trans 'Activity' %}</h3>
   <hr class="mt-2">
   {% for activity in activities %}

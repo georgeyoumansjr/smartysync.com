@@ -13,10 +13,10 @@
     </div>
     <div class="card-footer d-flex justify-content-between">
       <div>
-        <a href="{% url 'campaigns:send_campaign' campaign.pk %}" class="btn btn-primary" role="button">{% trans 'Send now' %}</a>
+        <a href="{% url 'campaigns:send_campaign' campaign.pk %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Send now' %}</a>
         <form action="{% url 'campaigns:campaign_revert_draft' campaign.pk %}" method="post" class="d-inline">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline-primary">{% trans 'Edit campaign' %}</button>
+          <button type="submit" class="btn btn-outline-dark rounded-pill">{% trans 'Edit campaign' %}</button>
         </form>
         <a href="{% url 'campaigns:campaigns' %}" class="btn btn-outline-secondary" role="button">{% trans 'Return to campaigns' %}</a>
       </div>

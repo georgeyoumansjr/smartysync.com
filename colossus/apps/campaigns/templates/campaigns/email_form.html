@@ -74,7 +74,7 @@
 {% block main %}
   <div class="container-fluid">
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
+      <ol class="breadcrumb alert-dark">
         <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}" class="text-dark">{% trans 'Campaigns' %}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}" class="text-dark">{{ campaign.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans 'Design Email' %}</li>

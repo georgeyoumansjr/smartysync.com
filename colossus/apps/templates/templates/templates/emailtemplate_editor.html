@@ -71,7 +71,7 @@
 {% block main %}
   <div class="container-fluid">
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
+      <ol class="breadcrumb alert-dark">
         <li class="breadcrumb-item"><a href="{% url 'templates:emailtemplates' %}">{% trans 'Templates' %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{{ email_template.name }}</li>
       </ol>
@@ -86,15 +86,15 @@
       <div style="display:none!important">
         {{ form.content }}
       </div>
-      <div class="mb-3 d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
+      <div class="mb-3 row justify-content-between align-items-center">
+        <div class="d-flex align-items-center col-12 col-md-6">
           <h2 class="mb-0 mr-2">{{ email_template.name }}</h2>
           <a href="{% url 'templates:emailtemplate_edit' email_template.pk %}" class="btn btn-sm btn-link" role="button">{% trans 'Edit name' %}</a>
         </div>
-        <div>
-          <a href="{% url 'templates:emailtemplate_delete' email_template.pk %}" class="btn btn-outline-danger" role="button">{% trans 'Delete template' %}</a>
-          <button type="submit" name="action" value="save_changes" class="btn btn-outline-success" role="button">{% trans 'Save changes' %}</button>
-          <button type="submit" name="action" value="save_and_close" class="btn btn-success" role="button">{% trans 'Save and close' %}</button>
+        <div class="col-12 col-md-6 text-center text-md-right">
+          <a href="{% url 'templates:emailtemplate_delete' email_template.pk %}" class="btn m-1 btn-outline-danger rounded-pill" role="button">{% trans 'Delete template' %}</a>
+          <button type="submit" name="action" value="save_changes" class="btn m-1 btn-outline-warning rounded-pill" role="button">{% trans 'Save changes' %}</button>
+          <button type="submit" name="action" value="save_and_close" class="btn m-1 btn-dark rounded-pill" role="button">{% trans 'Save and close' %}</button>
         </div>
       </div>
 
