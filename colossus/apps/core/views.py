@@ -14,7 +14,9 @@ from colossus.apps.campaigns.constants import CampaignStatus
 from colossus.apps.campaigns.models import Campaign
 from colossus.apps.lists.models import MailingList
 from colossus.apps.subscribers.constants import ActivityTypes
-from colossus.apps.subscribers.models import Activity
+from colossus.apps.subscribers.models import Activity, Subscriber
+
+import datetime
 
 User = get_user_model()
 
@@ -30,17 +32,74 @@ class SiteUpdateView(UpdateView):
         return Site.objects.get(pk=django_settings.SITE_ID)
 
 
+def home(request):
+    
+    return render(request, 'core/home.html', {
+        'menu': 'dashboard',
+    })
+
 @login_required
 def dashboard(request):
-    campaigns = Campaign.objects.filter(status=CampaignStatus.DRAFT)
+    drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT)
+    sent = Campaign.objects.filter(status=CampaignStatus.SENT).count()
+
+    oneMonthAgo = datetime.date.today() - datetime.timedelta(weeks=4)
+
+    subscriberActivities = Activity.objects \
+        .select_related('subscriber__mailing_list') \
+        .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo)
+    
+    campaignOpens = Activity.objects \
+        .filter(activity_type=ActivityTypes.OPENED).count()
+    
+    subbed = subscriberActivities.filter(activity_type=ActivityTypes.SUBSCRIBED)
+    unsubbed = subscriberActivities.filter(activity_type=ActivityTypes.UNSUBSCRIBED)
+    subDelta = subbed.count() - unsubbed.count()
+
+    subscribers = Subscriber.objects.all().order_by('optin_date')
+    sub_list = []
+    for sub in subscribers:
+        if not sub.email in sub_list:
+            sub_list.append(sub.email)
+    totalSubCount = len(sub_list)    
+
     activities = Activity.objects \
         .select_related('campaign', 'subscriber__mailing_list') \
         .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}) \
         .order_by('-date')[:50]
+    
+    # Chart Data
+    # Subscribers
+    chartData = {'date':[], 'subCount':[], 'campaignCount':[]}
+    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT).order_by('send_date')
+    
+    firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
+    lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
+    # lastDate = subscribers.last().optin_date
+    dateDelta = ( lastDate - firstDate ) / 7
+    startDate = firstDate
+    endDate = firstDate + dateDelta
+    for i in range(7):
+        subCount = subscribers.filter( optin_date__gte=startDate, optin_date__lte=endDate).count()
+        campaignCount = campaigns.filter( send_date__gte=startDate, send_date__lte=endDate).count()
+        chartData['date'].append(startDate.strftime("%m/%d/%Y"))
+        chartData['subCount'].append(subCount)
+        chartData['campaignCount'].append(campaignCount)
+        startDate += dateDelta
+        endDate += dateDelta
+
+    
     return render(request, 'core/dashboard.html', {
         'menu': 'dashboard',
+        'campaignOpens': campaignOpens,
         'activities': activities,
-        'drafts': campaigns
+        'drafts': drafts,
+        'sent': sent,
+        'subbed': subbed,
+        'unsubbed': unsubbed,
+        'subDelta': subDelta,
+        'totalSubCount': totalSubCount,
+        'chartData': chartData,
     })
 
 

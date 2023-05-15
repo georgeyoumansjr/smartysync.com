@@ -28,70 +28,37 @@
 
 <div class="cards-grid">
   <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">CAMPAIGN SENT</h3>
+    <h3 class="h6 font-weight-normal">CAMPAIGNS SENT</h3>
     <div class="d-flex align-items-center h3 text-warning">
         <i class="fas fa-rocket"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">197</span>
+        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark"> {{ sent }} </span>
     </div>
   </div>
   <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">ANNUAL PROFIT</h3>
-    <div class="d-flex align-items-center h3 text-warning">
-      <i class="fas fa-dollar-sign"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">350k</span>
-    </div>
-  </div>
-  <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">LEAD COVERSATION</h3>
+    <h3 class="h6 font-weight-normal">SUBSCRIBER CHANGE FROM LAST MONTH</h3>
     <div class="d-flex align-items-center h3 text-warning">
       <i class="fas fa-chart-line"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">32%</span>
+        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ subDelta }}</span>
     </div>
   </div>
   <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">DAILY AVERAGE INCOME</h3>
+    <h3 class="h6 font-weight-normal">NUMBER OF SUBSCRIBERS</h3>
     <div class="d-flex align-items-center h3 text-warning">
-      <i class="fas fa-trophy"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">19754$</span>
+      <i class="fas fa-hashtag"></i>
+        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ totalSubCount }}</span>
+    </div>
+  </div>
+  <div class="dashboard-card">
+    <h3 class="h6 font-weight-normal">TOTAL CAMPAIGN OPENS</h3>
+    <div class="d-flex align-items-center h3 text-warning">
+      <i class="fas fa-hand-pointer"></i>
+        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ campaignOpens }}</span>
     </div>
   </div>
 </div>
 
 <div id="chart" class="my-4 py-2 border-0 shadow-none"></div>
-<h3>{% trans 'Recent Subscribers' %}</h3>
-  <hr class="mt-2">
-<div class="responsive-table">
-  <table class="table table-striped py-3">
-    <thead class="bg-dark text-light">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>1</th>
-        <td>Mark</td>
-        <td>Otto@gmail.c</td>
-        <td>22 Apr, 2022</td>
-      </tr>
-      <tr>
-        <th>2</th>
-        <td>Mark</td>
-        <td>Otto@gmail.c</td>
-        <td>22 Apr, 2022</td>
-      </tr>
-      <tr>
-        <th>3</th>
-        <td>Mark</td>
-        <td>Otto@gmail.c</td>
-        <td>22 Apr, 2022</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+{% if activities %}
 <h3>{% trans 'Activity' %}</h3>
   <hr class="mt-2">
   {% for activity in activities %}
@@ -131,14 +98,15 @@
       </div>
     </div>
   {% endfor %}
+{% endif %}
   <script>
     var options = {
       series: [{
         name: 'Subscribers',
-        data: [31, 40, 280, 51, 12, 309, 500]
+        data: {{ chartData.subCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
       }, {
         name: 'Campaigns',
-        data: [11, 232, 345, 132, 534, 52, 641]
+        data: {{ chartData.campaignCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
       }],
       chart: {
         height: 350,
@@ -152,7 +120,7 @@
       },
       xaxis: {
         type: 'month',
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July"]
+        categories: {{ chartData.date|safe }}   //["Jan", "Feb", "Mar", "Apr", "May", "June", "July"]
       },
       tooltip: {
         x: {
