@@ -33,7 +33,7 @@ class SiteUpdateView(UpdateView):
 
 
 def home(request):
-    
+
     return render(request, 'core/home.html', {
         'menu': 'dashboard',
     })
@@ -77,15 +77,13 @@ def dashboard(request):
     lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
     # lastDate = subscribers.last().optin_date
     dateDelta = ( lastDate - firstDate ) / 7
-    startDate = firstDate
     endDate = firstDate + dateDelta
     for i in range(7):
-        subCount = subscribers.filter( optin_date__gte=startDate, optin_date__lte=endDate).count()
-        campaignCount = campaigns.filter( send_date__gte=startDate, send_date__lte=endDate).count()
-        chartData['date'].append(startDate.strftime("%m/%d/%Y"))
+        subCount = subscribers.filter( optin_date__lte=endDate).count()
+        campaignCount = campaigns.filter( send_date__lte=endDate).count()
+        chartData['date'].append(endDate.strftime("%m/%d/%Y"))
         chartData['subCount'].append(subCount)
         chartData['campaignCount'].append(campaignCount)
-        startDate += dateDelta
         endDate += dateDelta
 
     
