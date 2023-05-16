@@ -201,6 +201,29 @@ class SubscriberListView(MailingListMixin, ListView):
             }
 
         return queryset.order_by('optin_date')
+    
+    def post(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        delete = request.POST.get('delete', False)
+
+        response = HttpResponse(content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="emails.txt"'
+        for q in queryset:
+            response.write(q)
+            response.write('\n')
+            print(q)
+
+        if delete:
+             queryset.delete()
+        return response
+        super().post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        queryset.delete()
+
+        return super().delete(request, *args, **kwargs)
 
 
 @method_decorator(login_required, name='dispatch')

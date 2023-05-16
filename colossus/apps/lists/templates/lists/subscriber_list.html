@@ -25,9 +25,11 @@
           </div>
         </form>
       </div>
-      <div class="col-6 text-right">
-        <a href="{% url 'lists:import_subscribers' mailing_list.pk %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Import subscribers' %}</a>
-        <a href="{% url 'lists:new_subscriber' mailing_list.pk %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Add subscriber' %}</a>
+      <div class="col-6 d-flex text-right" style="justify-content: flex-end;">
+        <form method="post" class="mx-auto"> <input type="hidden" name="delete" value="delete"> <button class="btn btn-danger rounded-pill" role="button" type="submit">{% trans 'Delete *' %}</button>{% csrf_token %}</form>
+        <a href="{% url 'lists:import_subscribers' mailing_list.pk %}" class="btn btn-outline-success rounded-pill" role="button">{% trans 'Import' %}</a>
+        <a href="{% url 'lists:new_subscriber' mailing_list.pk %}" class="btn btn-outline-success rounded-pill" role="button">{% trans 'Add' %}</a>
+        <form method="post"><button class="btn btn-outline-primary rounded-pill" role="button" type="submit">{% trans 'Download' %}</button>{% csrf_token %}</form>
       </div>
     </div>
   </div>
