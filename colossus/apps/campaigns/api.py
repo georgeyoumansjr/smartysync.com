@@ -37,10 +37,15 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
         subject = '[%s] %s' % (_('Test'), subject)
 
     rich_text_message = email.render(context)
+
+    buy_rice_url = "https://ger-rei.com/buy-rice/?email="
+    rich_text_message = re.sub(r'https?://.*/buy-rice/', buy_rice_url+to[0], rich_text_message)
+
     plain_text_message = html2text.html2text(rich_text_message, bodywidth=2000)
 
     # Remove track open from plain text version
     plain_text_message = re.sub(r'(!\[\]\(https?://.*/open/.*/\)\n\n)', '', plain_text_message, 1)
+
 
     headers = dict()
     if not is_test:
