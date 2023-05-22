@@ -194,8 +194,7 @@ class CampaignReportsView(CampaignMixin, DetailView):
             'location_open_activities': location_open_activities,
         })
         return super().get_context_data(**kwargs)
-
-
+    
 @method_decorator(login_required, name='dispatch')
 class CampaignReportsLocationsView(CampaignMixin, DetailView):
     model = Campaign
