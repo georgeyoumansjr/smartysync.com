@@ -42,11 +42,11 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
     # print(rich_text_message)
 
 
-    # buy_rice_url = "https://ger-rei.com/buy-rice/?email="
+    buy_rice_url = "https://ger-rei.com/buy-rice/?email="
     
     # print(rich_text_message)
-    # print("#####")
-    # rich_text_message = re.sub(r'https?://.*/buy-rice/', buy_rice_url+to[0], rich_text_message)
+    # print("&&&&&&")
+    rich_text_message = re.sub(r'https?:\/\/[^"]+\/buy-rice\/', buy_rice_url+to[0], rich_text_message)
     # print(rich_text_message)
 
     plain_text_message = html2text.html2text(rich_text_message, bodywidth=2000)
