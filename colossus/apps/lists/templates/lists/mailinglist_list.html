@@ -15,6 +15,7 @@
       <div class="d-flex justify-content-center justify-content-sm-between flex-wrap align-items-center">
         <h2 class="mb-0">{% trans 'Mailing Lists' %}</h2>
         <div class="text-center">
+          <a href="{% url 'lists:delete_subscriber_paste' %}" class="btn m-1 btn-outline-danger rounded-pill" role="button">{% trans 'Delete Subscriber wia Paste' %}</a>
           <a href="{% url 'lists:list_campaigns' %}" class="btn m-1 btn-outline-dark rounded-pill" role="button">{% trans 'List with Campaigns' %}</a>
           <a href="{% url 'lists:search' %}" class="btn m-1 btn-outline-warning rounded-pill" role="button">{% trans 'Search Email' %}</a>
           <a href="{% url 'lists:new_list' %}" class="btn m-1 btn-dark rounded-pill" role="button">{% trans 'Create list' %}</a>

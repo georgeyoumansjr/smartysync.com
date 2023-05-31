@@ -207,7 +207,6 @@ class PasteSearchSubscribersForm(forms.Form):
         alone_subscribers = list()
 
         with transaction.atomic():
-            # multiple campaign subscribers # all of them
             all_subscribers = Subscriber.objects.all()
             emails_and_campaigns = {subscriber.email: [] for subscriber in all_subscribers}
             campaigns_and_subscribers = {subscriber.mailing_list.name: [] for subscriber in all_subscribers}
@@ -217,13 +216,6 @@ class PasteSearchSubscribersForm(forms.Form):
                 campaigns_and_subscribers.setdefault(sub.mailing_list.name, []).append(sub.email)
 
             multiple_campaign_subscribers_all = {email: campaigns for email, campaigns in emails_and_campaigns.items() if len(set(campaigns)) > 1}
-            #alone_subscribers = [email for email, campaigns in emails_and_campaigns.items() if len(set(campaigns)) == 0]
-
-            #campaign_subscribers = {campaign: emails for campaign, emails in emails_and_campaigns.items()}
-            
-            #subscribers = all_subscribers.filter(email_in=emails)
-
-            # given emails
             for email in emails:
 
                 subscribers = Subscriber.objects.filter( email=email )
@@ -246,6 +238,25 @@ class PasteSearchSubscribersForm(forms.Form):
 
         return campaign_subscribers, multiple_campaign_subscribers, alone_subscribers , multiple_campaign_subscribers_all
 
+class PasteDeleteSubscribersForm(forms.Form):
+    emails = MultipleEmailField(
+        label=_('Paste email addresses'),
+        help_text=_('One email per line, or separated by comma. Duplicate emails will be suppressed.'),
+    )
+
+    def delete_subscribers(self):
+        emails = self.cleaned_data.get('emails')
+
+        with transaction.atomic():
+            for email in emails:
+                print(email)
+                subscribers_to_delete = Subscriber.objects.filter(email=email)
+                if subscribers_to_delete.exists():
+                    subscribers_to_delete.delete()
+
+        mailing_lists = MailingList.objects.all()
+        for mailing_list in mailing_lists:
+            mailing_list.update_subscribers_count()
 
 class MailingListSMTPForm(forms.ModelForm):
     class Meta:

@@ -38,7 +38,7 @@ from .charts import (
 )
 from .forms import (
     BulkTagForm, ConfirmSubscriberImportForm, MailingListSMTPForm,
-    PasteImportSubscribersForm, PasteSearchSubscribersForm,
+    PasteImportSubscribersForm, PasteSearchSubscribersForm, PasteDeleteSubscribersForm
 )
 from .mixins import FormTemplateMixin, MailingListMixin
 from .models import MailingList, SubscriberImport
@@ -317,6 +317,16 @@ class PasteEmailsSearchSubscribersView(FormView):
     def get(self, request):
 
         return super().get(request)
+    
+@method_decorator(login_required, name='dispatch')
+class PasteEmailsDeleteSubscribersView(FormView):
+    template_name = 'lists/delete_subscribers.html'
+    form_class = PasteDeleteSubscribersForm 
+    extra_context = {'title': _('Paste Emails')}
+
+    def form_valid(self, form):
+        form.delete_subscribers()
+        return redirect('lists:lists')
 
 
 @method_decorator(login_required, name='dispatch')
