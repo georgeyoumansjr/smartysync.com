@@ -11,6 +11,7 @@ urlpatterns = [
     path('', views.MailingListListView.as_view(), name='lists'),
     path('list_campaigns/', views.MailingListCampaignListView, name='list_campaigns'),
     path('delete_subscriber_paste/', views.PasteEmailsDeleteSubscribersView.as_view(), name='delete_subscriber_paste'),
+    path('delete_non_existing_subscribers/', views.delete_non_existing_subscribers, name='delete_non_existing_subscribers'),
     path('search/', views.PasteEmailsSearchSubscribersView.as_view(), name='search'),
     path('add/', views.MailingListCreateView.as_view(), name='new_list'),
     path('<int:pk>/', views.MailingListDetailView.as_view(), name='list'),

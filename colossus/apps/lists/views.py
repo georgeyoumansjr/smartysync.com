@@ -42,6 +42,7 @@ from .forms import (
 )
 from .mixins import FormTemplateMixin, MailingListMixin
 from .models import MailingList, SubscriberImport
+from .utils import get_non_existing_emails_and_return_list
 
 from colossus.apps.campaigns.models import Campaign
 
@@ -628,6 +629,7 @@ def download_subscriber_import(request, pk, import_pk):
     response = HttpResponse(subscriber_import.file.read(), content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     return response
+
 from django.shortcuts import render
 @login_required
 def search_subscribers(request):
@@ -650,3 +652,16 @@ def search_subscribers(request):
             except Subscriber.DoesNotExist:
                 continue
     return HttpResponse( render(request, 'search_subscribers.html', context) )
+
+@login_required
+def delete_non_existing_subscribers(request):
+    emails = get_non_existing_emails_and_return_list()
+    for email in emails:
+        subscriber_to_delete = Subscriber.objects.filter(email=email)
+        if subscriber_to_delete.exists():
+            subscriber_to_delete.delete()
+    mailing_lists = MailingList.objects.all()
+    for mailing_list in mailing_lists:
+        mailing_list.update_subscribers_count()
+    return redirect('lists:lists')
+
