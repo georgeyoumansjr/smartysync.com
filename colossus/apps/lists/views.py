@@ -665,3 +665,18 @@ def delete_non_existing_subscribers(request):
         mailing_list.update_subscribers_count()
     return redirect('lists:lists')
 
+def delete_duplicate_subscribers(request):
+    subscribers = Subscriber.objects.all()
+    for subscriber in subscribers:
+        if subscriber.email == 'coboaccess@gmail.com' or subscriber.email == 'georgeyoumansjr@gmail.com':
+            continue
+        subs = subscribers.filter(email=subscriber.email)
+        if subs.count() > 1:
+            obj = subs.order_by('optin_date').first()
+            objects_to_delete = subs.filter(optin_date__gt=obj.optin_date)
+            objects_to_delete.delete()
+
+    mailing_lists = MailingList.objects.all()
+    for mailing_list in mailing_lists:
+        mailing_list.update_subscribers_count()
+    return redirect('lists:lists')
