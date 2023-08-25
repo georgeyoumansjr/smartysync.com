@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
+    --theme-primary-color: #5a9ef4;
     --theme-dark-color: #343a40;
     --theme-warning-color: #ffc107;
     --theme-success-color: #28a745;
@@ -125,6 +126,26 @@ label span {
 
 .title {
     font-size: 40px;
+}
+.customer-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+}
+.customer-wrapper{
+    width: calc(100% - 100px);
+}
+.form-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+.customer-title{
+    color: var(--theme-primary-color);
 }
 @media screen and (max-width: 1024px) {
     .cards-grid {
