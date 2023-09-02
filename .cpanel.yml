@@ -1,16 +1,14 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/tnhlabsc/thetitandev.com/
+ - export DEPLOYPATH=/home/greenzo2/smartysync.com/
  - /bin/cp -R bin $DEPLOYPATH
  - /bin/cp -R colossus $DEPLOYPATH
  - /bin/cp -R docs $DEPLOYPATH
  - /bin/cp -R etc $DEPLOYPATH
  - /bin/cp -R requirements $DEPLOYPATH
- - /bin/cp .editorconfig $DEPLOYPATH
  - /bin/cp app.json $DEPLOYPATH
  - /bin/cp manage.py $DEPLOYPATH
- - /bin/cp Procfile $DEPLOYPATH
  - /bin/cp requirements.txt $DEPLOYPATH
  - /bin/cp runtime.txt $DEPLOYPATH
  - /bin/cp setup.cfg $DEPLOYPATH
