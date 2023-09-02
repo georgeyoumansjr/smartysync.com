@@ -14,7 +14,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-dark">
+    <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item"><a href="{% url 'campaigns:campaigns' %}">{% trans 'Campaigns' %}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}">{{ campaign.name }}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans 'Schedule campaign' %}</li>

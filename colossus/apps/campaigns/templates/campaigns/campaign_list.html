@@ -7,13 +7,13 @@
 {% block main %}
 <div class="container-fluid">
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-dark">
+    <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Campaigns' %}</li>
     </ol>
   </nav>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">{% trans 'Campaigns' %}</h2>
-    <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Create campaign' %}</a>
+    <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-primary rounded-pill" role="button">{% trans 'Create campaign' %}</a>
   </div>
   <div class="row">
     <div class="col col-md-3 mb-3">
@@ -41,11 +41,11 @@
                   <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
                   <div class="input-group-append">
                     {% if query %}
-                      <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-dark" role="button">
+                      <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-primary" role="button">
                         {% trans 'Clear' %}
                       </a>
                     {% endif %}
-                    <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
+                    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
                   </div>
                 </div>
               </form>

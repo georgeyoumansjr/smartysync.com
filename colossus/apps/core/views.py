@@ -71,20 +71,22 @@ def dashboard(request):
     # Chart Data
     # Subscribers
     chartData = {'date':[], 'subCount':[], 'campaignCount':[]}
-    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT).order_by('send_date')
     
-    firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
-    lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
-    # lastDate = subscribers.last().optin_date
-    dateDelta = ( lastDate - firstDate ) / 7
-    endDate = firstDate + dateDelta
-    for i in range(7):
-        subCount = subscribers.filter( optin_date__lte=endDate).count()
-        campaignCount = campaigns.filter( send_date__lte=endDate).count()
-        chartData['date'].append(endDate.strftime("%m/%d/%Y"))
-        chartData['subCount'].append(subCount)
-        chartData['campaignCount'].append(campaignCount)
-        endDate += dateDelta
+    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT).order_by('send_date')
+        
+    if campaigns.exists():
+        firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
+        lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
+        # lastDate = subscribers.last().optin_date
+        dateDelta = ( lastDate - firstDate ) / 7
+        endDate = firstDate + dateDelta
+        for i in range(7):
+            subCount = subscribers.filter( optin_date__lte=endDate).count()
+            campaignCount = campaigns.filter( send_date__lte=endDate).count()
+            chartData['date'].append(endDate.strftime("%m/%d/%Y"))
+            chartData['subCount'].append(subCount)
+            chartData['campaignCount'].append(campaignCount)
+            endDate += dateDelta
 
     
     return render(request, 'core/dashboard.html', {
