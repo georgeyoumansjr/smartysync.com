@@ -1,6 +1,8 @@
 import datetime
 from typing import Any, Dict
 
+from django.db.models.query import QuerySet
+
 from colossus.apps.subscribers.fields import MultipleEmailField
 
 from django.db import transaction
@@ -49,9 +51,9 @@ from colossus.apps.campaigns.models import Campaign
 def MailingListCampaignListView(request):
     context = {}
     mls_and_cmps = {}
-
-    campaigns = Campaign.objects.all()
-    mailinglists = MailingList.objects.all()
+    current_user = request.user
+    campaigns = Campaign.objects.filter(created_by=current_user.id)
+    mailinglists = MailingList.objects.filter(created_by=current_user.id)
 
     for mailinglist in mailinglists:
         mls_and_cmps[mailinglist.name] = campaigns.filter(mailing_list=mailinglist).values('name')
@@ -67,16 +69,27 @@ class MailingListListView(ListView):
     context_object_name = 'mailing_lists'
     ordering = ('name',)
     paginate_by = 25
-
+    
     def get_context_data(self, **kwargs):
         kwargs['menu'] = 'lists'
         kwargs['total_count'] = MailingList.objects.count()
         return super().get_context_data(**kwargs)
     
+    def get_queryset(self):
+        current_user = self.request.user
+        print(current_user)
+        queryset = super().get_queryset().filter(created_by=current_user.id)
+        print(queryset)
+        return queryset
+    
 @method_decorator(login_required, name='dispatch')
 class MailingListCreateView(CreateView):
     model = MailingList
     fields = ('name', 'slug', 'campaign_default_from_name', 'campaign_default_from_email', 'website_url')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         kwargs['menu'] = 'lists'
