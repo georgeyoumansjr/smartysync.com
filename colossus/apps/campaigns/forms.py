@@ -39,7 +39,7 @@ class CreateCampaignForm(forms.ModelForm):
         campaign = super().save(commit=False)
         mailing_list = self.cleaned_data.get('mailing_list')
         tag = self.cleaned_data.get('tag')
-
+    
         if tag is not None and mailing_list is None:
             # Remove the tag if there was no mailing list associated with
             # This is just to keep the consistency of the data
@@ -51,6 +51,7 @@ class CreateCampaignForm(forms.ModelForm):
             # Remove the tag if it is not associated with the mailing list
             if not mailing_list.tags.filter(pk=tag.pk).exists():
                 campaign.tag = None
+
 
         if commit:
             campaign.save()

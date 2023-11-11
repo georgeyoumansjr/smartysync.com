@@ -20,6 +20,8 @@ from colossus.apps.subscribers.constants import ActivityTypes
 from colossus.apps.templates.models import EmailTemplate
 from colossus.apps.templates.utils import get_template_blocks
 
+from colossus.apps.accounts.models import User
+
 from .constants import CampaignStatus, CampaignTypes
 from .tasks import send_campaign_task, update_rates_after_campaign_deletion
 
@@ -61,6 +63,14 @@ class Campaign(models.Model):
     send_date = models.DateTimeField(_('send date'), null=True, blank=True, db_index=True)
     create_date = models.DateTimeField(_('create date'), auto_now_add=True)
     update_date = models.DateTimeField(_('update date'), default=timezone.now)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name=_('created by'),
+        related_name='created_campaigns',
+        null=True,
+        blank=True
+    )
     recipients_count = models.PositiveIntegerField(default=0)
     track_opens = models.BooleanField(_('track opens'), default=True)
     track_clicks = models.BooleanField(_('track clicks'), default=True)
@@ -70,7 +80,6 @@ class Campaign(models.Model):
     total_clicks_count = models.PositiveIntegerField(_('total clicks'), default=0, editable=False)
     open_rate = models.FloatField(_('opens'), default=0.0, editable=False)
     click_rate = models.FloatField(_('clicks'), default=0.0, editable=False)
-
     __cached_email = None
 
     class Meta:

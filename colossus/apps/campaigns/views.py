@@ -48,9 +48,8 @@ class CampaignListView(CampaignMixin, ListView):
 
     def get_queryset(self):
         self.extra_context = {}
-
-        queryset = super().get_queryset().select_related('mailing_list')
-
+        current_user = self.request.user
+        queryset = super().get_queryset().filter(created_by=current_user.id).select_related('mailing_list')
         try:
             status_filter = int(self.request.GET.get('status'))
             if status_filter in CampaignStatus.FILTERS:
@@ -74,6 +73,11 @@ class CampaignListView(CampaignMixin, ListView):
 class CampaignCreateView(CampaignMixin, CreateView):
     model = Campaign
     form_class = CreateCampaignForm
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        print(form.instance)
+        return super().form_valid(form)
 
     def get_initial(self):
         initial = super().get_initial()
