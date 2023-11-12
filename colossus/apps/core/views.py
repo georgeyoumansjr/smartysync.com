@@ -40,6 +40,7 @@ def home(request):
 
 @login_required
 def dashboard(request):
+    current_user = request.user
     drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT)
     sent = Campaign.objects.filter(status=CampaignStatus.SENT).count()
 

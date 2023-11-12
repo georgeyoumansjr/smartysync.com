@@ -26,7 +26,7 @@ from .api import get_test_email_context
 from .constants import CampaignStatus, CampaignTypes
 from .forms import (
     CampaignRecipientsForm, CampaignTestEmailForm, CreateCampaignForm,
-    EmailEditorForm, ScheduleCampaignForm,
+    EmailEditorForm, ScheduleCampaignForm
 )
 from .mixins import CampaignMixin
 from .models import Campaign, Email, Link
@@ -349,6 +349,12 @@ class CampaignEditTemplateView(AbstractCampaignEmailUpdateView):
         email.set_blocks()
         email.save()
         return redirect('campaigns:campaign_edit_content', pk=self.kwargs.get('pk'))
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['template'].queryset = form.fields['template'].queryset.filter(created_by=self.request.user.id)
+
+        return form
 
 
 @method_decorator(login_required, name='dispatch')

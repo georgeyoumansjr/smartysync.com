@@ -7,7 +7,7 @@ from colossus.apps.subscribers.models import Tag
 
 from .api import send_campaign_email_test
 from .constants import CampaignStatus
-from .models import Campaign
+from .models import Campaign, Email
 
 
 class CreateCampaignForm(forms.ModelForm):

@@ -29,8 +29,10 @@ class EmailTemplateListView(EmailTemplateMixin, ListView):
         kwargs['total_count'] = self.model.objects.count()
         return super().get_context_data(**kwargs)
 
+
     def get_queryset(self):
-        queryset = self.model.objects.select_related('last_used_campaign')
+        current_user = self.request.user
+        queryset = self.model.objects.filter(created_by=current_user.id).select_related('last_used_campaign')
         if self.request.GET.get('q', ''):
             query = self.request.GET.get('q')
             queryset = queryset.filter(Q(name__icontains=query) | Q(content__icontains=query))
@@ -47,6 +49,10 @@ class EmailTemplateCreateView(EmailTemplateMixin, CreateView):
     model = EmailTemplate
     context_object_name = 'email_template'
     fields = ('name',)
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, name='dispatch')

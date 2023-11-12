@@ -269,6 +269,7 @@ class Email(models.Model):
         return self.__child_template_string
 
     def set_template_content(self):
+        
         if self.template is None:
             self.template_content = EmailTemplate.objects.default_content()
         else:

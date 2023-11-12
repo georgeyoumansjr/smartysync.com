@@ -4,10 +4,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
-
+from django.contrib.auth import get_user_model
 from .utils import wrap_blocks
 
-
+User = get_user_model()
 class EmailTemplateManager(models.Manager):
     @classmethod
     def default_content(cls):
@@ -20,6 +20,14 @@ class EmailTemplate(models.Model):
     name = models.CharField(_('name'), max_length=100)
     content = models.TextField(blank=True)
     create_date = models.DateTimeField(_('create date'), auto_now_add=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name=_('created by'),
+        related_name='created_email_template',
+        null=True,
+        blank=True
+    )
     update_date = models.DateTimeField(_('update date'), default=timezone.now)
     last_used_date = models.DateTimeField(_('last used'), null=True, blank=True)
     last_used_campaign = models.ForeignKey(
