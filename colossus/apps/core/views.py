@@ -41,24 +41,29 @@ def home(request):
 @login_required
 def dashboard(request):
     current_user = request.user
-    drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT)
-    sent = Campaign.objects.filter(status=CampaignStatus.SENT).count()
-
+    drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT,created_by=current_user.id)
+    print(drafts)
+    sent = Campaign.objects.filter(status=CampaignStatus.SENT,created_by=current_user.id).count()
+    print(sent)
     oneMonthAgo = datetime.date.today() - datetime.timedelta(weeks=4)
 
     subscriberActivities = Activity.objects \
         .select_related('subscriber__mailing_list') \
-        .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo)
+        .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo) \
+        .filter(campaign__created_by=current_user.id)
+    
+    print(subscriberActivities)
     
     campaignOpens = Activity.objects \
-        .filter(activity_type=ActivityTypes.OPENED).count()
+        .filter(activity_type=ActivityTypes.OPENED)\
+        .filter(campaign__created_by=current_user.id).count()
     
     subbed = subscriberActivities.filter(activity_type=ActivityTypes.SUBSCRIBED)
     unsubbed = subscriberActivities.filter(activity_type=ActivityTypes.UNSUBSCRIBED)
     subDelta = subbed.count() - unsubbed.count()
 
     
-    subscribers = Subscriber.objects.all().order_by('optin_date')
+    subscribers = Subscriber.objects.select_related('mailing_list').filter(mailing_list__created_by=current_user.id).order_by('optin_date')
     sub_list = []
     for sub in subscribers:
         if not sub.email in sub_list:
@@ -68,6 +73,7 @@ def dashboard(request):
     activities = Activity.objects \
         .select_related('campaign', 'subscriber__mailing_list') \
         .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}) \
+        .filter(campaign__created_by=current_user.id) \
         .order_by('-date')[:50]
     
     # Chart Data

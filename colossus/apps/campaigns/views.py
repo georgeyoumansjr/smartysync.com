@@ -260,6 +260,11 @@ class CampaignEditRecipientsView(CampaignMixin, UpdateView):
     context_object_name = 'campaign'
     template_name = 'campaigns/campaign_edit_recipients.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 @login_required
 def load_list_tags(request):
