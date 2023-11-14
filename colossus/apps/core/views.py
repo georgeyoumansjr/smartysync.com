@@ -42,9 +42,7 @@ def home(request):
 def dashboard(request):
     current_user = request.user
     drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT,created_by=current_user.id)
-    print(drafts)
     sent = Campaign.objects.filter(status=CampaignStatus.SENT,created_by=current_user.id).count()
-    print(sent)
     oneMonthAgo = datetime.date.today() - datetime.timedelta(weeks=4)
 
     subscriberActivities = Activity.objects \
@@ -52,7 +50,6 @@ def dashboard(request):
         .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo) \
         .filter(campaign__created_by=current_user.id)
     
-    print(subscriberActivities)
     
     campaignOpens = Activity.objects \
         .filter(activity_type=ActivityTypes.OPENED)\
@@ -79,7 +76,7 @@ def dashboard(request):
     # Chart Data
     # Subscribers
     chartData = {'date':[], 'subCount':[], 'campaignCount':[]}
-    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT).order_by('send_date')
+    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT,created_by=current_user.id).order_by('send_date')
     try:
         firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
         lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
@@ -95,6 +92,7 @@ def dashboard(request):
             endDate += dateDelta
     except AttributeError:
         return render(request,'core/alternate_dashboard.html')
+    
     
     return render(request, 'core/dashboard.html', {
         'menu': 'dashboard',

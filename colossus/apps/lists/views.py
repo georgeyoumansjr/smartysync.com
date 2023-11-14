@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Count, Q
+from django.db.utils import IntegrityError
 from django.forms import modelform_factory
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -250,7 +251,13 @@ class SubscriberCreateView(MailingListMixin, CreateView):
         self.object = form.save(commit=False)
         self.object.mailing_list_id = self.kwargs.get('pk')
         self.object.status = Status.SUBSCRIBED
-        self.object.save()
+        
+        try:
+            self.object.save()
+        except Exception as e:
+            # print(e)
+            messages.error(self.request, _(f'The email "{self.object.email}" already exist in the mailing list'))
+            
         return redirect('lists:subscribers', pk=self.kwargs.get('pk'))
 
 
