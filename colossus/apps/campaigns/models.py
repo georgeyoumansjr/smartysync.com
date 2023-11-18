@@ -146,7 +146,7 @@ class Campaign(models.Model):
         send_campaign_task.delay(self.pk, **kwargs)
 
     @transaction.atomic
-    def replicate(self):
+    def replicate(self,user):
         copy = gettext(' (copy)')
         slice_at = 100 - len(copy)
         name = '%s%s' % (self.name[:slice_at], copy)
@@ -156,6 +156,7 @@ class Campaign(models.Model):
             campaign_type=self.campaign_type,
             mailing_list=self.mailing_list,
             status=CampaignStatus.DRAFT,
+            created_by=user 
         )
 
         replicated_emails = list()

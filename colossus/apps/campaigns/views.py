@@ -513,7 +513,7 @@ def send_campaign(request, pk):
 @login_required
 def replicate_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
-    replicated_campaign = campaign.replicate()
+    replicated_campaign = campaign.replicate(request.user)
     return redirect(replicated_campaign)
 
 @login_required
