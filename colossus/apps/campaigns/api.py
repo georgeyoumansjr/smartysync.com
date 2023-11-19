@@ -86,7 +86,7 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
         headers=headers
     )
 
-    
+   
     pdf_name = kwargs.get('pdf_name', None)
     pdf_path = kwargs.get('pdf_path', None)
     if pdf_name and pdf_path:
@@ -103,7 +103,7 @@ def send_campaign_email(email, context, to, connection=None, is_test=False, **kw
     #    message.attach(attachment_name, attachment_content, 'application/pdf')
     
     message.attach_alternative(rich_text_message, 'text/html')
-
+    # message.send(fail_silently=False) 
     try:
         message.send(fail_silently=False)
         return True

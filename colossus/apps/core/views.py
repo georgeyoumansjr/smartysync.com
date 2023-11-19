@@ -40,23 +40,27 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT)
-    sent = Campaign.objects.filter(status=CampaignStatus.SENT).count()
-
+    current_user = request.user
+    drafts = Campaign.objects.filter(status=CampaignStatus.DRAFT,created_by=current_user.id)
+    sent = Campaign.objects.filter(status=CampaignStatus.SENT,created_by=current_user.id).count()
     oneMonthAgo = datetime.date.today() - datetime.timedelta(weeks=4)
 
     subscriberActivities = Activity.objects \
         .select_related('subscriber__mailing_list') \
-        .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo)
+        .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}, date__gte=oneMonthAgo) \
+        .filter(campaign__created_by=current_user.id)
+    
     
     campaignOpens = Activity.objects \
-        .filter(activity_type=ActivityTypes.OPENED).count()
+        .filter(activity_type=ActivityTypes.OPENED)\
+        .filter(campaign__created_by=current_user.id).count()
     
     subbed = subscriberActivities.filter(activity_type=ActivityTypes.SUBSCRIBED)
     unsubbed = subscriberActivities.filter(activity_type=ActivityTypes.UNSUBSCRIBED)
     subDelta = subbed.count() - unsubbed.count()
 
-    subscribers = Subscriber.objects.all().order_by('optin_date')
+    
+    subscribers = Subscriber.objects.select_related('mailing_list').filter(mailing_list__created_by=current_user.id).order_by('optin_date')
     sub_list = []
     for sub in subscribers:
         if not sub.email in sub_list:
@@ -66,26 +70,29 @@ def dashboard(request):
     activities = Activity.objects \
         .select_related('campaign', 'subscriber__mailing_list') \
         .filter(activity_type__in={ActivityTypes.SUBSCRIBED, ActivityTypes.UNSUBSCRIBED}) \
+        .filter(campaign__created_by=current_user.id) \
         .order_by('-date')[:50]
     
     # Chart Data
     # Subscribers
     chartData = {'date':[], 'subCount':[], 'campaignCount':[]}
-    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT).order_by('send_date')
+    campaigns = Campaign.objects.filter(status=CampaignStatus.SENT,created_by=current_user.id).order_by('send_date')
+    try:
+        firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
+        lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
+        # lastDate = subscribers.last().optin_date
+        dateDelta = ( lastDate - firstDate ) / 7
+        endDate = firstDate + dateDelta
+        for i in range(7):
+            subCount = subscribers.filter( optin_date__lte=endDate).count()
+            campaignCount = campaigns.filter( send_date__lte=endDate).count()
+            chartData['date'].append(endDate.strftime("%m/%d/%Y"))
+            chartData['subCount'].append(subCount)
+            chartData['campaignCount'].append(campaignCount)
+            endDate += dateDelta
+    except AttributeError:
+        return render(request,'core/alternate_dashboard.html')
     
-    firstDate = subscribers.first().optin_date if subscribers.first().optin_date < campaigns.first().send_date else campaigns.first().send_date
-    lastDate  = subscribers.last().optin_date if subscribers.last().optin_date > campaigns.last().send_date else campaigns.last().send_date
-    # lastDate = subscribers.last().optin_date
-    dateDelta = ( lastDate - firstDate ) / 7
-    endDate = firstDate + dateDelta
-    for i in range(7):
-        subCount = subscribers.filter( optin_date__lte=endDate).count()
-        campaignCount = campaigns.filter( send_date__lte=endDate).count()
-        chartData['date'].append(endDate.strftime("%m/%d/%Y"))
-        chartData['subCount'].append(subCount)
-        chartData['campaignCount'].append(campaignCount)
-        endDate += dateDelta
-
     
     return render(request, 'core/dashboard.html', {
         'menu': 'dashboard',
@@ -102,8 +109,8 @@ def dashboard(request):
 
 
 def setup(request):
-    if User.objects.exists() or MailingList.objects.exists():
-        return redirect('dashboard')
+    # if User.objects.exists() or MailingList.objects.exists():
+    #     return redirect('dashboard')
 
     site = Site.objects.get(pk=django_settings.SITE_ID)
     if site.domain == 'example.com':
@@ -114,8 +121,8 @@ def setup(request):
 
 
 def setup_account(request):
-    if User.objects.exists() or MailingList.objects.exists():
-        return redirect('dashboard')
+    # if User.objects.exists() or MailingList.objects.exists():
+    #     return redirect('dashboard')
 
     if request.method == 'POST':
         form = AdminUserCreationForm(data=request.POST)
