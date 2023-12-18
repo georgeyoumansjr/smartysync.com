@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-dark">
+    <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Mailing Lists' %}</li>
     </ol>
   </nav>
@@ -18,9 +18,9 @@
           <a href="{% url 'lists:delete_subscriber_paste' %}" class="btn m-1 btn-outline-danger rounded-pill" role="button">{% trans 'Delete w Paste' %}</a>
           <a href="{% url 'lists:delete_non_existing_subscribers' %}" class="btn m-1 btn-outline-danger rounded-pill" role="button">{% trans 'Delete non-existing Subscribers' %}</a>
           <a href="{% url 'lists:delete_duplicate_subscribers' %}" class="btn m-1 btn-outline-danger rounded-pill" role="button">{% trans 'Delete Duplicate Subscribers' %}</a>
-          <a href="{% url 'lists:list_campaigns' %}" class="btn m-1 btn-outline-dark rounded-pill" role="button">{% trans 'List with Campaigns' %}</a>
+          <a href="{% url 'lists:list_campaigns' %}" class="btn m-1 btn-outline-primary rounded-pill" role="button">{% trans 'List with Campaigns' %}</a>
           <a href="{% url 'lists:search' %}" class="btn m-1 btn-outline-warning rounded-pill" role="button">{% trans 'Search Email' %}</a>
-          <a href="{% url 'lists:new_list' %}" class="btn m-1 btn-dark rounded-pill" role="button">{% trans 'Create list' %}</a>
+          <a href="{% url 'lists:new_list' %}" class="btn m-1 btn-primary rounded-pill" role="button">{% trans 'Create list' %}</a>
         </div>
       </div>
     </div>
@@ -33,11 +33,11 @@
                 <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search lists' %}" aria-label="{% trans 'Search lists' %}" aria-describedby="basic-addon2">
                 <div class="input-group-append">
                   {% if query %}
-                    <a href="?" class="btn btn-outline-dark" role="button">
+                    <a href="?" class="btn btn-outline-primary" role="button">
                       {% trans 'Clear' %}
                     </a>
                   {% endif %}
-                  <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
+                  <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
                 </div>
               </div>
             </form>

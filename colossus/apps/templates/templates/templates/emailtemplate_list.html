@@ -6,7 +6,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-dark">
+    <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item active" aria-current="page">{% trans 'Templates' %}</li>
     </ol>
   </nav>
@@ -14,7 +14,7 @@
     <div class="card-body">
       <div class="d-flex justify-content-between align-items-center">
         <h2 class="mb-0">{% trans 'Templates' %}</h2>
-        <a href="{% url 'templates:emailtemplate_add' %}" class="btn btn-dark rounded-pill" role="button">{% trans 'Create template' %}</a>
+        <a href="{% url 'templates:emailtemplate_add' %}" class="btn btn-primary rounded-pill" role="button">{% trans 'Create template' %}</a>
       </div>
     </div>
     <div class="list-group list-group-flush">
@@ -26,11 +26,11 @@
                 <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search templates' %}" aria-label="{% trans 'Search templates' %}">
                 <div class="input-group-append">
                   {% if query %}
-                    <a href="?" class="btn btn-outline-dark" role="button">
+                    <a href="?" class="btn btn-outline-primary" role="button">
                       {% trans 'Clear' %}
                     </a>
                   {% endif %}
-                  <button class="btn btn-dark" type="submit">{% trans 'Search' %}</button>
+                  <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
                 </div>
               </div>
             </form>

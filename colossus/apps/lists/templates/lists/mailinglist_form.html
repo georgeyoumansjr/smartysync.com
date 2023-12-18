@@ -4,7 +4,7 @@
 
 {% block content %}
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-dark">
+    <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
       <li class="breadcrumb-item active" aria-current="page">{% trans 'New list' %}</li>
     </ol>
@@ -19,7 +19,7 @@
             {{ form|crispy }}
           </div>
         </div>
-        <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Create list' %}</button>
+        <button type="submit" class="btn btn-primary rounded-pill" role="button">{% trans 'Create list' %}</button>
         <a href="{% url 'lists:lists' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
       </form>
     </div>
