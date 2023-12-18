@@ -4,10 +4,10 @@ from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
 
 from colossus.apps.subscribers.models import Tag
-
+from colossus.apps.lists.models import MailingList
 from .api import send_campaign_email_test
 from .constants import CampaignStatus
-from .models import Campaign
+from .models import Campaign, Email
 
 
 class CreateCampaignForm(forms.ModelForm):
@@ -39,7 +39,7 @@ class CreateCampaignForm(forms.ModelForm):
         campaign = super().save(commit=False)
         mailing_list = self.cleaned_data.get('mailing_list')
         tag = self.cleaned_data.get('tag')
-
+    
         if tag is not None and mailing_list is None:
             # Remove the tag if there was no mailing list associated with
             # This is just to keep the consistency of the data
@@ -52,6 +52,7 @@ class CreateCampaignForm(forms.ModelForm):
             if not mailing_list.tags.filter(pk=tag.pk).exists():
                 campaign.tag = None
 
+
         if commit:
             campaign.save()
 
@@ -63,9 +64,11 @@ class CampaignRecipientsForm(forms.ModelForm):
         model = Campaign
         fields = ('mailing_list', 'tag')
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,user,*args, **kwargs):
         super().__init__(*args, **kwargs)
+        print(user)
         self.fields['tag'].queryset = Tag.objects.none()
+        self.fields['mailing_list'].queryset = MailingList.objects.filter(created_by=user.id).order_by('name')
         if 'tag' in self.data:
             try:
                 mailing_list_id = int(self.data.get('mailing_list'))
