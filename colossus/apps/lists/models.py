@@ -23,6 +23,14 @@ class MailingList(models.Model):
     open_rate = models.FloatField(_('opens'), default=0.0)
     click_rate = models.FloatField(_('clicks'), default=0.0)
     date_created = models.DateTimeField(_('created'), auto_now_add=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name=_('created by'),
+        related_name='created_mailing_lists',
+        null=True,
+        blank=True
+    )
     contact_email_address = models.EmailField(_('contact email address'), blank=True)
     website_url = models.URLField(_('website URL'), blank=True, help_text=_('Where did people opt in to this list?'))
     campaign_default_from_name = models.CharField(_('default from name'), max_length=100, blank=True)
@@ -31,6 +39,7 @@ class MailingList(models.Model):
     enable_recaptcha = models.BooleanField(_('enable reCAPTCHA'), default=False)
     recaptcha_site_key = models.CharField(_('site key'), max_length=100, blank=True)
     recaptcha_secret_key = models.CharField(_('secret key'), max_length=100, blank=True)
+
     list_manager = models.EmailField(
         _('list manager'),
         blank=True,
