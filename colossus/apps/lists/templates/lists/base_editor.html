@@ -18,7 +18,7 @@
   <div class="container-fluid">
     {% include 'includes/messages.html' %}
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb alert-dark">
+      <ol class="breadcrumb alert-primary">
         <li class="breadcrumb-item"><a href="{% url 'lists:lists' %}">{% trans 'Mailing Lists' %}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'lists:list' mailing_list.pk %}">{{ mailing_list.name }}</a></li>
         <li class="breadcrumb-item"><a href="{% url 'lists:subscription_forms' mailing_list.pk %}">{% trans 'Subscription Forms' %}</a></li>

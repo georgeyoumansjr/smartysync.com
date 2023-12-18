@@ -1,135 +1,179 @@
-{% extends 'base.html' %}
-
-{% load i18n %}
+{% extends 'base.html' %} {% load i18n %}
+{% load static %}
 
 {% block content %}
-  <div class="d-flex justify-content-between align-items-center mb-3 py-2">
-    <h2 class="mb-0 title">{% trans 'Dashboard' %}</h2>
-    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-      <div class="dropdown">
-        <button class="btn btn-outline-warning dropdown-toggle rounded-pill" type="button" id="draftsMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {% trans 'Drafts' %}
-        </button>
-        <div class="dropdown-menu dropdown-menu-right rounded" aria-labelledby="draftsMenu">
-          {% for campaign in drafts %}
-            <a class="dropdown-item" href="{{ campaign.get_absolute_url }}">{{ campaign.name }}</a>
-          {% empty %}
-            <div class="dropdown-item">
-              <em class="text-muted">{% trans 'You have no draft.' %}</em>
-            </div>
-          {% endfor %}
+<div class="d-flex justify-content-between align-items-center my-3 px-3 py-4 alert-primary">
+  <h2 class="mb-0 title">{% trans 'Dashboard' %}</h2>
+  <div
+    class="btn-toolbar"
+    role="toolbar"
+    aria-label="Toolbar with button groups"
+  >
+    <div class="dropdown">
+      <button
+        class="btn btn-outline-primary dropdown-toggle rounded-pill"
+        type="button"
+        id="draftsMenu"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {% trans 'Drafts' %}
+      </button>
+      <div
+        class="dropdown-menu dropdown-menu-right rounded"
+        aria-labelledby="draftsMenu"
+      >
+        {% for campaign in drafts %}
+        <a class="dropdown-item" href="{{ campaign.get_absolute_url }}"
+          >{{ campaign.name }}</a
+        >
+        {% empty %}
+        <div class="dropdown-item">
+          <em class="text-muted">{% trans 'You have no draft.' %}</em>
         </div>
+        {% endfor %}
       </div>
-      <a href="{% url 'campaigns:campaign_add' %}" class="btn btn-dark rounded-pill ml-2" role="button">{% trans 'Create campaign' %}</a>
     </div>
-  </div>
-  <hr class="mt-2">
-
-
-<div class="cards-grid">
-  <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">CAMPAIGNS SENT</h3>
-    <div class="d-flex align-items-center h3 text-warning">
-        <i class="fas fa-rocket"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark"> {{ sent }} </span>
-    </div>
-  </div>
-  <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">SUBSCRIBER CHANGE FROM LAST MONTH</h3>
-    <div class="d-flex align-items-center h3 text-warning">
-      <i class="fas fa-chart-line"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ subDelta }}</span>
-    </div>
-  </div>
-  <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">NUMBER OF SUBSCRIBERS</h3>
-    <div class="d-flex align-items-center h3 text-warning">
-      <i class="fas fa-hashtag"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ totalSubCount }}</span>
-    </div>
-  </div>
-  <div class="dashboard-card">
-    <h3 class="h6 font-weight-normal">TOTAL CAMPAIGN OPENS</h3>
-    <div class="d-flex align-items-center h3 text-warning">
-      <i class="fas fa-hand-pointer"></i>
-        <span class="inline-block pl-3 ml-3 border-left border-warning text-dark">{{ campaignOpens }}</span>
-    </div>
+    <a
+      href="{% url 'campaigns:campaign_add' %}"
+      class="btn btn-dark rounded-pill ml-2"
+      role="button"
+      >{% trans 'Create campaign' %}</a
+    >
   </div>
 </div>
+<hr class="mt-2" />
 
-<div id="chart" class="my-4 py-2 border-0 shadow-none"></div>
-{% if activities %}
-<h3>{% trans 'Activity' %}</h3>
-  <hr class="mt-2">
-  {% for activity in activities %}
-    {% ifchanged %}
-      <h6 class="mb-2 mt-4">{{ activity.date|date:'j M, Y' }}</h6>
-    {% endifchanged %}
-    <div class="card mb-2">
-      <div class="card-body align-middle">
-        {% if activity.is_subscribed %}
-          <span class="fas fa-user-plus text-primary mr-2"></span>
-          <small class="text-muted mr-2">{{ activity.date|date:'P' }}</small>
-          <span>
-            <a href="{% url 'lists:edit_subscriber' activity.subscriber.mailing_list_id activity.subscriber_id %}">
-              {{ activity.subscriber.email }}
-            </a>
-            subscribed to
-            <a href="{{ activity.subscriber.mailing_list.get_absolute_url }}">
-              {{ activity.subscriber.mailing_list.name }}
-            </a>
+  <div class="cards-grid">
+    <div class="dashboard-card d-flex align-items-center ">
+      <div class="dashboard-card-content">
+        <h3 class="h6 font-weight-normal">CAMPAIGNS SENT</h3>
+        <div class="d-flex align-items-center h3 text-primary">
+          <i class="fas fa-rocket"></i>
+          <span
+            class="inline-block pl-3 ml-3 border-left border-primary text-dark"
+          >
+            {{ sent }}
           </span>
-        {% elif activity.is_unsubscribed %}
-          <span class="fas fa-user-minus text-danger mr-2"></span>
-          <small class="text-muted mr-2">{{ activity.date|date:'P' }}</small>
-          <span>
-            <a href="{% url 'lists:edit_subscriber' activity.subscriber.mailing_list_id activity.subscriber_id %}">
-              {{ activity.subscriber.email }}
-            </a>
-            unsubscribed from
-            <a href="{{ activity.subscriber.mailing_list.get_absolute_url }}">
-              {{ activity.subscriber.mailing_list.name }}
-            </a>
-            {% if activity.campaign %}
-              via <a href="{{ activity.campaign.get_absolute_url }}">{{ activity.campaign.name }}</a>
-            {% endif %}
-          </span>
-        {% endif %}
+        </div>
       </div>
     </div>
-  {% endfor %}
-{% endif %}
-  <script>
-    var options = {
-      series: [{
-        name: 'Subscribers',
-        data: {{ chartData.subCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
-      }, {
-        name: 'Campaigns',
-        data: {{ chartData.campaignCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
-      }],
-      chart: {
-        height: 350,
-        type: 'area'
+    <div class="dashboard-card d-flex align-items-center ">
+      <div class="dashboard-card-content">
+        <h3 class="h6 font-weight-normal">SUBSCRIBER CHANGE FROM LAST MONTH</h3>
+        <div class="d-flex align-items-center h3 text-primary">
+          <i class="fas fa-chart-line"></i>
+          <span
+            class="inline-block pl-3 ml-3 border-left border-primary text-dark"
+            >{{ subDelta }}</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-card d-flex align-items-center ">
+      <div class="dashboard-card-content">
+        <h3 class="h6 font-weight-normal">NUMBER OF SUBSCRIBERS</h3>
+        <div class="d-flex align-items-center h3 text-primary">
+          <i class="fas fa-hashtag"></i>
+          <span
+            class="inline-block pl-3 ml-3 border-left border-primary text-dark"
+            >{{ totalSubCount }}</span
+          >
+        </div>
+      </div>
+    </div>
+    <div class="dashboard-card d-flex align-items-center ">
+      <div class="dashboard-card-content">
+        <h3 class="h6 font-weight-normal">TOTAL CAMPAIGN OPENS</h3>
+        <div class="d-flex align-items-center h3 text-primary">
+          <i class="fas fa-hand-pointer"></i>
+          <span
+            class="inline-block pl-3 ml-3 border-left border-primary text-dark"
+            >{{ campaignOpens }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="chart" class="my-4 py-2 border-0 shadow-none"></div>
+  {% if activities %}
+  <h3>{% trans 'Activity' %}</h3>
+  <hr class="mt-2" />
+  {% for activity in activities %} {% ifchanged %}
+  <h6 class="mb-2 mt-4">{{ activity.date|date:'j M, Y' }}</h6>
+  {% endifchanged %}
+  <div class="card mb-2">
+    <div class="card-body align-middle">
+      {% if activity.is_subscribed %}
+      <span class="fas fa-user-plus text-primary mr-2"></span>
+      <small class="text-muted mr-2">{{ activity.date|date:'P' }}</small>
+      <span>
+        <a
+          href="{% url 'lists:edit_subscriber' activity.subscriber.mailing_list_id activity.subscriber_id %}"
+        >
+          {{ activity.subscriber.email }}
+        </a>
+        subscribed to
+        <a href="{{ activity.subscriber.mailing_list.get_absolute_url }}">
+          {{ activity.subscriber.mailing_list.name }}
+        </a>
+      </span>
+      {% elif activity.is_unsubscribed %}
+      <span class="fas fa-user-minus text-danger mr-2"></span>
+      <small class="text-muted mr-2">{{ activity.date|date:'P' }}</small>
+      <span>
+        <a
+          href="{% url 'lists:edit_subscriber' activity.subscriber.mailing_list_id activity.subscriber_id %}"
+        >
+          {{ activity.subscriber.email }}
+        </a>
+        unsubscribed from
+        <a href="{{ activity.subscriber.mailing_list.get_absolute_url }}">
+          {{ activity.subscriber.mailing_list.name }}
+        </a>
+        {% if activity.campaign %} via
+        <a href="{{ activity.campaign.get_absolute_url }}"
+          >{{ activity.campaign.name }}</a
+        >
+        {% endif %}
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %} {% endif %}
+<script>
+  var options = {
+    series: [{
+      name: 'Subscribers',
+      data: {{ chartData.subCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
+    }, {
+      name: 'Campaigns',
+      data: {{ chartData.campaignCount|safe }}   //[31, 40, 280, 51, 12, 309, 500]
+    }],
+    chart: {
+      height: 350,
+      type: 'area'
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'smooth'
+    },
+    xaxis: {
+      type: 'month',
+      categories: {{ chartData.date|safe }}   //["Jan", "Feb", "Mar", "Apr", "May", "June", "July"]
+    },
+    tooltip: {
+      x: {
+        format: 'dd/MM/yy HH:mm'
       },
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: 'smooth'
-      },
-      xaxis: {
-        type: 'month',
-        categories: {{ chartData.date|safe }}   //["Jan", "Feb", "Mar", "Apr", "May", "June", "July"]
-      },
-      tooltip: {
-        x: {
-          format: 'dd/MM/yy HH:mm'
-        },
-      },
-    };
+    },
+  };
 
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
-  </script>
+  var chart = new ApexCharts(document.querySelector("#chart"), options);
+  chart.render();
+</script>
 {% endblock %}

@@ -14,10 +14,7 @@
     width: 100%;
     height: 100vh;
     background-size: cover;
-  }
-
-  .logo {
-    color: #ffffff !important;
+    background-position: center;
   }
 </style>
 {% endblock %}
@@ -30,9 +27,9 @@
     <input type="hidden" name="next" value="{{ next }}">
     {{ form|crispy }}
     <div class="form-btns">
-      <button type="submit" class="btn btn-dark px-5 rounded-pill">{% trans 'Log in' %}</button>
+      <button type="submit" class="btn btn-primary px-5 rounded-pill">{% trans 'Log in' %}</button>
       <div class="forget-password-box">
-        <a href="{% url 'password_reset' %}" class="btn">{% trans 'Forgot your password?' %}</a>
+        <a href="{% url 'password_reset' %}" class="link">{% trans 'Forgot your password?' %}</a>
       </div>
     </div>
   </form>

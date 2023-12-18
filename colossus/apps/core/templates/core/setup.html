@@ -1,22 +1,37 @@
-{% extends 'base.html' %}
-
-{% load i18n %}
-
-{% block title %}{% trans 'Initial Setup' %}{% endblock %}
-
-{% block body %}
-  <h1 class="logo text-center my-4">Colossus</h1>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-8">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h4 class="card-title">{% trans 'Welcome to Colossus!' %}</h4>
-            {% block content %}
-            {% endblock %}
-          </div>
-        </div>
+{% extends 'base.html' %} {% load i18n %} {% load static %} {% block title %}{%
+trans 'Initial Setup' %}{% endblock %} {% block stylesheet %}
+<style>
+  body {
+    background: left center no-repeat;
+    background-image: url("{% static 'img/smartysync-bg.jpg' %}");
+    background-blend-mode: darken;
+    background-color: #0000005e !important;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+  }
+</style>
+{% endblock %} {% block body %}
+<div class="customer-container bg-white">
+  <div class="customer-wrapper">
+    <div class="logo-header d-flex justify-content-center">
+      <img
+        src="{% static 'img/smartysync-logo.png' %}"
+        class="mx-auto"
+        width="125px"
+        height="108px"
+      />
+    </div>
+    <div class="customer-content py-3">
+      <div class="customer-form">
+        <h4 class="customer-title text-center">
+          {% trans 'Welcome to Colossus!' %}
+        </h4>
+        {% block content %} {% endblock %}
       </div>
     </div>
   </div>
+</div>
+
 {% endblock %}
