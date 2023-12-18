@@ -26,7 +26,7 @@ from .api import get_test_email_context
 from .constants import CampaignStatus, CampaignTypes
 from .forms import (
     CampaignRecipientsForm, CampaignTestEmailForm, CreateCampaignForm,
-    EmailEditorForm, ScheduleCampaignForm,
+    EmailEditorForm, ScheduleCampaignForm
 )
 from .mixins import CampaignMixin
 from .models import Campaign, Email, Link
@@ -48,9 +48,8 @@ class CampaignListView(CampaignMixin, ListView):
 
     def get_queryset(self):
         self.extra_context = {}
-
-        queryset = super().get_queryset().select_related('mailing_list')
-
+        current_user = self.request.user
+        queryset = super().get_queryset().filter(created_by=current_user.id).select_related('mailing_list')
         try:
             status_filter = int(self.request.GET.get('status'))
             if status_filter in CampaignStatus.FILTERS:
@@ -74,6 +73,11 @@ class CampaignListView(CampaignMixin, ListView):
 class CampaignCreateView(CampaignMixin, CreateView):
     model = Campaign
     form_class = CreateCampaignForm
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        print(form.instance)
+        return super().form_valid(form)
 
     def get_initial(self):
         initial = super().get_initial()
@@ -256,6 +260,11 @@ class CampaignEditRecipientsView(CampaignMixin, UpdateView):
     context_object_name = 'campaign'
     template_name = 'campaigns/campaign_edit_recipients.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
 
 @login_required
 def load_list_tags(request):
@@ -345,6 +354,12 @@ class CampaignEditTemplateView(AbstractCampaignEmailUpdateView):
         email.set_blocks()
         email.save()
         return redirect('campaigns:campaign_edit_content', pk=self.kwargs.get('pk'))
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['template'].queryset = form.fields['template'].queryset.filter(created_by=self.request.user.id)
+
+        return form
 
 
 @method_decorator(login_required, name='dispatch')
@@ -498,7 +513,7 @@ def send_campaign(request, pk):
 @login_required
 def replicate_campaign(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
-    replicated_campaign = campaign.replicate()
+    replicated_campaign = campaign.replicate(request.user)
     return redirect(replicated_campaign)
 
 @login_required

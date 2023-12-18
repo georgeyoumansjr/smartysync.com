@@ -14,17 +14,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================================================================
 # CORE SETTINGS
 # ==============================================================================
-
 PROD = config('PROD', default=False, cast=bool)
-
-if not PROD:
-    from dotenv import load_dotenv
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR,".env"))
+# if not PROD:
+from dotenv import load_dotenv
+load_dotenv()
 
 
 SECRET_KEY = config('SECRET_KEY', default=string.ascii_letters)
 
 DEBUG = config('DEBUG', default=True, cast=bool)
+
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', 
                        cast=Csv())
@@ -165,19 +164,17 @@ PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'media/private')
 EMAIL_SUBJECT_PREFIX = os.getenv('EMAIL_SUBJECT_PREFIX', '[GER WHOLESALE] ')
 
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', 'coboaccess@gmail.com')
-
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'Ger Wholesale <coboaccess@gmail.com>')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # os.getenv('EMAIL_BACKEND')
 
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'coboaccess@gmail.com')
-
+# print(EMAIL_HOST_USER)
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-
+# print(EMAIL_HOST_PASSWORD)
 if EMAIL_PORT == 465:
     EMAIL_USE_SSL = True
 else:
