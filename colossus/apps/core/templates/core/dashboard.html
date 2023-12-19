@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center my-3 px-3 py-4 alert-primary">
-  <h2 class="mb-0 title">{% trans 'Dashboard' %}</h2>
+<div class="d-flex justify-content-center justify-content-sm-between align-items-center flex-wrap my-3 px-3 py-4">
+  <h2 class="mb-0 section-title mb-2">{% trans 'Dashboard' %}</h2>
   <div
     class="btn-toolbar"
     role="toolbar"
@@ -143,6 +143,23 @@
     </div>
   </div>
   {% endfor %} {% endif %}
+  <div class="email-status mb-4">
+    <h2 class="section-title mb-2 text-sm-left text-center">Emails Delivery</h2>
+    <div class="email-grid">
+      <div class="email-item">
+        <img src="{% static 'img/mail.png' %}" alt="" width="100px">
+        <h4>50 Emails Send</h4>
+      </div>
+      <div class="email-item">
+        <img src="{% static 'img/failed-message.png' %}" alt="" width="100px">
+        <h4>10 Emails Failed</h4>
+      </div>
+      <div class="email-item">
+        <img src="{% static 'img/stats.png' %}" alt="" width="100px">
+        <h4>90% Accuracy</h4>
+      </div>
+    </div>
+  </div>
 <script>
   var options = {
     series: [{
