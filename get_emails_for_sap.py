@@ -71,7 +71,7 @@ def get_emails_from_email(batch_name):
     today = datetime.datetime.today()
 
     status, messages = imap.select("INBOX")
-    N = 15
+    N = 30
     messages = int(messages[0])
 
     for i in range(messages, messages-N, -1):
@@ -183,7 +183,9 @@ def get_emails_from_email(batch_name):
                     pass  # don't deal with html emails for now
                 print("="*100)
                 return []
-
+            
+    print(f'No {batch_name} email found in the last {N} emails.')
+    
     return emails
 
 def send_campaign_from_email(username, batch_name):
