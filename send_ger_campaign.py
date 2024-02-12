@@ -59,70 +59,7 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
         print(f'No mailing list to get the emails from. Create the mailing list with the name : {source_mailing_list_name}')
         return False
 
-    """
-    try:
-        mailing_list_name = f'{batch_name}-BATCH-AUTO-CURRENT'
-        mailing_list = MailingList.objects.only('pk').get(created_by=user, name=mailing_list_name)
 
-    except MailingList.DoesNotExist:
-        print('No mailing list. Setting the mailing list first')
-        mailing_list = MailingList.objects.create(
-            created_by=user, 
-            name = mailing_list_name,
-            slug = mailing_list_name.lower(),
-            contact_email_address = 'contact@gerwholesalers.com',
-            website_url = 'https://thetitandev.com',
-            campaign_default_from_name = 'Ger Wholesale',
-            campaign_default_from_email = 'contact@gerwholesalers.com',
-            campaign_default_email_subject = 'Ger Wholesale',
-        )
-    """
-
-
-    
-    # if mailing list exists, move to the next one and create the latest batch
-    try:
-        i = 1
-        while True:
-            batch_mailing_list_name = f'{batch_name}-BATCH-AUTO-{i}'
-            batch_mailing_list = MailingList.objects.get(created_by=user, name=batch_mailing_list_name)
-
-            i += 1
-            continue
-
-            # if mailing list exists and has less than 500 subscribers, use that mailing list
-            if batch_mailing_list.subscribers_count + len(emails) < 60:
-                break
-
-            # if it has more than 500 subscribers, go to the next batch number (and create the mailing list)
-
-    except MailingList.DoesNotExist:
-        batch_mailing_list = MailingList.objects.create(
-            created_by=user, 
-            name = batch_mailing_list_name,
-            slug = batch_mailing_list_name.lower(),
-            contact_email_address = 'coboaccess@gmail.com',
-            website_url = 'https://thetitandev.com',
-            campaign_default_from_name = 'Ger Wholesale',
-            campaign_default_from_email = 'contact@gerwholesalers.com',
-            campaign_default_email_subject = 'Ger Wholesale',
-        )
-
-    """
-    print(f'Emails are being moved to {batch_mailing_list_name}')
-    for subscriber in mailing_list.subscribers.all():
-        try:
-            subscriber.mailing_list = batch_mailing_list
-            subscriber.save()
-        except:
-            if subscriber.email != 'georgeyoumansjr@gmail.com' or subscriber.email != 'coboaccess@gmail.com':
-                subscriber.delete()
-
-    batch_mailing_list.update_subscribers_count()
-    print('Emails are moved')
-    """
-
-    
     emails = []
 
      # test the adding next batch if current one has more than 500 emails
@@ -165,6 +102,28 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
             print(f'Subscriber Count : {m.subscribers_count}')
 
         return False
+
+    try:
+        i = 1
+        while True:
+            batch_mailing_list_name = f'{batch_name}-BATCH-AUTO-{i}'
+            batch_mailing_list = MailingList.objects.get(created_by=user, name=batch_mailing_list_name)
+
+            i += 1
+            continue
+
+    except MailingList.DoesNotExist:
+        batch_mailing_list = MailingList.objects.create(
+            created_by=user, 
+            name = batch_mailing_list_name,
+            slug = batch_mailing_list_name.lower(),
+            contact_email_address = 'coboaccess@gmail.com',
+            website_url = 'https://thetitandev.com',
+            campaign_default_from_name = 'Ger Wholesale',
+            campaign_default_from_email = 'contact@gerwholesalers.com',
+            campaign_default_email_subject = 'Ger Wholesale',
+        )
+    
 
     
     if 'georgeyoumansjr@gmail.com' not in emails:
