@@ -14,17 +14,8 @@ import requests
 from dotenv import load_dotenv 
 from django.conf import settings
 
-import pytz
-
-from smtplib import SMTPAuthenticationError
-from typing import Dict, List
-
-from django import forms
-from django.core.exceptions import ValidationError
-from django.core.mail.backends.smtp import EmailBackend
 from django.db import transaction
 from django.db.models import Q
-from django.forms import BoundField
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
 
@@ -40,156 +31,11 @@ from colossus.apps.lists.models import MailingList, SubscriberImport
 from colossus.apps.campaigns.models import Campaign
 from colossus.apps.campaigns.constants import CampaignStatus
 
-
-import imaplib
-import email
-from email.header import decode_header
-import os
-
-username = 'contact@gerwholesalers.com'
-username = 'mail@thetitandev.com'
-username = 'coboaccess@gmail.com'
-password = 'Ohappy2023'
-password = 'fyrljfsrqmhqkzmd'
-
-imap_server = 'az1-ts111.a2hosting.com'
-imap_server = 'mail.thetitandev.com'
-imap_server = 'smtp.gmail.com'
-
-imap = imaplib.IMAP4_SSL(imap_server)
-
-imap.login(username, password)
-
 def clean(text):
     # clean text for creating a folder
     return "".join(c if c.isalnum() else "_" for c in text)
 
-def get_emails_from_email(batch_name):
-    emails = []
-
-    # print(imap.list())
-
-    today = datetime.datetime.today()
-
-    status, messages = imap.select("INBOX")
-    N = 30
-    messages = int(messages[0])
-
-    for i in range(messages, messages-N, -1):
-        # fetch the email message by ID
-        try:
-            res, msg = imap.fetch(str(i), "(RFC822)")
-        except:
-            print('Email fetch error')
-            continue
-        for response in msg:
-            if isinstance(response, tuple):
-                # parse a bytes email into a message object
-                msg = email.message_from_bytes(response[1])
-                # decode the email subject
-                subject, encoding = decode_header(msg["Subject"])[0]
-                if isinstance(subject, bytes):
-                    # if it's a bytes, decode to str
-                    subject = subject.decode(encoding)
-                # decode email sender
-                From, encoding = decode_header(msg.get("From"))[0]
-                if isinstance(From, bytes):
-                    From = From.decode(encoding)
-                print("Subject:", subject)
-                print("From:", From)
-                # if the email message is multipart
-
-                # if not from the account ve want
-                # or not the subject we need, pass
-                if subject != 'email-read-test' and subject != f'List of lead emails recieved Yesterday on {batch_name}!':
-                    continue
-
-
-                if msg.is_multipart():
-                    # iterate over email parts
-                    for part in msg.walk():
-                        # extract content type of email
-                        content_type = part.get_content_type()
-                        content_disposition = str(part.get("Content-Disposition"))
-                        try:
-                            # get the email body
-                            body = part.get_payload(decode=True).decode()
-                        except:
-                            pass
-                        if content_type == "text/plain" and "attachment" not in content_disposition:
-                            # print text/plain emails and skip attachments
-                            print(body)
-                            body = body.replace('\r','').replace('\n', '')
-                            body = eval(body) # json.loads(body)
-                            try:
-                                received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d %H:%M:%S.%f')
-                            except:
-                                received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
-
-                            if received_at.date() + datetime.timedelta(days=1) != today.date():
-                                print('This is an old email.')
-                                return []
-                            
-                            emails = body['data']['emails']
-                            return emails
-
-                        """
-                        if "attachment" in content_disposition:
-                            # download attachment
-                            filename = part.get_filename()
-                            if filename:
-                                folder_name = clean(subject)
-                                if not os.path.isdir(folder_name):
-                                    # make a folder for this email (named after the subject)
-                                    os.mkdir(folder_name)
-                                filepath = os.path.join(folder_name, filename)
-                                # download attachment and save it
-                                open(filepath, "wb").write(part.get_payload(decode=True))
-                        """
-                else:
-                    # extract content type of email
-                    content_type = msg.get_content_type()
-                    # get the email body
-                    body = msg.get_payload(decode=True).decode()
-                    if content_type == "text/plain":
-                        # print only text email parts
-                        print(body)
-                        body = body.replace('\r','').replace('\n', '')
-                        body = eval(body) # json.loads(body)
-                        try:
-                            received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d %H:%M:%S.%f')
-                        except:
-                            received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
-
-                        if received_at.date() + datetime.timedelta(days=1) != today.date():
-                            print('This is an old email.')
-                            return []
-                        
-                        emails = body['data']['emails']
-                        return emails
-                if content_type == "text/html":
-                    """  
-                    # if it's HTML, create a new HTML file and open it in browser
-                    folder_name = clean(subject)
-                    if not os.path.isdir(folder_name):
-                        # make a folder for this email (named after the subject)
-                        os.mkdir(folder_name)
-                    filename = "index.html"
-                    filepath = os.path.join(folder_name, filename)
-                    # write the file
-                    open(filepath, "w").write(body)
-                    # open in the default browser
-                    webbrowser.open(filepath)
-                    """
-                    pass  # don't deal with html emails for now
-                print("="*100)
-                return []
-            
-    print(f'No {batch_name} email found in the last {N} emails.')
-    
-    return emails
-
-def send_campaign_from_email(username, batch_name, pdf_name=None):
+def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf_name=None, max_number_of_emails=60):
 
     try:
         user = User.objects.get(username=username)
@@ -207,7 +53,6 @@ def send_campaign_from_email(username, batch_name, pdf_name=None):
         return False
 
     try:
-        source_mailing_list_name = 'GER BATCH 9'
         source_mailing_list = MailingList.objects.only('pk').get(created_by=user, name=source_mailing_list_name)
 
     except MailingList.DoesNotExist:
@@ -284,7 +129,6 @@ def send_campaign_from_email(username, batch_name, pdf_name=None):
     # for i in range(400):  
     #     emails.append(f'{uuid.uuid4()}@gmail.com')
 
-    max_number_of_emails = 60
     counter = 0
 
     for subscriber in source_mailing_list.subscribers.all():
@@ -301,6 +145,26 @@ def send_campaign_from_email(username, batch_name, pdf_name=None):
             break
 
     print(f'Collected {counter} emails.')
+
+    if counter == 0:
+        print('No emails to send. Either script is done with the current set of emails or there is a problem with the logic.')
+        print(f'Source mailing list name : {source_mailing_list_name}')
+        print(f'Source mailing list subscriber count : {source_mailing_list.subscribers_count}')
+        
+        if source_mailing_list.subscribers_count == 0:
+            print('Source mailing list is empty. Please make sure it\'s the right mailing list.')
+
+        prefix = f'{batch_name}-BATCH'
+        existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=f'{batch_name}-BATCH')
+        print(f"Existing mailing lists with prefix {prefix} : ")
+
+        if not existing_mailing_lists_with_prefix.exists():
+            print('None')
+        for m in existing_mailing_lists_with_prefix:
+            print(f'Name : {m.name}')
+            print(f'Subscriber Count : {m.subscribers_count}')
+
+        return False
 
     
     if 'georgeyoumansjr@gmail.com' not in emails:
@@ -374,7 +238,11 @@ if __name__ == '__main__':
 
     username = 'ger'
     batch_name = username.upper()
-    status = send_campaign_from_email(username, batch_name)
+    source_mailing_list_name = 'GER BATCH 9'
+    max_number_of_emails = 60
+
+    status = send_campaign_from_email(username, batch_name, source_mailing_list_name,
+                                    pdf_name=None, max_number_of_emails=max_number_of_emails)
 
     if status:
         print('Successfuly sent the campaign')
