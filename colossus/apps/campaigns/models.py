@@ -40,7 +40,7 @@ class Campaign(models.Model):
     )
     mailing_list = models.ForeignKey(
         MailingList,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name=_('mailing list'),
         related_name='campaigns',
         null=True,

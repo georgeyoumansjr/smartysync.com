@@ -188,7 +188,7 @@ def get_emails_from_email(batch_name):
     
     return emails
 
-def send_campaign_from_email(username, batch_name):
+def send_campaign_from_email(username, batch_name, pdf_name):
 
     emails = get_emails_from_email(batch_name)
 
@@ -337,7 +337,15 @@ def send_campaign_from_email(username, batch_name):
     campaign.status = CampaignStatus.QUEUED  # it might be in SENT state in which case campaign won't be send again
     campaign.save()
 
-    campaign.send()
+    print('PDF name is :' + pdf_name)
+
+    if pdf_name:  # send with attachment
+        pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
+
+    else:  
+        campaign.send()
+
 
     return True
 
@@ -350,9 +358,12 @@ if __name__ == '__main__':
 
     username = 'sap'
     batch_name = username.upper()
-    status = send_campaign_from_email(username, batch_name)
+    pdf_name = 'Introduction to React.pdf'
+    status = send_campaign_from_email(username, batch_name, pdf_name)
 
     if status:
         print('Successfuly sent the campaign')
     else:
         print('Fix the errors and try again')
+
+        
