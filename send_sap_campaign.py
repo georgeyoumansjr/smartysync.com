@@ -69,7 +69,7 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
     counter = 0
 
     for subscriber in source_mailing_list.subscribers.all():
-        if Subscriber.objects.filter(mailing_list__name__startswith=f'{batch_name}-BATCH',
+        if Subscriber.objects.filter(mailing_list__name__startswith=f'{source_mailing_list_name} AUTO',
                                      email=subscriber.email).exists():
             continue
         emails.append(subscriber.email)
@@ -91,8 +91,8 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
         if source_mailing_list.subscribers_count == 0:
             print('Source mailing list is empty. Please make sure it\'s the right mailing list.')
 
-        prefix = f'{batch_name}-BATCH'
-        existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=f'{batch_name}-BATCH')
+        prefix = f'{source_mailing_list_name} AUTO'
+        existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=prefix)
         print(f"Existing mailing lists with prefix {prefix} : ")
 
         if not existing_mailing_lists_with_prefix.exists():
@@ -131,6 +131,9 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
 
     if 'coboaccess@gmail.com' not in emails:
         emails.append('coboaccess@gmail.com')
+
+    if 'coboaccess3@gmail.com' not in emails:
+        emails.append('coboaccess3@gmail.com')
 
     cached_domains = dict()
     status = 2  # SUBSCRIBED
@@ -179,11 +182,10 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
     if pdf_name:  # send with attachment
         print('PDF name is :' + pdf_name)
         pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
-        # campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
 
     else:  
-        pass
-        # campaign.send()
+        campaign.send()
 
 
     return True
@@ -197,11 +199,12 @@ if __name__ == '__main__':
 
     username = 'sap'
     batch_name = username.upper()
-    source_mailing_list_name = 'SAP BATCH 2'
-    max_number_of_emails = 60
+    source_mailing_list_name = 'SAP BATCH 3'
+    max_number_of_emails = 50
+    pdf_name = 'Introduction to React.pdf'
 
     status = send_campaign_from_email(username, batch_name, source_mailing_list_name,
-                                    pdf_name=None, max_number_of_emails=max_number_of_emails)
+                                    pdf_name=pdf_name, max_number_of_emails=max_number_of_emails)
 
     if status:
         print('Successfuly sent the campaign')
