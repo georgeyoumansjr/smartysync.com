@@ -91,8 +91,8 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
         if source_mailing_list.subscribers_count == 0:
             print('Source mailing list is empty. Please make sure it\'s the right mailing list.')
 
-        prefix = f'{batch_name}-BATCH'
-        existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=f'{batch_name}-BATCH')
+        prefix = f'{source_mailing_list_name} AUTO'
+        existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=prefix)
         print(f"Existing mailing lists with prefix {prefix} : ")
 
         if not existing_mailing_lists_with_prefix.exists():
