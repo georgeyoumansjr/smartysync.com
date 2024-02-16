@@ -1,5 +1,6 @@
 import logging
 import re
+import time
 from smtplib import SMTPException
 
 from pprint import pprint
@@ -8,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.conf import settings
 
 import html2text
 
@@ -141,7 +143,6 @@ def send_campaign_email_test(email, recipient_list):
     context = get_test_email_context(unsub=unsubscribe_absolute_url)
     return send_campaign_email(email, context, recipient_list, is_test=True)
 
-
 def send_campaign(campaign, **kwargs):
     campaign.status = CampaignStatus.DELIVERING
     campaign.save(update_fields=['status'])
@@ -162,6 +163,13 @@ def send_campaign(campaign, **kwargs):
                     subscriber.update_open_and_click_rate()
                     subscriber.last_sent = timezone.now()
                     subscriber.save(update_fields=['last_sent'])
+
+                    # if redis and celery are ready and CELERY_TASK_ALWAYS_EAGER env variable is set
+                    # wait a few seconds to send each email
+                    if not settings.CELERY_TASK_ALWAYS_EAGER:
+                        print(f'Sent to {subscriber.email}, waiting 13 seconds...')
+                        time.sleep(13)
+                
 
     campaign.mailing_list.update_open_and_click_rate()
     campaign.status = CampaignStatus.SENT
