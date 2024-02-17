@@ -102,7 +102,6 @@ def get_non_existing_emails_and_return_list():
                 else:
                     body = msg.get_payload(decode=True).decode()
 
-                print(body)
                 try:
                     email_address = re.findall(pattern, body)[0]
                 except:
