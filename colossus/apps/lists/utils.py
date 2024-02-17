@@ -1,14 +1,17 @@
-from datetime import datetime
-
-# Define imports and config dictionary
-import msal
-import requests
-from dotenv import load_dotenv 
-import os 
-from django.conf import settings
-
+import imaplib
+import email
+import os
+import re
 import pytz
 
+from email.header import decode_header
+from datetime import datetime
+from dotenv import load_dotenv 
+from django.conf import settings
+
+
+pathdot = os.path.join(settings.BASE_DIR,".env")
+load_dotenv(pathdot)
 
 def convert_date(str_date: str) -> datetime:
     date = datetime.strptime(str_date.strip(), '%Y-%m-%d %H:%M:%S')
@@ -28,66 +31,89 @@ def normalize_text(text: str) -> str:
     return text
 
 
-
-
-pathdot = os.path.join(settings.BASE_DIR,".env")
-load_dotenv(pathdot)
-config = {
-  'client_id': os.getenv("CLIENT_ID"),
-  'client_secret': os.getenv("CLIENT_SECRET"),
-  'authority': 'https://login.microsoftonline.com/'+os.getenv("TENANT_ID"),
-  'scope': ['https://graph.microsoft.com/.default']
-}
-
-# Create an MSAL instance providing the client_id, authority and client_credential parameters
-client = msal.ConfidentialClientApplication(config['client_id'], authority=config['authority'], client_credential=config['client_secret'])
-# print(client)""
-# Make an MS Graph call
+def clean(text):
+    # clean text for creating a folder
+    return "".join(c if c.isalnum() else "_" for c in text)
 
 
 def get_non_existing_emails_and_return_list():
-    mail_folders = ["junkemail","sentitems","inbox"]
-    pagination = True
+    username = 'contact@gerwholesalers.com'
+    username = 'coboaccess@gmail.com'
+    username = 'georgeyoumansjr@gmail.com'
+
+    password = 'Ohappy2023'
+    password = 'fyrljfsrqmhqkzmd'  # coboaccess
+    password = 'lhhd pvex quyg pkxx'  # georgeyoumansjr
+
+    imap_server = 'mail.thetitandev.com'
+    imap_server = 'smtp.gmail.com'
+
+
+
+    imap = imaplib.IMAP4_SSL(imap_server)
+    imap.login(username, password)
+
     emails = []
-    for folder in mail_folders:
-        url = 'https://graph.microsoft.com/v1.0/users/'+os.getenv("USER_ID")+f"/mailFolders('{folder}')/messages"
-        token_result = client.acquire_token_silent(config['scope'], account=None)
-        if not token_result:
-            token_result = client.acquire_token_for_client(scopes=config['scope'])
 
-        if 'access_token' in token_result:
-            headers = {
-                'Authorization': 'Bearer ' + token_result['access_token'],
-                "Content-Type": "application/json"
-                }
+    pattern = r'<(.*?)>'
+    pattern = r'"mailto:(.*?)"'
+    pattern = r"<[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+(?:\.[-A-Za-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[-A-Za-z0-9]*[A-Za-z0-9])?>"
 
-            while url:
+    mailbox = "[Gmail]/Spam"
+
+    status, messages = imap.select(mailbox)
+    N = 50
+    messages = int(messages[0])
+
+    print('Removing non-existing emails.')
+
+    for i in range(messages, messages-N, -1):
+        # fetch the email message by ID
+        try:
+            res, msg = imap.fetch(str(i), "(RFC822)")
+        except:
+            print('Email fetch error')
+            continue
+        for response in msg:
+            if isinstance(response, tuple):
+                # parse a bytes email into a message object
+                msg = email.message_from_bytes(response[1])
+                # decode the email subject
+                subject, encoding = decode_header(msg["Subject"])[0]
+                if isinstance(subject, bytes):
+                    # if it's a bytes, decode to str
+                    subject = subject.decode(encoding)
+                # decode email sender
+                From, encoding = decode_header(msg.get("From"))[0]
+                if isinstance(From, bytes):
+                    From = From.decode(encoding)
+                print("Subject:", subject)
+      
+                if subject != 'Undelivered Mail Returned to Sender' and subject != 'Mail delivery failed: returning message to sender':
+                    continue
+
+                if msg.is_multipart():
+                    for part in msg.walk():
+                        try:
+                            body = part.get_payload(decode=True).decode()
+                            break
+                        except:
+                            pass
+                else:
+                    body = msg.get_payload(decode=True).decode()
+
+                print(body)
                 try:
-                    graph_result = requests.get(url=url, headers=headers).json()
-                    for result in graph_result['value']:
-                        from_email = result['from']['emailAddress']['address']
-                        if 'MAILER-DAEMON@mailchannels.net' == from_email:
-                            # print('from : ',from_email)
-                            to_email = result['toRecipients'][0]['emailAddress']['address']
-                            print('Failed email : ', to_email)
-                            emails.append(to_email)
-
-                    #graph_results.extend(graph_result['value'])
-                    if (pagination == True):
-                        url = graph_result['@odata.nextLink']
-                    else:
-                        url = None
+                    email_address = re.findall(pattern, body)[0]
                 except:
-                    break
-        else:
-            print(token_result.get('error'))
-            print(token_result.get('error_description'))
-            print(token_result.get('correlation'))
-            return []
+                    continue
 
+                
+                print(f'Found : {email_address}')
+                emails.append(email_address)
+            
+    print(f'non-existing emails : {emails}')
     return emails
-
-
 
 
 
