@@ -512,3 +512,9 @@ class SubscriptionFormTemplate(models.Model):
         )
         email.attach_alternative(rich_text_message, 'text/html')
         email.send()
+
+class Unsubscribers(models.Model):
+    email = email = models.EmailField(_('email address'), max_length=255)
+
+    def __str__(self):
+        return self.email
