@@ -677,9 +677,11 @@ def search_subscribers(request):
 def delete_non_existing_subscribers(request):
     emails = get_non_existing_emails_and_return_list()
     for email in emails:
-        subscriber_to_delete = Subscriber.objects.filter(email=email)
-        if subscriber_to_delete.exists():
-            subscriber_to_delete.delete()
+        bad_subscriber = Subscriber.objects.filter(email=email)
+        if bad_subscriber.exists():
+            bad_subscriber.is_bad = True
+            bad_subscriber.mailing_list = None
+            bad_subscriber.save()
     mailing_lists = MailingList.objects.all()
     for mailing_list in mailing_lists:
         mailing_list.update_subscribers_count()
