@@ -222,6 +222,7 @@ class Subscriber(models.Model):
         with transaction.atomic():
             self.status = Status.UNSUBSCRIBED
             self.last_seen_ip_address = ip_address
+            # self.mailing_list = None
             self.save()
             self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
 
@@ -513,3 +514,9 @@ class SubscriptionFormTemplate(models.Model):
         )
         email.attach_alternative(rich_text_message, 'text/html')
         email.send()
+
+# class Unsubscribers(models.Model):
+#     email = email = models.EmailField(_('email address'), max_length=255)
+
+#     def __str__(self):
+#         return self.email
