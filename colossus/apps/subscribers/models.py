@@ -104,7 +104,7 @@ class Subscriber(models.Model):
         related_name='subscribers'
     )
     name = models.CharField(_('name'), max_length=150, blank=True)
-    mailing_list = models.ForeignKey(MailingList, on_delete=models.CASCADE, related_name='subscribers')
+    mailing_list = models.ForeignKey(MailingList, on_delete=models.CASCADE, related_name='subscribers', null=True, blank=True)
     open_rate = models.FloatField(_('opens'), default=0.0, editable=False)
     click_rate = models.FloatField(_('clicks'), default=0.0, editable=False)
     update_date = models.DateTimeField(_('updated'), default=timezone.now)
@@ -131,6 +131,7 @@ class Subscriber(models.Model):
     last_sent = models.DateTimeField(_('last campaign sent date'), null=True, blank=True)
     tags = models.ManyToManyField(Tag, related_name='subscribers', verbose_name=_('tags'), blank=True)
     tokens = GenericRelation(Token)
+    is_bad = models.BooleanField(default=False)
 
     objects = SubscriberManager()
 
@@ -221,6 +222,7 @@ class Subscriber(models.Model):
         with transaction.atomic():
             self.status = Status.UNSUBSCRIBED
             self.last_seen_ip_address = ip_address
+            # self.mailing_list = None
             self.save()
             self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
 
@@ -512,3 +514,9 @@ class SubscriptionFormTemplate(models.Model):
         )
         email.attach_alternative(rich_text_message, 'text/html')
         email.send()
+
+# class Unsubscribers(models.Model):
+#     email = email = models.EmailField(_('email address'), max_length=255)
+
+#     def __str__(self):
+#         return self.email
