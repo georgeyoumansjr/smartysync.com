@@ -249,10 +249,11 @@ class Subscriber(models.Model):
             self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
 
         update_subscriber_location.delay(ip_address, self.pk)
+        if mailList:
+            goodbye_email = mailList.get_goodbye_email_template()
 
-        goodbye_email = self.mailing_list.get_goodbye_email_template()
-        if goodbye_email.send_email:
-            goodbye_email.send(self.get_email())
+            if goodbye_email.send_email:
+                goodbye_email.send(self.get_email())
 
     def create_activity(self, activity_type, **activity_kwargs):
         activity_kwargs.update({
