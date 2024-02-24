@@ -61,8 +61,16 @@ def get_all_unsubscribed():
     try:
         unsubscribers = Subscriber.objects.filter(status=3,mailing_list__isnull=False)
         return unsubscribers
-    except User.DoesNotExist:
+    except Subscriber.DoesNotExist:
         logger.warning(f'Unsubscribers list is empty')
+        return False
+    
+def get_still_subscribed(unsubscribed_email):
+    try:
+        still_subscribed = Subscriber.objects.filter(email=unsubscribed_email, status=2, mailing_list__isnull=False)
+        return still_subscribed
+    except Subscriber.DoesNotExist:
+        print("No Still Subscribed emails found")
         return False
 
 
