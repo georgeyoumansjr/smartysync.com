@@ -12,6 +12,7 @@ urlpatterns = [
     path('list_campaigns/', views.MailingListCampaignListView, name='list_campaigns'),
     path('delete_subscriber_paste/', views.PasteEmailsDeleteSubscribersView.as_view(), name='delete_subscriber_paste'),
     path('delete_duplicate_subscribers/', views.delete_duplicate_subscribers, name='delete_duplicate_subscribers'),
+    path('download_unsubscribers_list/',views.download_unsubscribers, name="download_unsubscribers"),
     path('delete_non_existing_subscribers/', views.delete_non_existing_subscribers, name='delete_non_existing_subscribers'),
     path('search/', views.PasteEmailsSearchSubscribersView.as_view(), name='search'),
     path('add/', views.MailingListCreateView.as_view(), name='new_list'),

@@ -215,6 +215,7 @@ class Subscriber(models.Model):
         welcome_email = self.mailing_list.get_welcome_email_template()
         if welcome_email.send_email:
             welcome_email.send(self.get_email())
+    
 
     def unsubscribe(self, request, campaign=None):
         ip_address = get_client_ip(request)
@@ -222,15 +223,37 @@ class Subscriber(models.Model):
         with transaction.atomic():
             self.status = Status.UNSUBSCRIBED
             self.last_seen_ip_address = ip_address
-            # self.mailing_list = None
+            
+            print(self.email)
             self.save()
+            
+            mailList = self.mailing_list
+            self.mailing_list = None
+            self.save()
+            print(f"Unsubscribed {self.email} from mailing list {mailList}")
+
+            still_subscribed = Subscriber.get_still_subscribed(self.email)
+            if still_subscribed:
+                for subscriber in still_subscribed:
+                    try:
+                        mailList = subscriber.mailing_list
+                        subscriber.status = Status.UNSUBSCRIBED
+                        subscriber.save()
+                        subscriber.mailing_list = None
+                        subscriber.save()
+                        print(f"Unsubscribed {subscriber.email} from mailing list {mailList}")
+                    except Exception as e:
+                        print(f"Exception while removing {subscriber.email} from mailing list {subscriber.mailing_list}")
+                
+
             self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
 
         update_subscriber_location.delay(ip_address, self.pk)
+        if mailList:
+            goodbye_email = mailList.get_goodbye_email_template()
 
-        goodbye_email = self.mailing_list.get_goodbye_email_template()
-        if goodbye_email.send_email:
-            goodbye_email.send(self.get_email())
+            if goodbye_email.send_email:
+                goodbye_email.send(self.get_email())
 
     def create_activity(self, activity_type, **activity_kwargs):
         activity_kwargs.update({
@@ -326,6 +349,16 @@ class Subscriber(models.Model):
             self.open_rate = 0.0
             self.click_rate = 0.0
         self.save(update_fields=['open_rate', 'click_rate'])
+    
+    @staticmethod
+    def get_still_subscribed(unsubscribed_email):
+        """
+        Retrieve users who are still subscribed to any mailing list when a user unsubscribes.
+        :param unsubscribed_email: The email address of the user who unsubscribed.
+        :return: QuerySet of still subscribed users.
+        """
+        still_subscribed = Subscriber.objects.filter(email=unsubscribed_email, status=Status.SUBSCRIBED, mailing_list__isnull=False)
+        return still_subscribed
 
 
 class Activity(models.Model):
