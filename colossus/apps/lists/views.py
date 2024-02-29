@@ -702,3 +702,22 @@ def delete_duplicate_subscribers(request):
     for mailing_list in mailing_lists:
         mailing_list.update_subscribers_count()
     return redirect('lists:lists')
+
+@login_required
+def download_unsubscribers(request):
+    excluded_emails = ["coboaccess@gmail.com","wealthtie@gmail.com"]
+    unsubscribers = Subscriber.objects.filter(
+        mailing_list__isnull=True
+    ).exclude(email__in=excluded_emails).values('email').distinct()
+    # print(unsubscribers)
+    
+    filename = f'unsubscribed_emails_{(str(datetime.datetime.now()))}.txt'
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    for unsubscribed in unsubscribers:
+        response.write(unsubscribed['email'] + '\n')
+
+    return response
+
+
