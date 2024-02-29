@@ -705,7 +705,9 @@ def delete_duplicate_subscribers(request):
 
 @login_required
 def download_unsubscribers(request):
-    excluded_emails = ["coboaccess@gmail.com","wealthtie@gmail.com"]
+    excluded_emails = ["coboaccess@gmail.com",
+                       "georgeyoumansjr@gmail.com",
+                       "coboaccess3@gmail.com"]
     unsubscribers = Subscriber.objects.filter(
         mailing_list__isnull=True
     ).exclude(email__in=excluded_emails).values('email').distinct()
