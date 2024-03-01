@@ -98,14 +98,12 @@ def remove_unsubscribed():
                     except Exception as e:
                         logger.exception(e)
                         logger.warning(f"Unable to Delete {email} due to exception")
-            # try:
-            #     unsubscribed.mailing_list = None
-            #     unsubscribed.save()
-            #     logger.info(f"unsubscribed email {email} removed from mailing list {str(ml_id)}")
-            # except Exception as e:
-            #     logger.exception(e)
-            #     unsubscribed.delete()
-            #     logger.warning(f"Deleted Subscribed {email} due to exception")
+            try:
+                unsubscribed.delete()
+                logger.info(f"Deleted email {email} removed from mailing list {str(ml_id)}")
+            except Exception as e:
+                logger.exception(e)
+                logger.warning(f"Unable to Delete Subscribed {email} due to above exception")
 
 
 if __name__ == "__main__":
