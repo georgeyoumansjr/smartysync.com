@@ -30,6 +30,7 @@ from colossus.utils import get_absolute_url, get_client_ip
 from .activities import render_activity
 from .constants import ActivityTypes, Status, TemplateKeys
 from .subscription_settings import SUBSCRIPTION_FORM_TEMPLATE_SETTINGS
+from .settings_hosts import ALLOWED_HOSTS
 
 
 class Tag(models.Model):
@@ -240,8 +241,8 @@ class Subscriber(models.Model):
             try:
                 message = EmailMultiAlternatives(
                     subject=f"{self.email} Unsubscribed",
-                    body=f"{self.email} in {self.mailing_list} Mailing List",
-                    to=["coboaccess3@gmail.com"]
+                    body=f"{self.email} in {self.mailing_list} Mailing List for domain {ALLOWED_HOSTS[0]}",
+                    to=["georgeyoumansjr@gmail.com"]
                 )
                 message.send()
             except Exception as e:
