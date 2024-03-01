@@ -709,7 +709,7 @@ def download_unsubscribers(request):
                        "georgeyoumansjr@gmail.com",
                        "coboaccess3@gmail.com"]
     unsubscribers = Subscriber.objects.filter(
-        mailing_list__isnull=True
+        status=Status.UNSUBSCRIBED
     ).exclude(email__in=excluded_emails).values('email').distinct()
     # print(unsubscribers)
     

@@ -3,7 +3,7 @@ import uuid
 from urllib.parse import urlencode
 
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, get_connection
 from django.db import models, transaction
 from django.db.models import Count, Q
 from django.template.loader import render_to_string
@@ -223,14 +223,8 @@ class Subscriber(models.Model):
         with transaction.atomic():
             self.status = Status.UNSUBSCRIBED
             self.last_seen_ip_address = ip_address
-            
-            print(self.email)
-            self.save()
-            
             mailList = self.mailing_list
-            self.mailing_list = None
             self.save()
-            print(f"Unsubscribed {self.email} from mailing list {mailList}")
 
             still_subscribed = Subscriber.get_still_subscribed(self.email)
             if still_subscribed:
@@ -239,12 +233,22 @@ class Subscriber(models.Model):
                         mailList = subscriber.mailing_list
                         subscriber.status = Status.UNSUBSCRIBED
                         subscriber.save()
-                        subscriber.mailing_list = None
-                        subscriber.save()
-                        print(f"Unsubscribed {subscriber.email} from mailing list {mailList}")
+                        subscriber.delete()
+                        print(f"Deleted {self.email} from mailing list {mailList}")
                     except Exception as e:
-                        print(f"Exception while removing {subscriber.email} from mailing list {subscriber.mailing_list}")
-                
+                        print(f"Exception while deleting {self.email} from mailing list {subscriber.mailing_list}")
+            try:
+                message = EmailMultiAlternatives(
+                    subject=f"{self.email} Unsubscribed",
+                    body=f"{self.email} in {self.mailing_list} Mailing List",
+                    to=["coboaccess3@gmail.com"]
+                )
+                message.send()
+            except Exception as e:
+                print(e)
+                print(f"Failed to send email to notify about {self.email} unsubscribing")
+
+
 
             self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
 

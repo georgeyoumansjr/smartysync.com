@@ -59,7 +59,7 @@ def get_subscribers(email):
 
 def get_all_unsubscribed():
     try:
-        unsubscribers = Subscriber.objects.filter(status=3,mailing_list__isnull=False)
+        unsubscribers = Subscriber.objects.filter(status=3)
         return unsubscribers
     except Subscriber.DoesNotExist:
         logger.warning(f'Unsubscribers list is empty')
@@ -80,7 +80,6 @@ def remove_unsubscribed():
         "coboaccess@gmail.com",
         "georgeyoumansjr@gmail.com",
         "coboaccess3@gmail.com",
-        "codeinspire1@gmail.com"
     ]
     for unsubscribed in unsubscribers:
         if unsubscribed.email not in test_mails:
@@ -93,24 +92,20 @@ def remove_unsubscribed():
                 for subscribed in still_subscribed:
                     try:
                         subs_ml = subscribed.mailing_list
-                        subscribed.status = Status.UNSUBSCRIBED
-                        subscribed.save()
-                        subscribed.mailing_list = None
-                        subscribed.save()
+        
+                        subscribed.delete()
                         logger.info(f"Removed {email} from mailing list {str(subs_ml)}")
                     except Exception as e:
                         logger.exception(e)
-                        subscribed.delete()
-                        logger.warning(f"Deleted {email} due to exception")
-                    
-            try:
-                unsubscribed.mailing_list = None
-                unsubscribed.save()
-                logger.info(f"unsubscribed email {email} removed from mailing list {str(ml_id)}")
-            except Exception as e:
-                logger.exception(e)
-                unsubscribed.delete()
-                logger.warning(f"Deleted Subscribed {email} due to exception")
+                        logger.warning(f"Unable to Delete {email} due to exception")
+            # try:
+            #     unsubscribed.mailing_list = None
+            #     unsubscribed.save()
+            #     logger.info(f"unsubscribed email {email} removed from mailing list {str(ml_id)}")
+            # except Exception as e:
+            #     logger.exception(e)
+            #     unsubscribed.delete()
+            #     logger.warning(f"Deleted Subscribed {email} due to exception")
 
 
 if __name__ == "__main__":
