@@ -221,7 +221,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         return False
     
     try:
-        campaign_name = f'{batch_name}-BATCH-AUTO'
+        campaign_name = f'FACEBOOK-{batch_name}-BATCH-AUTO'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
 
     except Campaign.DoesNotExist:
@@ -229,7 +229,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         return False
 
     try:
-        mailing_list_name = f'{batch_name}-BATCH-AUTO-CURRENT'
+        mailing_list_name = f'FACEBOOK-{batch_name}-BATCH-AUTO-CURRENT'
         mailing_list = MailingList.objects.only('pk').get(created_by=user, name=mailing_list_name)
 
     except MailingList.DoesNotExist:
@@ -251,7 +251,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         # find the latest sap auto batch with less than 500 subscribers
         i = 1
         while True:
-            sap_mailing_list_name = f'{batch_name}-BATCH-AUTO-{i}'
+            sap_mailing_list_name = f'FACEBOOK-{batch_name}-BATCH-AUTO-{i}'
             sap_mailing_list = MailingList.objects.get(created_by=user, name=sap_mailing_list_name)
 
             # if mailing list exists and has less than 500 subscribers, use that mailing list
@@ -291,7 +291,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     cached_domains = dict()
     status = 2  # SUBSCRIBED
 
-    with transaction.atomic():
+    with transaction.atomic():  
         for email in emails:
             email_name, domain_part = email.rsplit('@', 1)
             domain_name = '@' + domain_part
