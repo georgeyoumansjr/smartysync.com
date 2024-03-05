@@ -1,3 +1,4 @@
+import time
 import os 
 import django
 
@@ -312,15 +313,33 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
 
             print(email)
-            
-            subscriber, created = Subscriber.objects.get_or_create(
-                email__iexact=email,
-                mailing_list=mailing_list,
-                defaults={
-                    'email': email,
-                    'domain': domain
-                }
-            )
+            subscriber = None
+            try:
+                subscriber, created = Subscriber.objects.get_or_create(
+                    email__iexact=email,
+                    mailing_list=mailing_list,
+                    defaults={
+                        'email': email,
+                        'domain': domain
+                    }
+                )
+            except Exception as e:  # db is locked. wait and try again
+                print("DB is locked. Waiting 2 seconds...")
+                time.sleep(2)
+                print("Trying again.")
+                subscriber, created = Subscriber.objects.get_or_create(
+                    email__iexact=email,
+                    mailing_list=mailing_list,
+                    defaults={
+                        'email': email,
+                        'domain': domain
+                    }
+                )
+            finally:
+                if subscriber is None:
+                    print("Couldn't create the subscriber object.")
+                    raise Exception("Couldn't create the subscriber object.")
+
 
             # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
             # or else it won't send the email to them
