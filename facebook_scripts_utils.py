@@ -88,11 +88,13 @@ def get_emails_from_email(batch_name):
                 # decode the email subject
                 subject, encoding = decode_header(msg["Subject"])[0]
                 if isinstance(subject, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     # if it's a bytes, decode to str
                     subject = subject.decode(encoding)
                 # decode email sender
                 From, encoding = decode_header(msg.get("From"))[0]
                 if isinstance(From, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
@@ -291,7 +293,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     cached_domains = dict()
     status = 2  # SUBSCRIBED
 
-    with transaction.atomic():  
+    with transaction.atomic():
         for email in emails:
             email_name, domain_part = email.rsplit('@', 1)
             domain_name = '@' + domain_part
@@ -307,6 +309,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
                 
                 print('Duplicate email: ', email)
                 continue  # duplicate email, continue to the next email
+
 
             print(email)
             
