@@ -18,7 +18,7 @@ def read_log_file_and_return_lines(filename) -> list:
 def main():
     filename = 'email_scripts.log'
     lines = read_log_file_and_return_lines(filename)
-    lines = lines.reverse()  # 
+    lines.reverse()  # 
     line_index = 0
 
     while True:
