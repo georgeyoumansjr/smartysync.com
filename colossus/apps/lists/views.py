@@ -29,7 +29,7 @@ from colossus.apps.subscribers.constants import (
     ActivityTypes, Status, TemplateKeys, Workflows,
 )
 from colossus.apps.subscribers.models import (
-    Activity, Subscriber, SubscriptionFormTemplate, Tag,
+    Activity, Subscriber, SubscriptionFormTemplate, Tag, Unsubscribers,
 )
 from colossus.apps.subscribers.subscription_settings import (
     SUBSCRIPTION_FORM_TEMPLATE_SETTINGS,
@@ -708,17 +708,18 @@ def download_unsubscribers(request):
     excluded_emails = ["coboaccess@gmail.com",
                        "georgeyoumansjr@gmail.com",
                        "coboaccess3@gmail.com"]
-    unsubscribers = Subscriber.objects.filter(
-        status=Status.UNSUBSCRIBED
-    ).exclude(email__in=excluded_emails).values('email').distinct()
+    # unsubscribers = Subscriber.objects.filter(
+    #     status=Status.UNSUBSCRIBED
+    # ).exclude(email__in=excluded_emails).values('email').distinct()
     # print(unsubscribers)
+    unsubscribers = Unsubscribers.objects.all()
     
     filename = f'unsubscribed_emails_{(str(datetime.datetime.now()))}.txt'
     response = HttpResponse(content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     for unsubscribed in unsubscribers:
-        response.write(unsubscribed['email'] + '\n')
+        response.write(unsubscribed.email + '\n')
 
     return response
 

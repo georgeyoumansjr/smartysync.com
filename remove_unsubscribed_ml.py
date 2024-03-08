@@ -27,7 +27,7 @@ from colossus.apps.lists.constants import ImportFields, ImportStatus
 from colossus.apps.lists.tasks import import_subscribers
 from colossus.apps.subscribers.constants import ActivityTypes, Status
 from colossus.apps.subscribers.fields import MultipleEmailField
-from colossus.apps.subscribers.models import Domain, Subscriber
+from colossus.apps.subscribers.models import Domain, Subscriber, Unsubscribers
 from colossus.apps.accounts.models import User
 
 from colossus.apps.lists.models import MailingList, SubscriberImport
@@ -88,6 +88,12 @@ def remove_unsubscribed():
             still_subscribed = get_subscribers(unsubscribed.email)
             email = unsubscribed.email
             logger.info(f"Processing for {email} from unsubscriber list")
+            try:
+                unsubscribe = Unsubscribers(email=email)
+                unsubscribe.save()
+                logger.info(f"{email} added in unsubscriber")
+            except Exception as e:
+                print(e)
             if still_subscribed:
                 for subscribed in still_subscribed:
                     try:
