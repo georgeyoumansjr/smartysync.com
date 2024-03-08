@@ -1,3 +1,4 @@
+import time
 import os 
 import django
 
@@ -88,11 +89,13 @@ def get_emails_from_email(batch_name):
                 # decode the email subject
                 subject, encoding = decode_header(msg["Subject"])[0]
                 if isinstance(subject, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     # if it's a bytes, decode to str
                     subject = subject.decode(encoding)
                 # decode email sender
                 From, encoding = decode_header(msg.get("From"))[0]
                 if isinstance(From, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
@@ -188,7 +191,7 @@ def get_emails_from_email(batch_name):
     
     return emails
 
-def send_campaign_from_email(username, batch_name):
+def send_campaign_from_email(username, batch_name, pdf_name):
 
     emails = get_emails_from_email(batch_name)
 
@@ -308,16 +311,35 @@ def send_campaign_from_email(username, batch_name):
                 print('Duplicate email: ', email)
                 continue  # duplicate email, continue to the next email
 
+
             print(email)
-            
-            subscriber, created = Subscriber.objects.get_or_create(
-                email__iexact=email,
-                mailing_list=mailing_list,
-                defaults={
-                    'email': email,
-                    'domain': domain
-                }
-            )
+            subscriber = None
+            try:
+                subscriber, created = Subscriber.objects.get_or_create(
+                    email__iexact=email,
+                    mailing_list=mailing_list,
+                    defaults={
+                        'email': email,
+                        'domain': domain
+                    }
+                )
+            except Exception as e:  # db is locked. wait and try again
+                print("DB is locked. Waiting 2 seconds...")
+                time.sleep(2)
+                print("Trying again.")
+                subscriber, created = Subscriber.objects.get_or_create(
+                    email__iexact=email,
+                    mailing_list=mailing_list,
+                    defaults={
+                        'email': email,
+                        'domain': domain
+                    }
+                )
+            finally:
+                if subscriber is None:
+                    print("Couldn't create the subscriber object.")
+                    raise Exception("Couldn't create the subscriber object.")
+
 
             # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
             # or else it won't send the email to them
@@ -337,22 +359,14 @@ def send_campaign_from_email(username, batch_name):
     campaign.status = CampaignStatus.QUEUED  # it might be in SENT state in which case campaign won't be send again
     campaign.save()
 
-    campaign.send()
+    print('PDF name is :' + pdf_name)
+
+    if pdf_name:  # send with attachment
+        pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
+
+    else:  
+        campaign.send()
+
 
     return True
-
-
-
-
-
-
-if __name__ == '__main__':
-
-    username = 'smt'
-    batch_name = username.upper()
-    status = send_campaign_from_email(username, batch_name)
-
-    if status:
-        print('Successfuly sent the campaign')
-    else:
-        print('Fix the errors and try again')
