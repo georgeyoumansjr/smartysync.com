@@ -235,6 +235,8 @@ class Subscriber(models.Model):
                         subscriber.status = Status.UNSUBSCRIBED
                         subscriber.save()
                         subscriber.delete()
+                        unsubscribe = Unsubscribers(email= self.email)
+                        unsubscribe.save()
                         print(f"Deleted {self.email} from mailing list {mailList}")
                     except Exception as e:
                         print(f"Exception while deleting {self.email} from mailing list {subscriber.mailing_list}")
@@ -553,8 +555,8 @@ class SubscriptionFormTemplate(models.Model):
         email.attach_alternative(rich_text_message, 'text/html')
         email.send()
 
-# class Unsubscribers(models.Model):
-#     email = email = models.EmailField(_('email address'), max_length=255)
+class Unsubscribers(models.Model):
+    email = models.EmailField(_('email address'), max_length=255, unique=True)
 
-#     def __str__(self):
-#         return self.email
+    def __str__(self):
+        return self.email
