@@ -12,25 +12,11 @@ from datetime import datetime
 from dotenv import load_dotenv 
 from django.conf import settings
 
-
 from typing import Dict, List
 
-from django import forms
-from django.core.exceptions import ValidationError
-from django.core.mail.backends.smtp import EmailBackend
-from django.db import transaction
-from django.forms import BoundField
-from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
-
-from colossus.apps.lists.constants import ImportFields, ImportStatus
-from colossus.apps.lists.tasks import import_subscribers
-from colossus.apps.subscribers.constants import ActivityTypes, Status
-from colossus.apps.subscribers.fields import MultipleEmailField
 from colossus.apps.subscribers.models import Domain, Subscriber, Unsubscribers
-from colossus.apps.accounts.models import User
 
-from colossus.apps.lists.models import MailingList, SubscriberImport
 
 #create logs dir
 logs_directory = 'logs'

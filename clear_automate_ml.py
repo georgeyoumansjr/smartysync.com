@@ -12,22 +12,13 @@ from datetime import datetime
 from dotenv import load_dotenv 
 from django.conf import settings
 
-from django.db import transaction
-from django.db.models import Q
-from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
 
-from colossus.apps.lists.constants import ImportFields, ImportStatus
-from colossus.apps.lists.tasks import import_subscribers
-from colossus.apps.subscribers.constants import ActivityTypes, Status
-from colossus.apps.subscribers.fields import MultipleEmailField
-from colossus.apps.subscribers.models import Domain, Subscriber, Tag
 from colossus.apps.accounts.models import User
 
-from colossus.apps.lists.models import MailingList, SubscriberImport
+from colossus.apps.lists.models import MailingList
 
-from colossus.apps.campaigns.models import Campaign
-from colossus.apps.campaigns.constants import CampaignStatus
+
 
 
 def get_delete_mailing_list(username, source_mailing_list_name=None):
