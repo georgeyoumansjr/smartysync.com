@@ -557,6 +557,7 @@ class SubscriptionFormTemplate(models.Model):
 
 class Unsubscribers(models.Model):
     email = models.EmailField(_('email address'), max_length=255, unique=True)
+    created_at = models.DateTimeField(_('created at'), default=timezone.now)
 
     def __str__(self):
         return self.email
