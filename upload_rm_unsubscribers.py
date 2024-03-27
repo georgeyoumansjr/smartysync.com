@@ -125,6 +125,8 @@ def upload_remove_unsubscribed():
                     subs_ml = subscribed.mailing_list
     
                     subscribed.delete()
+                    subs_ml.update_subscribers_count()
+                    subs_ml.save()
                     logger.info(f"Removed {email} from mailing list {str(subs_ml)}")
                 except Exception as e:
                     logger.exception(e)
