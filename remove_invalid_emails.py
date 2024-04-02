@@ -130,7 +130,7 @@ if not os.path.exists(logs_directory):
 logger = logging.getLogger("__name__")
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s [%(levelname)s] - %(name)s - %(message)s")
-file_handler = logging.FileHandler(os.path.join("logs","upload_remove_unsubs.log"))
+file_handler = logging.FileHandler(os.path.join("logs","remove_invalid_emails.log"))
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
