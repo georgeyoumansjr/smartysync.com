@@ -182,7 +182,7 @@ def upload_remove_invalid():
         
         still_subscribed = get_subscribers(subscriber)
         email = subscriber
-        logger.info(f"Processing for {email} from unsubscriber list")
+        logger.info(f"Processing for {email} from invalid email list")
         if still_subscribed:
             for subscribed in still_subscribed:
                 print(subscribed)
