@@ -43,7 +43,7 @@ def get_non_existing_emails_and_return_list():
 
     password = 'Ohappy2023'
     password = 'fyrljfsrqmhqkzmd'  # coboaccess
-    password = 'lhhd pvex quyg pkxx'  # georgeyoumansjr
+    password = 'lhhdpvexquygpkxx'  # georgeyoumansjr
 
     imap_server = 'mail.thetitandev.com'
     imap_server = 'smtp.gmail.com'
@@ -80,9 +80,11 @@ def get_non_existing_emails_and_return_list():
                 msg = email.message_from_bytes(response[1])
                 # decode the email subject
                 subject, encoding = decode_header(msg["Subject"])[0]
+                
                 if isinstance(subject, bytes):
                     # if it's a bytes, decode to str
-                    subject = subject.decode(encoding)
+                    if encoding:
+                        subject = subject.decode(encoding)
                 # decode email sender
                 From, encoding = decode_header(msg.get("From"))[0]
                 if isinstance(From, bytes):
