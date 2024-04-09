@@ -20,7 +20,7 @@ from colossus.apps.accounts.models import User
 
 from colossus.apps.subscribers.models import Subscriber
 
-def get_subscriber(email:str)-> QuerySet[Subscriber]:
+def get_subscriber(email:str)-> list:
     return Subscriber.objects.filter(email=email)
 
 
@@ -41,7 +41,7 @@ def delete_subscriber(email: Union[str, None])-> bool:
         return True
     return False
 
-def delete_subscribers(subscriberList: QuerySet[Subscriber])-> bool:
+def delete_subscribers(subscriberList: list)-> bool:
     if subscriberList:
         for subscriber in subscriberList:
             try:
