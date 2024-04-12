@@ -8,7 +8,7 @@ django.setup()
 from datetime import datetime
 
 # Define imports and config dictionary
-import uuid
+import time
 import json
 import logging
 from dotenv import load_dotenv 
@@ -23,6 +23,7 @@ logging.basicConfig(filename='email_checker.log', level=logging.INFO, format='%(
 
 
 def check_email(to_email:str):
+    time.sleep(15)
     url = 'http://191.101.233.115:8080/v0/check_email'
     headers = {
         'Content-Type': 'application/json',
@@ -55,9 +56,6 @@ def filter_get_invalid_email():
     other_emails = []
 
     for sub in subs_obj:
-        # if sub.endswith("gmail.com") or sub.endswith("yahoo.com") or sub.endswith("outlook.com") or sub.endswith("hotmail.com"):
-        #     continue
-        
         check_resp = check_email(sub)
         logging.info("Email: %s, Check Result: %s", sub, check_resp)
 
