@@ -92,10 +92,11 @@ def get_non_existing_emails_and_return_list():
                 # decode email sender
                 From, encoding = decode_header(msg.get("From"))[0]
                 if isinstance(From, bytes):
-                    try:
-                        From = From.decode(encoding)
-                    except LookupError:
-                        From = From.decode('utf-8')
+                    if encoding:
+                        try:
+                                From = From.decode(encoding)
+                        except LookupError:
+                            From = From.decode('utf-8')
                 print("Subject:", subject)
       
                 if subject != 'Undelivered Mail Returned to Sender' and subject != 'Mail delivery failed: returning message to sender':
