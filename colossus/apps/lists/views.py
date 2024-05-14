@@ -684,7 +684,10 @@ def delete_non_existing_subscribers(request):
         if bad_subscriber.exists():
             
             for subscriber in bad_subscriber:
-                print(f"Delete subscriber with email {email} from mailing list {subscriber.mailing_list.name}")
+                if subscriber is not None and subscriber.mailing_list is not None:
+                    print(f"Delete subscriber with email {email} from mailing list {subscriber.mailing_list.name}")
+                else:
+                    print("Subscriber or mailing list does not exist.")
                 subscriber.is_bad = True
                 subscriber.mailing_list = None
                 subscriber.save()
