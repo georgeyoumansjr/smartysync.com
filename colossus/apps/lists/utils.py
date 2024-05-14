@@ -119,7 +119,7 @@ def get_non_existing_emails_and_return_list():
 
                 
                 print(f'Found : {email_address}')
-                emails.append(email_address)
+                emails.append(email_address.strip("<>"))
             
     print(f'non-existing emails : {emails}')
     return emails
