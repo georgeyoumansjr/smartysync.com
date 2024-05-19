@@ -64,6 +64,10 @@ DATABASES = {
     )
 }
 
+# Add timeout option if the database engine is SQLite
+if DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+    DATABASES['default']['OPTIONS'] = {'timeout': 20}  # Timeout in seconds
+
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
@@ -302,6 +306,11 @@ LOGGING = {
         },
         'django.security.DisallowedHost': {
             'handlers': ['null'],
+            'propagate': False,
+        },
+        'celery': {
+            'handlers': ['console', 'file', 'sentry'],
+            'level': 'INFO',  # Set to DEBUG if you need more detailed logs
             'propagate': False,
         },
     }
