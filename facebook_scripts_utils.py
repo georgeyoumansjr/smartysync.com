@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Define imports and config dictionary
 import uuid
-import json
+import logging
 import datetime
 import requests
 from dotenv import load_dotenv 
@@ -46,6 +46,20 @@ import email
 from email.header import decode_header
 import os
 
+
+logs_directory = 'logs'
+if not os.path.exists(logs_directory):
+    os.makedirs(logs_directory)
+
+# Configure logging
+logger = logging.getLogger("__name__")
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s [%(levelname)s] - %(name)s - %(message)s")
+file_handler = logging.FileHandler(os.path.join("logs","email_automation.log"))
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+
 username = 'contact@gerwholesalers.com'
 username = 'mail@thetitandev.com'
 username = 'coboaccess@gmail.com'
@@ -81,6 +95,7 @@ def get_emails_from_email(batch_name):
             res, msg = imap.fetch(str(i), "(RFC822)")
         except:
             print('Email fetch error')
+            logger.warning("Email Fetch Error")
             continue
         for response in msg:
             if isinstance(response, tuple):
@@ -99,6 +114,8 @@ def get_emails_from_email(batch_name):
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
+                logger.info("Subject: "+str(subject))
+                logger.info("From: "+str(From))
                 # if the email message is multipart
 
                 # if not from the account ve want
@@ -121,6 +138,7 @@ def get_emails_from_email(batch_name):
                         if content_type == "text/plain" and "attachment" not in content_disposition:
                             # print text/plain emails and skip attachments
                             print(body)
+                            logger.info(body)
                             body = body.replace('\r','').replace('\n', '')
                             body = eval(body) # json.loads(body)
                             try:
@@ -130,6 +148,7 @@ def get_emails_from_email(batch_name):
 
                             if received_at.date() + datetime.timedelta(days=1) != today.date():
                                 print('This is an old email.')
+                                logger.info("is an old email")
                                 return []
                             
                             emails = body['data']['emails']
@@ -164,7 +183,7 @@ def get_emails_from_email(batch_name):
                             received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
 
                         if received_at.date() + datetime.timedelta(days=1) != today.date():
-                            print('This is an old email.')
+                            print('This is an old email.' + str(received_at.date() + datetime.timedelta(days=1)))
                             return []
                         
                         emails = body['data']['emails']
@@ -221,6 +240,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         print(f'User does not exist, create the user with username : {username}')
+        logger.warning(f'User does not exist, create the user with username : {username}')
         return False
     
     try:
@@ -229,6 +249,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
     except Campaign.DoesNotExist:
         print('No campaign. Set the campaign first')
+        logger.error('No campaign. Set the campaign first')
         return False
 
     try:
@@ -277,6 +298,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         )
 
     print(f'Emails are being moved to {sap_mailing_list_name}')
+    logger.info(f'Emails are being moved to {sap_mailing_list_name}')
 
 
     for subscriber in mailing_list.subscribers.all():
@@ -290,6 +312,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     sap_mailing_list.update_subscribers_count()
 
     print('Emails are moved')
+    logger.info('emails are moved')
     
     cached_domains = dict()
     status = 2  # SUBSCRIBED
@@ -313,6 +336,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
 
             print(email)
+            logger.info(email)
             subscriber = None
             try:
                 subscriber, created = Subscriber.objects.get_or_create(
@@ -324,9 +348,11 @@ def send_campaign_from_email(username, batch_name, pdf_name):
                     }
                 )
             except Exception as e:  # db is locked. wait and try again
-                print("DB is locked. Waiting 2 seconds...")
-                time.sleep(2)
+                print("DB is locked. Waiting 5 seconds...")
+                logger.info("DB is locked. Waiting 5 seconds...")
+                time.sleep(5)
                 print("Trying again.")
+                logger.info("Trying again.")
                 subscriber, created = Subscriber.objects.get_or_create(
                     email__iexact=email,
                     mailing_list=mailing_list,
@@ -337,6 +363,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
                 )
             finally:
                 if subscriber is None:
+                    logger.info("Couldn't create the subscriber object")
                     print("Couldn't create the subscriber object.")
                     raise Exception("Couldn't create the subscriber object.")
 
@@ -360,6 +387,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     campaign.save()
 
     print('PDF name is :' + pdf_name)
+    logger.info('PDF name is :' + pdf_name)
 
     if pdf_name:  # send with attachment
         pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
