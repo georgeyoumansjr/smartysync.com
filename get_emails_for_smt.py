@@ -344,9 +344,13 @@ def send_campaign_from_email(username, batch_name):
                             and (email != 'georgeyoumansjr@gmail.com' and email != 'coboaccess@gmail.com'):
                         
                         print('Duplicate email: ', email)
+                        logger.info('Duplicate email: ', email)
+                        
                         continue  # duplicate email, continue to the next email
 
                     print(email)
+                    logger.info(email)
+                    
                     
                     subscriber, created = Subscriber.objects.get_or_create(
                         email__iexact=email,
