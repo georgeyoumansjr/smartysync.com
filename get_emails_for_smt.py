@@ -94,7 +94,9 @@ def get_emails_from_email(batch_name):
             res, msg = imap.fetch(str(i), "(RFC822)")
         except:
             print('Email fetch error')
+            logger.warning("Email Fetch Error")
             continue
+        
         for response in msg:
             if isinstance(response, tuple):
                 # parse a bytes email into a message object
@@ -110,6 +112,8 @@ def get_emails_from_email(batch_name):
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
+                logger.info("Subject: "+str(subject))
+                logger.info("From: "+str(From))
                 # if the email message is multipart
 
                 # if not from the account ve want
@@ -132,6 +136,8 @@ def get_emails_from_email(batch_name):
                         if content_type == "text/plain" and "attachment" not in content_disposition:
                             # print text/plain emails and skip attachments
                             print(f"fetching for element-iq emails for smt {batch_name}")
+                            logger.info(f"fetching for element-iq emails for smt {batch_name}")
+                            
                             print(body)
                             body = body.replace('\r','').replace('\n', '')
                             body = eval(body) # json.loads(body)
@@ -142,6 +148,8 @@ def get_emails_from_email(batch_name):
 
                             if received_at.date() + datetime.timedelta(days=1) != today.date():
                                 print('This is an old email.')
+                                logger.info('This is an old email.')
+                                
                                 return []
                             
                             emails = body['data']['emails']
@@ -200,6 +208,7 @@ def get_emails_from_email(batch_name):
                 return []
             
     print(f'No element iq india cutting costs email found in the last {N} emails.')
+    logger.info(f'No element iq india cutting costs emails found in the last {N} emails.')
     
     return emails
 
@@ -233,6 +242,8 @@ def send_campaign_from_email(username, batch_name):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         print(f'User does not exist, create the user with username : {username}')
+        logger.warning(f'User does not exist, create the user with username : {username}')
+        
         return False
     
     try:
@@ -241,6 +252,7 @@ def send_campaign_from_email(username, batch_name):
 
     except Campaign.DoesNotExist:
         print('No campaign. Set the campaign first')
+        logger.error('No campaign. Set the campaign first')
         return False
 
     try:
@@ -249,6 +261,8 @@ def send_campaign_from_email(username, batch_name):
 
     except MailingList.DoesNotExist:
         print('No mailing list. Setting the mailing list first')
+        logger.info('No mailing list. Setting the mailing list first')
+        
         mailing_list = MailingList.objects.create(
             created_by=user, 
             name = mailing_list_name,
@@ -289,6 +303,7 @@ def send_campaign_from_email(username, batch_name):
         )
 
     print(f'Emails are being moved to {sap_mailing_list_name}')
+    logger.info(f'Emails are being moved to {sap_mailing_list_name}')
 
 
     for subscriber in mailing_list.subscribers.all():
@@ -302,6 +317,8 @@ def send_campaign_from_email(username, batch_name):
     sap_mailing_list.update_subscribers_count()
 
     print('Emails are moved')
+    logger.info('emails are moved')
+    
     
     cached_domains = dict()
     status = 2  # SUBSCRIBED
