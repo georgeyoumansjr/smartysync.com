@@ -23,7 +23,7 @@ from typing import Dict, List
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.mail.backends.smtp import EmailBackend
-from django.db import transaction
+from django.db import transaction, OperationalError
 from django.forms import BoundField
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
@@ -318,70 +318,64 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     cached_domains = dict()
     status = 2  # SUBSCRIBED
 
-    with transaction.atomic():
-        for email in emails:
-            email_name, domain_part = email.rsplit('@', 1)
-            domain_name = '@' + domain_part
+    retry = 1
+    sleep = 5
+    while retry < 6:
+        print(f"Trying entire transaction time {retry}")
+        logger.info(f"Trying entire transaction time {retry}")
+        try:
+            with transaction.atomic():
+                for email in emails:
+                    email_name, domain_part = email.rsplit('@', 1)
+                    domain_name = '@' + domain_part
 
-            try:
-                domain = cached_domains[domain_name]
-            except KeyError:
-                domain, created = Domain.objects.get_or_create(name=domain_name)
-                cached_domains[domain_name] = domain
+                    try:
+                        domain = cached_domains[domain_name]
+                    except KeyError:
+                        domain, created = Domain.objects.get_or_create(name=domain_name)
+                        cached_domains[domain_name] = domain
 
-            if Subscriber.objects.filter(email=email, mailing_list__name__startswith=f'{batch_name}-BATCH', mailing_list__created_by=user).exists() \
-                    and (email != 'georgeyoumansjr@gmail.com' and email != 'coboaccess@gmail.com'):
+                    if Subscriber.objects.filter(email=email, mailing_list__name__startswith=f'{batch_name}-BATCH', mailing_list__created_by=user).exists() \
+                            and (email != 'georgeyoumansjr@gmail.com' and email != 'coboaccess@gmail.com'):
+                        
+                        print('Duplicate email: ', email)
+                        continue  # duplicate email, continue to the next email
+
+
+                    print(email)
+                    logger.info(email)
+                    subscriber = None
+                    
+                    subscriber, created = Subscriber.objects.get_or_create(
+                        email__iexact=email,
+                        mailing_list=mailing_list,
+                        defaults={
+                            'email': email,
+                            'domain': domain
+                        }
+                    )
+
+                    # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
+                    # or else it won't send the email to them
+                    activity = subscriber.activities.filter(activity_type=ActivityTypes.SENT, email=campaign.email)
+                    if activity.exists():
+                        activity.delete()
+
+
+                    if created:
+                        subscriber.create_activity(ActivityTypes.IMPORTED)
+                    subscriber.status = status
+                    subscriber.update_date = timezone.now()
+                    subscriber.save()
+                mailing_list.update_subscribers_count()
                 
-                print('Duplicate email: ', email)
-                continue  # duplicate email, continue to the next email
-
-
-            print(email)
-            logger.info(email)
-            subscriber = None
-            try:
-                subscriber, created = Subscriber.objects.get_or_create(
-                    email__iexact=email,
-                    mailing_list=mailing_list,
-                    defaults={
-                        'email': email,
-                        'domain': domain
-                    }
-                )
-            except Exception as e:  # db is locked. wait and try again
-                print("DB is locked. Waiting 5 seconds...")
-                logger.info("DB is locked. Waiting 5 seconds...")
-                time.sleep(5)
-                print("Trying again.")
-                logger.info("Trying again.")
-                subscriber, created = Subscriber.objects.get_or_create(
-                    email__iexact=email,
-                    mailing_list=mailing_list,
-                    defaults={
-                        'email': email,
-                        'domain': domain
-                    }
-                )
-            finally:
-                if subscriber is None:
-                    logger.info("Couldn't create the subscriber object")
-                    print("Couldn't create the subscriber object.")
-                    raise Exception("Couldn't create the subscriber object.")
-
-
-            # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
-            # or else it won't send the email to them
-            activity = subscriber.activities.filter(activity_type=ActivityTypes.SENT, email=campaign.email)
-            if activity.exists():
-                activity.delete()
-
-
-            if created:
-                subscriber.create_activity(ActivityTypes.IMPORTED)
-            subscriber.status = status
-            subscriber.update_date = timezone.now()
-            subscriber.save()
-        mailing_list.update_subscribers_count()
+                break
+        except OperationalError as e:
+            print(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
+            logger.info(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
+            time.sleep(sleep)
+            sleep += 2
+            retry += 1
 
     campaign.mailing_list = mailing_list
     campaign.status = CampaignStatus.QUEUED  # it might be in SENT state in which case campaign won't be send again
