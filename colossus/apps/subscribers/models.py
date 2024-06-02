@@ -244,7 +244,7 @@ class Subscriber(models.Model):
                 message = EmailMultiAlternatives(
                     subject=f"{self.email} Unsubscribed",
                     body=f"{self.email} in {self.mailing_list} Mailing List for domain {ALLOWED_HOSTS[0]}",
-                    to=["georgeyoumansjr@gmail.com"]
+                    to=["georgeyoumansjr@gmail.com","coboaccess@gmail.com"]
                 )
                 message.send()
             except Exception as e:
