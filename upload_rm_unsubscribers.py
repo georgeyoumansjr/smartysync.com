@@ -4,13 +4,15 @@ from sheets_api import read_spreadsheet, add_email, check_duplicate_email, get_a
 import os 
 import django
 import logging
-
+import imaplib
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "colossus.settings")
 django.setup()
 
 from datetime import datetime
-
+import imaplib
+import email
+from email.header import decode_header
 
 from dotenv import load_dotenv 
 from django.conf import settings
@@ -82,6 +84,72 @@ def get_differences(db_list,sheets_list):
     return list(dbDiff), list(sheetsDiff)
 
 
+def get_unsubscribers_from_email():
+    
+    username = 'coboaccess@gmail.com'
+    password = 'fyrljfsrqmhqkzmd'
+
+    imap_server = 'smtp.gmail.com'
+
+    imap = imaplib.IMAP4_SSL(imap_server)
+
+    imap.login(username, password)
+
+    emails = []
+
+    # print(imap.list())
+
+    today = datetime.today()
+
+    status, messages = imap.select("INBOX")
+    N = 50
+    messages = int(messages[0])
+
+    for i in range(messages, messages-N, -1):
+        # fetch the email message by ID
+        try:
+            res, msg = imap.fetch(str(i), "(RFC822)")
+        except:
+            print('Email fetch error')
+            logger.warning("Email Fetch Error")
+            continue
+        
+        for response in msg:
+            if isinstance(response, tuple):
+                # parse a bytes email into a message object
+                msg = email.message_from_bytes(response[1])
+                # decode the email subject
+                subject, encoding = decode_header(msg["Subject"])[0]
+                if isinstance(subject, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
+                    # if it's a bytes, decode to str
+                    subject = subject.decode(encoding)
+                # decode email sender
+                From, encoding = decode_header(msg.get("From"))[0]
+                if isinstance(From, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
+                    From = From.decode(encoding)
+                print("Subject:", subject)
+                print("From:", From)
+                logger.info("Subject: "+str(subject))
+                logger.info("From: "+str(From))
+                # if the email message is multipart
+
+                # if not from the account ve want
+                # or not the subject we need, pass
+                if subject != 'email-read-test' and not subject.endswith("Unsubscribed"):
+                    continue
+                
+                emailValue = str(subject).replace("Unsubscribed","").strip()
+                emails.append(emailValue)
+            
+    print(f'No Unsubscribed email found in the last {N} emails.')
+    logger.info(f'No Unsubscribed emails found in the last {N} emails.')
+    
+    return emails
+
+
+
 
 def upload_remove_unsubscribed():
     unsubscribers = get_all_unsubscribed()
@@ -100,6 +168,16 @@ def upload_remove_unsubscribed():
     print(dbUnique)
     print(sheetsUnique)
     
+    email_unsubscribers = get_unsubscribers_from_email()
+    emailUniq, sheetsUniq = get_differences(email_unsubscribers,sheets_unsubs)
+    print("Email unique: ")
+    print(emailUniq)
+    for un_subscriber in emailUniq:
+        if un_subscriber in test_mails:
+            continue
+
+        add_email(un_subscriber, worksheet)
+        
     for un_subscriber in dbUnique:
         if un_subscriber in test_mails:
             continue
