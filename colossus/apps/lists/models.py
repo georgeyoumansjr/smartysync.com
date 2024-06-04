@@ -1,6 +1,7 @@
 import csv
 import json
 import uuid
+import chardet 
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -195,6 +196,8 @@ class SubscriberImport(models.Model):
     )
 
     __cached_headings = None
+    dialect = None
+    encoding = None
 
     class Meta:
         verbose_name = _('subscribers import')
@@ -217,8 +220,10 @@ class SubscriberImport(models.Model):
 
     def get_headings(self):
         if self.__cached_headings is None:
-            with open(self.file.path, 'r') as csvfile:
-                reader = csv.reader(csvfile)
+            print(self.encoding)
+            self._detect_encoding_and_dialect()
+            with open(self.file.path, 'r', encoding=self.encoding) as csvfile:
+                reader = csv.reader(csvfile,self.dialect)
                 csv_headings = next(reader)
                 self.__cached_headings = csv_headings
         return self.__cached_headings
@@ -228,8 +233,10 @@ class SubscriberImport(models.Model):
 
     def get_rows(self, limit=None):
         rows = list()
-        with open(self.file.path, 'r') as csvfile:
-            reader = csv.reader(csvfile)
+        print(f"Encoding is {self.encoding}")
+        self._detect_encoding_and_dialect()
+        with open(self.file.path, 'r',encoding=self.encoding) as csvfile:
+            reader = csv.reader(csvfile,self.dialect)
             # skip header
             next(reader)
             for index, row in enumerate(reader):
@@ -242,10 +249,31 @@ class SubscriberImport(models.Model):
         return self.get_rows(limit=10)
 
     def set_size(self, save=True):
-        with open(self.file.path, 'r') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+        self._detect_encoding_and_dialect()
+        
+        with open(self.file.path, 'r',encoding=self.encoding) as csvfile:
+            
+            # self.dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            
+            # # self.dialect = csv.Sniffer().sniff(csvfile.read(1024))
             csvfile.seek(0)
-            reader = csv.reader(csvfile, dialect)
+            reader = csv.reader(csvfile, self.dialect)
             self.size = sum(1 for row in reader)
         if save:
             self.save(update_fields=['size'])
+            
+            
+    def _detect_encoding_and_dialect(self):
+        if self.dialect is not None and self.encoding is not None:
+            return
+
+        with open(self.file.path, 'rb') as rawfile:
+            rawdata = rawfile.read()
+            result = chardet.detect(rawdata)
+            self.encoding = result['encoding']
+
+        with open(self.file.path, 'r', encoding=self.encoding) as csvfile:
+            content = csvfile.read().replace('\x00', '')  # Remove null bytes
+            sample = content[:1024]
+            self.dialect = csv.Sniffer().sniff(sample)
+            
