@@ -277,3 +277,5 @@ class SubscriberImport(models.Model):
             sample = content[:1024]
             self.dialect = csv.Sniffer().sniff(sample)
             
+        return self.encoding, self.dialect
+            

@@ -95,12 +95,13 @@ def import_subscribers(subscriber_import_id: Union[str, int]) -> str:
 
             try:
                 columns_mapping = subscriber_import.get_columns_mapping()
+                encoding, dialect = subscriber_import._detect_encoding_and_dialect()
                 subscriber_created = 0
                 subscriber_updated = 0
                 subscriber_skipped = 0
 
-                with open(subscriber_import.file.path, 'r') as csvfile:
-                    reader = csv.reader(csvfile)
+                with open(subscriber_import.file.path, 'r', encoding=encoding) as csvfile:
+                    reader = csv.reader(csvfile,dialect=dialect)
 
                     # FIXME: determine if needs to skip the first line or not
                     if True:
