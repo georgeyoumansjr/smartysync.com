@@ -221,40 +221,47 @@ class Subscriber(models.Model):
     def unsubscribe(self, request, campaign=None):
         ip_address = get_client_ip(request)
 
-        with transaction.atomic():
-            self.status = Status.UNSUBSCRIBED
-            self.last_seen_ip_address = ip_address
-            mailList = self.mailing_list
-            self.save()
+        try:
+            with transaction.atomic():
+                self.status = Status.UNSUBSCRIBED
+                self.last_seen_ip_address = ip_address
+                mailList = self.mailing_list
+                self.save()
+                print(self)
 
-            still_subscribed = Subscriber.get_still_subscribed(self.email)
-            if still_subscribed:
-                for subscriber in still_subscribed:
-                    try:
-                        mailList = subscriber.mailing_list
-                        subscriber.status = Status.UNSUBSCRIBED
-                        subscriber.save()
-                        subscriber.delete()
-                        unsubscribe = Unsubscribers(email= self.email)
-                        unsubscribe.save()
-                        print(f"Deleted {self.email} from mailing list {mailList}")
-                    except Exception as e:
-                        print(f"Exception while deleting {self.email} from mailing list {subscriber.mailing_list}")
-            try:
-                message = EmailMultiAlternatives(
-                    subject=f"{self.email} Unsubscribed",
-                    body=f"{self.email} in {self.mailing_list} Mailing List for domain {ALLOWED_HOSTS[0]}",
-                    to=["georgeyoumansjr@gmail.com","coboaccess@gmail.com"]
-                )
-                message.send()
-            except Exception as e:
-                print(e)
-                print(f"Failed to send email to notify about {self.email} unsubscribing")
+                still_subscribed = Subscriber.get_still_subscribed(self.email)
+                print(still_subscribed)
+            
+                if still_subscribed:
+                    for subscriber in still_subscribed:
+                        print(subscriber)
+                        try:
+                            mailList = subscriber.mailing_list
+                            subscriber.status = Status.UNSUBSCRIBED
+                            subscriber.save()
+                            subscriber.delete()
+                            unsubscribe = Unsubscribers(email= self.email)
+                            unsubscribe.save()
+                            print(f"Deleted {self.email} from mailing list {mailList}")
+                        except Exception as e:
+                            print(f"Exception while deleting {self.email} from mailing list {subscriber.mailing_list}")
+                try:
+                    message = EmailMultiAlternatives(
+                        subject=f"{self.email} Unsubscribed",
+                        body=f"{self.email} in {self.mailing_list} Mailing List for domain {ALLOWED_HOSTS[0]}",
+                        to=["georgeyoumansjr@gmail.com","coboaccess@gmail.com"]
+                    )
+                    message.send()
+                except Exception as e:
+                    print(e)
+                    print(f"Failed to send email to notify about {self.email} unsubscribing")
 
 
 
-            self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
-
+                self.create_activity(ActivityTypes.UNSUBSCRIBED, campaign=campaign, ip_address=ip_address)
+        except Exception as main_exception:
+            print("Main Exception Cause:")
+            print(main_exception)
         update_subscriber_location.delay(ip_address, self.pk)
         if mailList:
             goodbye_email = mailList.get_goodbye_email_template()
