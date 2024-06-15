@@ -8,13 +8,12 @@
   <title>{{ subject }}</title>
 </head>
 <body>
-  {% block header %}
-    <div><br></div>
+  {% block content %}{% endblock %}
+  {% block footer %}
     <div>
-      <small><a href="{{ unsub }}">Unsubscribe from this list</a>.</small>
+      <a href="{{ unsub }}"><img src="https://www.smartysync.com/static/email_imgs/UB7.png" alt="" width="100%"></a>
     </div>
   {% endblock %}
-  {% block content %}{% endblock %}
-  
+
 </body>
 </html>
