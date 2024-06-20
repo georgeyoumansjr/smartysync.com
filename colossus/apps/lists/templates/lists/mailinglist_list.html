@@ -68,7 +68,7 @@
               <td>{{ mailing_list.click_rate|percentage }}%</td>
               <td><a href="{% url 'lists:delete' mailing_list.pk %}"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a></td>
               {% if not "AUTO PT-" in  mailing_list.name %}
-              <td><a href="{% url 'lists:delete_auto_generated_list_by_name' mailing_list.name %}"><i class="fa fa-trash text-danger" aria-hidden="true"> Auto-Gen</i></a></td></td>
+              <td><a href="{% url 'lists:delete_auto_generated_list_by_name' mailing_list.name %}"><i class="fa fa-trash text-danger" aria-hidden="true"> Auto</i></a></td></td>
               {% else %}
               <td></td>
               {% endif %}
