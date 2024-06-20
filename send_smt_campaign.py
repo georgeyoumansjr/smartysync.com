@@ -45,7 +45,7 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
         return False
     
     try:
-        campaign_name = f'{batch_name}-BATCH-AUTO Nurture 1'
+        campaign_name = f'{batch_name}-BATCH-AUTO Nurture 1 Part 1'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
 
     except Campaign.DoesNotExist:
@@ -197,10 +197,10 @@ def send_campaign_from_email(username, batch_name, source_mailing_list_name, pdf
 
 if __name__ == '__main__':
 
-    username = 'ger'
-    batch_name = username.upper()
-    source_mailing_list_name = 'GER BATCH 1'
-    max_number_of_emails = 50
+    username = 'smt'
+    batch_name = "EIQ"
+    source_mailing_list_name = 'SMT INDIA BATCH 1'
+    max_number_of_emails = 20
     pdf_name = 'Introduction to React.pdf'
 
     status = send_campaign_from_email(username, batch_name, source_mailing_list_name,

@@ -676,12 +676,22 @@ def search_subscribers(request):
 @login_required
 def delete_non_existing_subscribers(request):
     emails = get_non_existing_emails_and_return_list()
+    
+    
     for email in emails:
         bad_subscriber = Subscriber.objects.filter(email=email)
+        print(len(bad_subscriber))
         if bad_subscriber.exists():
-            bad_subscriber.is_bad = True
-            bad_subscriber.mailing_list = None
-            bad_subscriber.save()
+            
+            for subscriber in bad_subscriber:
+                if subscriber is not None and subscriber.mailing_list is not None:
+                    print(f"Delete subscriber with email {email} from mailing list {subscriber.mailing_list.name}")
+                else:
+                    print("Subscriber or mailing list does not exist.")
+                subscriber.is_bad = True
+                subscriber.mailing_list = None
+                subscriber.save()
+           
     mailing_lists = MailingList.objects.all()
     for mailing_list in mailing_lists:
         mailing_list.update_subscribers_count()

@@ -110,3 +110,8 @@ venv.bak/
 
 .idea/
 .DS_Store
+
+
+MailServerScripts/*.json
+
+media/

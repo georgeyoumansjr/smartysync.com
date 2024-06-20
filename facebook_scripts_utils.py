@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Define imports and config dictionary
 import uuid
-import json
+import logging
 import datetime
 import requests
 from dotenv import load_dotenv 
@@ -23,7 +23,7 @@ from typing import Dict, List
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.mail.backends.smtp import EmailBackend
-from django.db import transaction
+from django.db import transaction, OperationalError
 from django.forms import BoundField
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
@@ -45,6 +45,20 @@ import imaplib
 import email
 from email.header import decode_header
 import os
+
+
+logs_directory = 'logs'
+if not os.path.exists(logs_directory):
+    os.makedirs(logs_directory)
+
+# Configure logging
+logger = logging.getLogger("__name__")
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s [%(levelname)s] - %(name)s - %(message)s")
+file_handler = logging.FileHandler(os.path.join("logs","email_automation.log"))
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 
 username = 'contact@gerwholesalers.com'
 username = 'mail@thetitandev.com'
@@ -81,6 +95,7 @@ def get_emails_from_email(batch_name):
             res, msg = imap.fetch(str(i), "(RFC822)")
         except:
             print('Email fetch error')
+            logger.warning("Email Fetch Error")
             continue
         for response in msg:
             if isinstance(response, tuple):
@@ -99,6 +114,8 @@ def get_emails_from_email(batch_name):
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
+                logger.info("Subject: "+str(subject))
+                logger.info("From: "+str(From))
                 # if the email message is multipart
 
                 # if not from the account ve want
@@ -121,6 +138,7 @@ def get_emails_from_email(batch_name):
                         if content_type == "text/plain" and "attachment" not in content_disposition:
                             # print text/plain emails and skip attachments
                             print(body)
+                            logger.info(body)
                             body = body.replace('\r','').replace('\n', '')
                             body = eval(body) # json.loads(body)
                             try:
@@ -130,6 +148,7 @@ def get_emails_from_email(batch_name):
 
                             if received_at.date() + datetime.timedelta(days=1) != today.date():
                                 print('This is an old email.')
+                                logger.info("is an old email")
                                 return []
                             
                             emails = body['data']['emails']
@@ -164,7 +183,7 @@ def get_emails_from_email(batch_name):
                             received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
 
                         if received_at.date() + datetime.timedelta(days=1) != today.date():
-                            print('This is an old email.')
+                            print('This is an old email.' + str(received_at.date() + datetime.timedelta(days=1)))
                             return []
                         
                         emails = body['data']['emails']
@@ -221,6 +240,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         print(f'User does not exist, create the user with username : {username}')
+        logger.warning(f'User does not exist, create the user with username : {username}')
         return False
     
     try:
@@ -229,6 +249,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
     except Campaign.DoesNotExist:
         print('No campaign. Set the campaign first')
+        logger.error('No campaign. Set the campaign first')
         return False
 
     try:
@@ -237,6 +258,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
     except MailingList.DoesNotExist:
         print('No mailing list. Setting the mailing list first')
+        
         mailing_list = MailingList.objects.create(
             created_by=user, 
             name = mailing_list_name,
@@ -277,6 +299,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         )
 
     print(f'Emails are being moved to {sap_mailing_list_name}')
+    logger.info(f'Emails are being moved to {sap_mailing_list_name}')
 
 
     for subscriber in mailing_list.subscribers.all():
@@ -290,76 +313,78 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     sap_mailing_list.update_subscribers_count()
 
     print('Emails are moved')
+    logger.info('emails are moved')
     
     cached_domains = dict()
     status = 2  # SUBSCRIBED
 
-    with transaction.atomic():
-        for email in emails:
-            email_name, domain_part = email.rsplit('@', 1)
-            domain_name = '@' + domain_part
+    retry = 1
+    sleep = 5
+    while retry < 6:
+        print(f"Trying entire transaction time {retry}")
+        logger.info(f"Trying entire transaction time {retry}")
+        try:
+            with transaction.atomic():
+                for email in emails:
+                    email_name, domain_part = email.rsplit('@', 1)
+                    domain_name = '@' + domain_part
 
-            try:
-                domain = cached_domains[domain_name]
-            except KeyError:
-                domain, created = Domain.objects.get_or_create(name=domain_name)
-                cached_domains[domain_name] = domain
+                    try:
+                        domain = cached_domains[domain_name]
+                    except KeyError:
+                        domain, created = Domain.objects.get_or_create(name=domain_name)
+                        cached_domains[domain_name] = domain
 
-            if Subscriber.objects.filter(email=email, mailing_list__name__startswith=f'{batch_name}-BATCH', mailing_list__created_by=user).exists() \
-                    and (email != 'georgeyoumansjr@gmail.com' and email != 'coboaccess@gmail.com'):
+                    if Subscriber.objects.filter(email=email, mailing_list__name__startswith=f'{batch_name}-BATCH', mailing_list__created_by=user).exists() \
+                            and (email != 'georgeyoumansjr@gmail.com' and email != 'coboaccess@gmail.com'):
+                        
+                        print('Duplicate email: ', email)
+                        logger.info('Duplicate email: ', email)
+                        
+                        continue  # duplicate email, continue to the next email
+
+
+                    print(email)
+                    logger.info(email)
+                    subscriber = None
+                    
+                    subscriber, created = Subscriber.objects.get_or_create(
+                        email__iexact=email,
+                        mailing_list=mailing_list,
+                        defaults={
+                            'email': email,
+                            'domain': domain
+                        }
+                    )
+
+                    # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
+                    # or else it won't send the email to them
+                    activity = subscriber.activities.filter(activity_type=ActivityTypes.SENT, email=campaign.email)
+                    if activity.exists():
+                        activity.delete()
+
+
+                    if created:
+                        subscriber.create_activity(ActivityTypes.IMPORTED)
+                    subscriber.status = status
+                    subscriber.update_date = timezone.now()
+                    subscriber.save()
+                mailing_list.update_subscribers_count()
                 
-                print('Duplicate email: ', email)
-                continue  # duplicate email, continue to the next email
-
-
-            print(email)
-            subscriber = None
-            try:
-                subscriber, created = Subscriber.objects.get_or_create(
-                    email__iexact=email,
-                    mailing_list=mailing_list,
-                    defaults={
-                        'email': email,
-                        'domain': domain
-                    }
-                )
-            except Exception as e:  # db is locked. wait and try again
-                print("DB is locked. Waiting 2 seconds...")
-                time.sleep(2)
-                print("Trying again.")
-                subscriber, created = Subscriber.objects.get_or_create(
-                    email__iexact=email,
-                    mailing_list=mailing_list,
-                    defaults={
-                        'email': email,
-                        'domain': domain
-                    }
-                )
-            finally:
-                if subscriber is None:
-                    print("Couldn't create the subscriber object.")
-                    raise Exception("Couldn't create the subscriber object.")
-
-
-            # georgeyoumansjr and coboaccess sent activity for this campaign should be removed
-            # or else it won't send the email to them
-            activity = subscriber.activities.filter(activity_type=ActivityTypes.SENT, email=campaign.email)
-            if activity.exists():
-                activity.delete()
-
-
-            if created:
-                subscriber.create_activity(ActivityTypes.IMPORTED)
-            subscriber.status = status
-            subscriber.update_date = timezone.now()
-            subscriber.save()
-        mailing_list.update_subscribers_count()
+                break
+        except OperationalError as e:
+            print(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
+            logger.info(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
+            time.sleep(sleep)
+            sleep += 2
+            retry += 1
 
     campaign.mailing_list = mailing_list
     campaign.status = CampaignStatus.QUEUED  # it might be in SENT state in which case campaign won't be send again
     campaign.save()
 
     print('PDF name is :' + pdf_name)
+    logger.info('PDF name is :' + pdf_name)
 
     if pdf_name:  # send with attachment
         pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name

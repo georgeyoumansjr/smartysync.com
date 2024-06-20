@@ -1,3 +1,4 @@
+import time
 import os 
 import django
 
@@ -8,14 +9,13 @@ from datetime import datetime
 
 # Define imports and config dictionary
 import uuid
-import json
+import logging
 import datetime
 import requests
 from dotenv import load_dotenv 
 from django.conf import settings
 
 import pytz
-import time
 
 from smtplib import SMTPAuthenticationError
 from typing import Dict, List
@@ -45,7 +45,7 @@ import imaplib
 import email
 from email.header import decode_header
 import os
-import logging 
+
 
 logs_directory = 'logs'
 if not os.path.exists(logs_directory):
@@ -55,9 +55,10 @@ if not os.path.exists(logs_directory):
 logger = logging.getLogger("__name__")
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter("%(asctime)s [%(levelname)s] - %(name)s - %(message)s")
-file_handler = logging.FileHandler(os.path.join("logs","email_automation_smt.log"))
+file_handler = logging.FileHandler(os.path.join("logs","email_automation_india.log"))
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+
 
 username = 'contact@gerwholesalers.com'
 username = 'mail@thetitandev.com'
@@ -96,7 +97,6 @@ def get_emails_from_email(batch_name):
             print('Email fetch error')
             logger.warning("Email Fetch Error")
             continue
-        
         for response in msg:
             if isinstance(response, tuple):
                 # parse a bytes email into a message object
@@ -104,11 +104,13 @@ def get_emails_from_email(batch_name):
                 # decode the email subject
                 subject, encoding = decode_header(msg["Subject"])[0]
                 if isinstance(subject, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     # if it's a bytes, decode to str
                     subject = subject.decode(encoding)
                 # decode email sender
                 From, encoding = decode_header(msg.get("From"))[0]
                 if isinstance(From, bytes):
+                    encoding = encoding if encoding is not None else 'utf-8'
                     From = From.decode(encoding)
                 print("Subject:", subject)
                 print("From:", From)
@@ -118,7 +120,7 @@ def get_emails_from_email(batch_name):
 
                 # if not from the account ve want
                 # or not the subject we need, pass
-                if subject != 'email-read-test' and not subject.startswith("List of lead emails recieved Yesterday on Element IQ - India"):
+                if subject != 'email-read-test' and not subject.startswith('List of lead emails recieved Yesterday on SAP FB Group - India'):
                     continue
 
 
@@ -135,10 +137,8 @@ def get_emails_from_email(batch_name):
                             pass
                         if content_type == "text/plain" and "attachment" not in content_disposition:
                             # print text/plain emails and skip attachments
-                            print(f"fetching for element-iq emails for smt {batch_name}")
-                            logger.info(f"fetching for element-iq emails for smt {batch_name}")
-                            
                             print(body)
+                            logger.info(body)
                             body = body.replace('\r','').replace('\n', '')
                             body = eval(body) # json.loads(body)
                             try:
@@ -148,8 +148,7 @@ def get_emails_from_email(batch_name):
 
                             if received_at.date() + datetime.timedelta(days=1) != today.date():
                                 print('This is an old email.')
-                                logger.info('This is an old email.')
-                                
+                                logger.info("is an old email")
                                 return []
                             
                             emails = body['data']['emails']
@@ -184,7 +183,7 @@ def get_emails_from_email(batch_name):
                             received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
 
                         if received_at.date() + datetime.timedelta(days=1) != today.date():
-                            print('This is an old email.')
+                            print('This is an old email.' + str(received_at.date() + datetime.timedelta(days=1)))
                             return []
                         
                         emails = body['data']['emails']
@@ -207,12 +206,11 @@ def get_emails_from_email(batch_name):
                 print("="*100)
                 return []
             
-    print(f'No element iq india cutting costs email found in the last {N} emails.')
-    logger.info(f'No element iq india cutting costs emails found in the last {N} emails.')
+    print(f'No {batch_name} email found in the last {N} emails.')
     
     return emails
 
-def send_campaign_from_email(username, batch_name):
+def send_campaign_from_email(username, batch_name, pdf_name):
 
     emails = get_emails_from_email(batch_name)
 
@@ -243,7 +241,6 @@ def send_campaign_from_email(username, batch_name):
     except User.DoesNotExist:
         print(f'User does not exist, create the user with username : {username}')
         logger.warning(f'User does not exist, create the user with username : {username}')
-        
         return False
     
     try:
@@ -261,7 +258,6 @@ def send_campaign_from_email(username, batch_name):
 
     except MailingList.DoesNotExist:
         print('No mailing list. Setting the mailing list first')
-        logger.info('No mailing list. Setting the mailing list first')
         
         mailing_list = MailingList.objects.create(
             created_by=user, 
@@ -319,7 +315,6 @@ def send_campaign_from_email(username, batch_name):
     print('Emails are moved')
     logger.info('emails are moved')
     
-    
     cached_domains = dict()
     status = 2  # SUBSCRIBED
 
@@ -348,9 +343,10 @@ def send_campaign_from_email(username, batch_name):
                         
                         continue  # duplicate email, continue to the next email
 
+
                     print(email)
                     logger.info(email)
-                    
+                    subscriber = None
                     
                     subscriber, created = Subscriber.objects.get_or_create(
                         email__iexact=email,
@@ -374,34 +370,39 @@ def send_campaign_from_email(username, batch_name):
                     subscriber.update_date = timezone.now()
                     subscriber.save()
                 mailing_list.update_subscribers_count()
+                
                 break
-            
         except OperationalError as e:
             print(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
             logger.info(f"Transaction failed due to DB lock. Retrying... ({retry + 1}/6)")
             time.sleep(sleep)
             sleep += 2
             retry += 1
+
     campaign.mailing_list = mailing_list
     campaign.status = CampaignStatus.QUEUED  # it might be in SENT state in which case campaign won't be send again
     campaign.save()
 
-    campaign.send()
-    # print("Instead of campaign send")
+    print('PDF name is :' + pdf_name)
+    logger.info('PDF name is :' + pdf_name)
+
+    if pdf_name:  # send with attachment
+        pdf_path = settings.STATIC_ROOT + '/PDFs/' + pdf_name
+        campaign.send(pdf_name=pdf_name, pdf_path=pdf_path)
+
+    else:  
+        campaign.send()
+
 
     return True
 
-
-
-
-
-
-if __name__ == '__main__':
-
-    username = 'smt'
-    batch_name = username.upper()
+if __name__ == "__main__":
+    username = 'sap'
+    batch_name = username.upper() + "-INDIA"
     
-    status = send_campaign_from_email(username, batch_name)
+    print(batch_name)
+    pdf_name = 'Introduction to React.pdf'
+    status = send_campaign_from_email(username, batch_name, pdf_name)
 
     if status:
         print('Successfuly sent the campaign')
