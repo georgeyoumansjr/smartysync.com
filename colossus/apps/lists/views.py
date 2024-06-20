@@ -733,4 +733,57 @@ def download_unsubscribers(request):
 
     return response
 
+@login_required
+def delete_auto_generated_lists(request):
+    
+    user = request.user
+    source_mailing_list = MailingList.objects.only('pk').filter(created_by=user.id)
+
+    if not source_mailing_list:
+        print(f'No mailing list to get the emails from. the user :{username}')
+        return redirect('lists:lists')
+        
+    
+    auto_pt_mailing_lists = MailingList.objects.filter(name__contains='AUTO PT-',created_by=user)
+
+    if auto_pt_mailing_lists:
+        # Delete each mailing list
+        for mailing_list in auto_pt_mailing_lists:
+            
+            mailing_list.delete()
+            print("Deleted sub Mailing List "+ str(mailing_list))
+
+
+    return redirect('lists:lists')
+
+
+@login_required
+def delete_auto_generated_list_by_name(request, batch_name):
+    
+    user = request.user
+    try:
+        source_mailing_list = MailingList.objects.only('pk').get(created_by=user, name=batch_name)
+
+    except MailingList.DoesNotExist:
+        print(f'No mailing list to get the emails from. Create the mailing list with the name : {batch_name}')
+        return redirect('lists:lists')
+        
+    
+    print(f'Source mailing list name : {batch_name}')
+    print(f'Source mailing list subscriber count : {source_mailing_list.subscribers_count}')
+        
+    if source_mailing_list.subscribers_count == 0:
+        print('Source mailing list is empty. Please make sure it\'s the right mailing list.')
+
+    prefix = f'{batch_name} AUTO'
+    existing_mailing_lists_with_prefix = MailingList.objects.filter(name__startswith=prefix)
+    
+    if existing_mailing_lists_with_prefix:
+        print(f"Existing mailing lists with prefix {prefix} : ")
+        for mailing_list in existing_mailing_lists_with_prefix:
+            mailing_list.delete()
+            print("Deleted sub Mailing list "+str(mailing_list))
+
+
+    return redirect('lists:lists')
 
