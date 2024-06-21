@@ -14,6 +14,8 @@ def get_pdf_files():
 
 
 class AutoCampaignForm(forms.ModelForm):
+    pdf_file = forms.ChoiceField(choices=[])
+    
     class Meta:
         model = AutoCampaign
         fields = ['campaign', 'mailing_list', 'mail_numbers', 'pdf_file']
@@ -24,3 +26,4 @@ class AutoCampaignForm(forms.ModelForm):
         super().__init__(*args,**kwargs)
         self.fields['campaign'].queryset = Campaign.objects.filter(created_by=user.id, status= 1).order_by('name')
         self.fields['mailing_list'].queryset = MailingList.objects.filter(created_by=user.id).exclude(name__icontains="AUTO PT").order_by('name')
+        self.fields['pdf_file'].choices = get_pdf_files()
