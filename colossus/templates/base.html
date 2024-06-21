@@ -48,6 +48,11 @@
           {% trans 'Templates' %}
           {% if menu == 'templates' %}<span class="sr-only">{% trans '(current)' %}</span>{% endif %}
         </a>
+        <a class="nav-item nav-link{% if menu == 'autocampaign' %} active{% endif %}"
+            href="{% url 'autocampaign:autocampaign_add' %}">
+          {% trans 'Auto Campaign' %}
+          {% if menu == 'autocampaign' %}<span class="sr-only">{% trans '(current)' %}</span>{% endif %}
+        </a>
       </div>
       <ul class="navbar-nav align-items-center pr-3 pl-3 bg-dark user-navbar">
         <li class="nav-item notification-item">
