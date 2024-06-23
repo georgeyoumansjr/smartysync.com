@@ -167,8 +167,8 @@ def send_campaign(campaign, **kwargs):
                     # if redis and celery are ready and CELERY_TASK_ALWAYS_EAGER env variable is set
                     # wait a few seconds to send each email
                     if not settings.CELERY_TASK_ALWAYS_EAGER:
-                        print(f'Sent to {subscriber.email}, waiting 13 seconds...')
-                        time.sleep(13)
+                        print(f'Sent to {subscriber.email}, waiting 2 seconds...')
+                        time.sleep(2)
                 
 
     campaign.mailing_list.update_open_and_click_rate()
