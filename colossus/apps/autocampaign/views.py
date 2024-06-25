@@ -51,9 +51,9 @@ class AutoCampaignListView(AutoCampaignMixin, ListView):
 @method_decorator(login_required, name='dispatch')
 class AutoCampaignCreateView(AutoCampaignMixin, CreateView):
     model = AutoCampaign
-    context_object_name = 'auto_campaign'
+    # context_object_name = 'auto_campaign'
     form_class = AutoCampaignForm
-    template_name = 'autocampaign/autocampaign_create.html'
+    # template_name = 'autocampaign/autocampaign_create.html'
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user

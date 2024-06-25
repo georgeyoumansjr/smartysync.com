@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils.translation import gettext, gettext_lazy as _
 
 from colossus.apps.accounts.models import User
+from django.urls import reverse
 from django.utils import timezone
 
 from colossus.apps.campaigns.models import Campaign
@@ -74,3 +75,11 @@ class AutoCampaign(models.Model):
         null=True,
         blank=True
     )
+    
+    
+    def get_absolute_url(self) -> str:
+        # if self.can_edit:
+        #     return reverse('campaigns:campaign_edit', kwargs={'pk': self.pk})
+        # elif self.is_scheduled:
+        #     return reverse('campaigns:campaign_scheduled', kwargs={'pk': self.pk})
+        return reverse('autocampaign:campaign_list')
