@@ -10,10 +10,10 @@
 <body>
   {% block content %}{% endblock %}
   {% block footer %}
-    <div><br></div>
-    <div>
-      <a href="{{ unsub }}"><img src="https://www.smartysync.com/static/email_imgs/UB7.png" alt="" width="100%"></a>
-    </div>
+  <div>
+    <p style="display: none;">This is an email from the Smartarchpro org....</p>
+    <small><a href="{{ unsub }}">Unsubscribe from this list</a>.</small>
+  </div>
   {% endblock %}
 
 </body>
