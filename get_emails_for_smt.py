@@ -284,7 +284,7 @@ def send_campaign_from_email(username, batch_name):
             sap_mailing_list = MailingList.objects.get(created_by=user, name=sap_mailing_list_name)
 
             # if mailing list exists and has less than 500 subscribers, use that mailing list
-            if sap_mailing_list.subscribers_count + len(emails) < 500:
+            if sap_mailing_list.subscribers_count + len(emails) < 300:
                 break
 
             # if it has more than 500 subscribers, go to the next batch number (and create the mailing list)
