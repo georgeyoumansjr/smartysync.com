@@ -6,7 +6,7 @@ app_name = 'autocampaign'
 
 
 urlpatterns = [
-    # path('', views.EmailTemplateListView.as_view(), name='emailtemplates'),
+    path('', views.AutoCampaignListView.as_view(), name='autocampaign_list'),
     path('add/', views.AutoCampaignCreateView.as_view(), name='autocampaign_add'),
 #     path('<int:pk>/', views.email_template_editor, name='emailtemplate_editor'),
 #     path('<int:pk>/edit/', views.EmailTemplateUpdateView.as_view(), name='emailtemplate_edit'),

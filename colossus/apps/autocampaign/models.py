@@ -4,6 +4,9 @@ from django.conf import settings
 
 from django.utils.translation import gettext, gettext_lazy as _
 
+from colossus.apps.accounts.models import User
+from django.utils import timezone
+
 from colossus.apps.campaigns.models import Campaign
 from colossus.apps.lists.models import MailingList
 # Create your models here.
@@ -60,3 +63,14 @@ class AutoCampaign(models.Model):
         verbose_name=_('PDF file')
     )
     
+    create_date = models.DateTimeField(_('create date'), auto_now_add=True)
+    update_date = models.DateTimeField(_('update date'), default=timezone.now)
+    
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name=_('created by'),
+        related_name='auto_created_campaigns',
+        null=True,
+        blank=True
+    )
