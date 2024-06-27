@@ -55,7 +55,9 @@
               <tr>
                 <td class="align-middle">
                   <div class="d-flex align-items-center">
-                     {{ autocampaign.campaign }}
+                    <a href="{% url 'autocampaign:autocampaign_detail' autocampaign.pk %}">
+                      {{ autocampaign.campaign }}
+                    </a>
                   </div>
                 </td>
                 <td class="align-middle">{{ autocampaign.mailing_list }}</td>

@@ -87,7 +87,7 @@ class AutoCampaignCreateView(AutoCampaignMixin, CreateView):
 @method_decorator(login_required, name='dispatch')
 class AutoCampaignDetailView(AutoCampaignMixin, DetailView):
     model = AutoCampaign
-    context_object_name = 'auto_campaign'
+    context_object_name = 'autocampaign'
     extra_context = {'submenu': 'details'}
 
 
@@ -99,6 +99,8 @@ def confim_send(request,pk):
         form = ConfirmSendForm(request.POST)
         if form.is_valid():
             source_mailing_list_name = autocampaign.mailing_list.name
+            max_number_of_emails = autocampaign.mail_numbers
+            pdf_name = autocampaign.pdf_file
             try:
                 campaign = autocampaign.campaign
 
@@ -107,7 +109,7 @@ def confim_send(request,pk):
                 return False
 
             try:
-                source_mailing_list = MailingList.objects.only('pk').get(name=source_mailing_list_name)
+                source_mailing_list = MailingList.objects.only('pk').get(created_by=user,name=source_mailing_list_name)
 
             except MailingList.DoesNotExist:
                 print(f'No mailing list to get the emails from. Create the mailing list with the name : {source_mailing_list_name}')
@@ -254,7 +256,7 @@ def confim_send(request,pk):
         'autocampaign': autocampaign,
         'form': form,
     }
-    return render(request, 'autocampaign/confirm_send.html', context)
+    return render(request, 'autocampaign/autocampaign_confirm_send.html', context)
 
 
 

@@ -1,4 +1,10 @@
+{% extends 'base.html' %}
+
 {% load i18n %}
+{% load crispy_forms_filters i18n static %}
+
+
+
 
 {% block title %}{% trans 'Auto Send Campaigns' %}{% endblock %}
 
@@ -16,7 +22,7 @@
       <form method="post" novalidate>
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm Send' %}</button>
+        <button type="submit" class="btn btn-primary rounded-pill" role="button">{% trans 'Confirm Send' %}</button>
         <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
       </form>
     </div>
