@@ -25,7 +25,6 @@ html2text==2018.1.9
 idna==2.8
 kombu==5.2.4
 maxminddb==2.2.0
-prompt-toolkit==3.0.38
 psycopg2-binary==2.9.6
 python-crontab==2.7.1
 python-dateutil==2.8.2

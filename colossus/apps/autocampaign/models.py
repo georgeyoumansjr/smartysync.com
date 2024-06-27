@@ -32,6 +32,13 @@ def get_pdf_files():
 
 
 class AutoCampaign(models.Model):
+
+    STATUS_CHOICES = [
+        ('draft', _('Draft')),
+        # ('scheduled', _('Scheduled')),
+        ('sent', _('Sent')),
+        ('failed', _('Failed')),
+    ]
     
     campaign = models.ForeignKey(
         Campaign,
@@ -63,9 +70,18 @@ class AutoCampaign(models.Model):
         choices=get_pdf_files(),
         verbose_name=_('PDF file')
     )
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default='draft',
+        verbose_name=_('status')
+    )
     
     create_date = models.DateTimeField(_('create date'), auto_now_add=True)
     update_date = models.DateTimeField(_('update date'), default=timezone.now)
+
+    send_date = models.DateTimeField(_('send date'), null=True, blank=True, db_index=True)
     
     created_by = models.ForeignKey(
         User,
@@ -78,8 +94,21 @@ class AutoCampaign(models.Model):
     
     
     def get_absolute_url(self) -> str:
-        # if self.can_edit:
-        #     return reverse('campaigns:campaign_edit', kwargs={'pk': self.pk})
+        if self.status in ["draft", "sent"]:
+            return reverse('autocampaign:autocampaign_detail', kwargs={'pk': self.pk})
         # elif self.is_scheduled:
         #     return reverse('campaigns:campaign_scheduled', kwargs={'pk': self.pk})
         return reverse('autocampaign:campaign_list')
+
+
+    def is_draft(self):
+        return self.status == 'draft'
+    
+    # def is_scheduled(self):
+    #     return self.status == 'scheduled'
+    
+    def is_sent(self):
+        return self.status == 'sent'
+    
+    def is_failed(self):
+        return self.status == 'failed'
