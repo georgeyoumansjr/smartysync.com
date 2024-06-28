@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import F, Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
@@ -10,8 +10,10 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView, D
 from django.views.generic.base import ContextMixin
 from django.contrib.auth.decorators import login_required
 
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
+from django.contrib import messages
 from django.utils import timezone
 from django.utils.translation import gettext, gettext_lazy as _
 
@@ -106,14 +108,17 @@ def confim_send(request,pk):
 
             except Campaign.DoesNotExist:
                 print('No campaign. Set the campaign first')
-                return False
+                messages.error(request, 'No campaign found. Set the campaign first.')
+                return redirect(reverse('autocampaign:autocampaign_detail', kwargs={'pk': pk}))
+                
 
             try:
                 source_mailing_list = MailingList.objects.only('pk').get(created_by=user,name=source_mailing_list_name)
 
             except MailingList.DoesNotExist:
                 print(f'No mailing list to get the emails from. Create the mailing list with the name : {source_mailing_list_name}')
-                return False
+                messages.error(request, f'No mailing list to get the emails from. Create the mailing list with the name: {source_mailing_list_name}')
+                return redirect(reverse('autocampaign:autocampaign_detail', kwargs={'pk': pk}))
 
 
             emails = []
@@ -157,7 +162,7 @@ def confim_send(request,pk):
                     print(f'Name : {m.name}')
                     print(f'Subscriber Count : {m.subscribers_count}')
 
-                return False
+                
 
             try:
                 i = 1
@@ -243,12 +248,11 @@ def confim_send(request,pk):
             else:  
                 campaign.send()
 
-
-
             autocampaign.status = 'sent'
+            autocampaign.send_date = timezone.now()
             autocampaign.save()
-            messages.success(request, 'Campaign has been successfully scheduled for sending.')
-            return redirect(reverse('autocampaign:autocampaign_list'))
+            messages.success(request, 'Campaign is successfully being sent.')
+            return redirect(reverse('autocampaign:autocampaign_detail', kwargs={'pk': pk}))
     else:
         form = ConfirmSendForm()
 
@@ -261,6 +265,3 @@ def confim_send(request,pk):
 
 
 
-@login_required
-def auto_campaign_send(request, autocampaign_id):
-    pass    
