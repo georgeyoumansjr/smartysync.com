@@ -54,11 +54,11 @@ class AutoCampaignListView(AutoCampaignMixin, ListView):
         current_user = self.request.user
         queryset = super().get_queryset().filter(created_by=current_user.id).select_related('mailing_list')
         
-        # if self.request.GET.get('q', ''):
-        #     query = self.request.GET.get('q')
-        #     queryset = queryset.filter(name__icontains=query)
-        #     self.extra_context['is_filtered'] = True
-        #     self.extra_context['query'] = query
+        if self.request.GET.get('q', ''):
+            query = self.request.GET.get('q')
+            queryset = queryset.filter(campaign__name__icontains=query)
+            self.extra_context['is_filtered'] = True
+            self.extra_context['query'] = query
 
         queryset = queryset.order_by('-update_date')
 
