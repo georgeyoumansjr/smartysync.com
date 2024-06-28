@@ -6,87 +6,94 @@
 
 {% block main %}
 <div class="container-fluid">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-primary">
-      <li class="breadcrumb-item active" aria-current="page">{% trans 'Auto Send Campaigns' %}</li>
-    </ol>
-  </nav>
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">{% trans 'Auto Send Campaigns' %}</h2>
-    <a href="{% url 'autocampaign:autocampaign_add' %}" class="btn btn-primary rounded-pill" role="button">{% trans 'Create AUTO/Send campaign' %}</a>
-  </div>
-  <div class="row">
-    <div class="col col-md-12">
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-sm-6">
-              <form method="get" class="rounded-pill overflow-hidden">
-                <input type="hidden" name="status" value="{{ status }}">
-                <div class="input-group">
-                  <input type="text" name="q" value="{{ query }}" class="form-control round-r-0" placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
-                  <div class="input-group-append">
-                    <!-- {% if query %}
+  <div class="row justify-content-center">
+    <div class="col col-md-9">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb alert-primary">
+          <li class="breadcrumb-item active" aria-current="page">{% trans 'Auto Send Campaigns' %}</li>
+        </ol>
+      </nav>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">{% trans 'Auto Send Campaigns' %}</h2>
+        <a href="{% url 'autocampaign:autocampaign_add' %}" class="btn btn-primary rounded-pill" role="button">{% trans 'Create AUTO/Send campaign' %}</a>
+      </div>
+      <div class="row">
+        <div class="col col-md-12">
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <form method="get" class="rounded-pill overflow-hidden">
+                    <input type="hidden" name="status" value="{{ status }}">
+                    <div class="input-group">
+                      <input type="text" name="q" value="{{ query }}" class="form-control round-r-0"
+                        placeholder="{% trans 'Search campaigns' %}" aria-label="{% trans 'Search campaigns' %}">
+                      <div class="input-group-append">
+                        <!-- {% if query %}
                       <a href="?{% if status %}status={{ status }}{% endif %}" class="btn btn-outline-primary" role="button">
                         {% trans 'Clear' %}
                       </a>
                     {% endif %} -->
-                    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
-                  </div>
+                        <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
-              </form>
+                <div class="col-6">
+                </div>
+              </div>
             </div>
-            <div class="col-6">
+            <div class="responsive-table">
+              <table class="table table-striped mb-0">
+                <thead class="thead-light">
+                  <tr>
+                    <th>{% trans 'Campaign' %}</th>
+                    <th style="width:15%;">{% trans 'Mailing List' %}</th>
+                    <th style="width:15%;">{% trans 'Max Mails to be Sent' %}</th>
+                    <th style="width:15%;">{% trans 'Status' %}</th>
+                    <th style="width: 15%;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for autocampaign in autocampaigns %}
+                  <tr>
+                    <td class="align-middle">
+                      <div class="d-flex align-items-center">
+                        <a href="{% url 'autocampaign:autocampaign_detail' autocampaign.pk %}">
+                          {{ autocampaign.campaign }}
+                        </a>
+                      </div>
+                    </td>
+                    <td class="align-middle">{{ autocampaign.mailing_list }}</td>
+                    <td class="align-middle">{{ autocampaign.mail_numbers }}</td>
+                    <td class="align-middle">
+                      {{ autocampaign.status }}
+                    </td>
+                    <td class="align-middle text-right">
+
+                      <div class="btn-group">
+
+                        <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split"
+                          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item"
+                            href="{% url 'autocampaign:autocampaign_delete' autocampaign.pk %}">{% trans 'Delete Auto Campaign' %}</a>
+                        </div>
+                      </div>
+
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
+            {% include 'includes/card_footer_paginator.html' %}
           </div>
         </div>
-        <div class="responsive-table">
-        <table class="table table-striped mb-0">
-          <thead class="thead-light">
-            <tr>
-              <th>{% trans 'Campaign' %}</th>
-              <th style="width:15%;">{% trans 'Mailing List' %}</th>
-              <th style="width:15%;">{% trans 'Max Mails to be Sent' %}</th>
-              <th style="width:15%;">{% trans 'Status' %}</th>
-              <th style="width: 15%;"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for autocampaign in autocampaigns %}
-              <tr>
-                <td class="align-middle">
-                  <div class="d-flex align-items-center">
-                    <a href="{% url 'autocampaign:autocampaign_detail' autocampaign.pk %}">
-                      {{ autocampaign.campaign }}
-                    </a>
-                  </div>
-                </td>
-                <td class="align-middle">{{ autocampaign.mailing_list }}</td>
-                <td class="align-middle">{{ autocampaign.mail_numbers }}</td>
-                <td class="align-middle">
-                  {{ autocampaign.status }}
-                </td>
-                <td class="align-middle text-right">
-
-                  <div class="btn-group">
-                    
-                    <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                      
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="{% url 'autocampaign:autocampaign_delete' autocampaign.pk %}">{% trans 'Delete campaign' %}</a>
-                    </div>
-                  </div>
-  
-                  </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-        {% include 'includes/card_footer_paginator.html' %}
       </div>
     </div>
   </div>

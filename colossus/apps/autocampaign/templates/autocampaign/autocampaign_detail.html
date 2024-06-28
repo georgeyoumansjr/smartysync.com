@@ -9,15 +9,19 @@
 
 {% block main %}
 <div class="container-fluid">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-primary">
-    <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto Campaigns' %}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ autocampaign.campaign }}</li>
-    </ol>
-  </nav>
+  <div class="row justify-content-center">
+    <div class="col col-md-9"> 
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb alert-primary">
+        <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto Campaigns' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ autocampaign.campaign }}</li>
+        </ol>
+      </nav>
+    </div> 
+  </div>
   
   <div class="row justify-content-center">
-    <div class="col col-md-6">
+    <div class="col col-md-9">
 
 
       <div class="card mb-3 p-3">

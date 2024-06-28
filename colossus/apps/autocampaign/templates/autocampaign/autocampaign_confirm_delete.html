@@ -3,23 +3,33 @@
 {% load crispy_forms_tags i18n %}
 
 {% block content %}
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb alert-primary">
-      <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto campaigns' %}</a></li>
-      <li class="breadcrumb-item"><a href="{{ autocampaign.get_absolute_url }}">{{ autocampaign.campaign }}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete' %}</li>
-    </ol>
-  </nav>
-  <div class="card mb-3">
-    <div class="card-body">
-      <h2 class="card-title">{% trans 'Are you sure?' %}</h2>
-      <p>You are about to delete the Auto campaign <strong>{{ autocampaign.campaign }}</strong>.</p>
-      <p>Note: The Campaign will Still be Available in<a href="{% url 'campaigns:campaigns' %}"> Campaigns</a></p>
-      <form method="post" novalidate>
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion' %}</button>
-        <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
-      </form>
+<div class="row justify-content-center">
+    <div class="col col-md-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb alert-primary">
+                <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto
+                        campaigns' %}</a></li>
+                <li class="breadcrumb-item"><a href="{{ autocampaign.get_absolute_url }}">{{ autocampaign.campaign
+                        }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete' %}</li>
+            </ol>
+        </nav>
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <h2 class="card-title">{% trans 'Are you sure?' %}</h2>
+                <p>You are about to delete the Auto campaign <strong>{{ autocampaign.campaign }}</strong>.</p>
+                <p>Note: The Campaign will Still be Available in<a href="{% url 'campaigns:campaigns' %}"> Campaigns</a>
+                </p>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion'
+                        %}</button>
+                    <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill"
+                        role="button">{% trans 'Never mind' %}</a>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 {% endblock %}
