@@ -13,7 +13,8 @@
   <div class="card mb-3">
     <div class="card-body">
       <h2 class="card-title">{% trans 'Are you sure?' %}</h2>
-      <p>You are about to delete the campaign <strong>{{ autocampaign.campaign }}</strong>.</p>
+      <p>You are about to delete the Auto campaign <strong>{{ autocampaign.campaign }}</strong>.</p>
+      <p>Note: The Campaign will Still be Available in<a href="{% url 'campaigns:campaigns' %}"> Campaigns</a></p>
       <form method="post" novalidate>
         {% csrf_token %}
         <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion' %}</button>

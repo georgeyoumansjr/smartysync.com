@@ -97,7 +97,7 @@ class AutoCampaignDetailView(AutoCampaignMixin, DetailView):
 class AutoCampaignDeleteView(AutoCampaignMixin, DeleteView):
     model = AutoCampaign
     context_object_name = 'autocampaign'
-    success_url = reverse_lazy('campaigns:campaigns')
+    success_url = reverse_lazy('autocampaign:autocampaign_list')
 
 
 @login_required
