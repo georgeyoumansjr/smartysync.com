@@ -46,8 +46,8 @@
             <tr>
               <th>{% trans 'Campaign' %}</th>
               <th style="width:15%;">{% trans 'Mailing List' %}</th>
-              <th style="width:15%;">{% trans 'Mailing Numbers' %}</th>
-              <th></th>
+              <th style="width:15%;">{% trans 'Max Mails to be Sent' %}</th>
+              <th style="width:15%;">{% trans 'Status' %}</th>
             </tr>
           </thead>
           <tbody>
@@ -62,12 +62,8 @@
                 </td>
                 <td class="align-middle">{{ autocampaign.mailing_list }}</td>
                 <td class="align-middle">{{ autocampaign.mail_numbers }}</td>
-                <td class="align-middle text-right">
-
-                <div class="btn-group">
-                  
-                </div>
-
+                <td class="align-middle">
+                  {{ autocampaign.status }}
                 </td>
               </tr>
             {% endfor %}
