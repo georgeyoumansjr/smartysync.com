@@ -48,6 +48,7 @@
               <th style="width:15%;">{% trans 'Mailing List' %}</th>
               <th style="width:15%;">{% trans 'Max Mails to be Sent' %}</th>
               <th style="width:15%;">{% trans 'Status' %}</th>
+              <th style="width: 15%;"></th>
             </tr>
           </thead>
           <tbody>
@@ -65,6 +66,21 @@
                 <td class="align-middle">
                   {{ autocampaign.status }}
                 </td>
+                <td class="align-middle text-right">
+
+                  <div class="btn-group">
+                    
+                    <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <span class="sr-only">{% trans 'Toggle Dropdown' %}</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <!-- <a class="dropdown-item" href="{% url 'campaigns:replicate_campaign' campaign.pk %}">{% trans 'Replicate' %}</a> -->
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'autocampaign:autocampaign_delete' campaign.pk %}">{% trans 'Delete campaign' %}</a>
+                    </div>
+                  </div>
+  
+                  </td>
               </tr>
             {% endfor %}
           </tbody>

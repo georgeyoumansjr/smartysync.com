@@ -93,6 +93,13 @@ class AutoCampaignDetailView(AutoCampaignMixin, DetailView):
     extra_context = {'submenu': 'details'}
 
 
+@method_decorator(login_required, name='dispatch')
+class AutoCampaignDeleteView(AutoCampaignMixin, DeleteView):
+    model = AutoCampaign
+    context_object_name = 'autocampaign'
+    success_url = reverse_lazy('campaigns:campaigns')
+
+
 @login_required
 def confim_send(request,pk):
     autocampaign = get_object_or_404(AutoCampaign, pk=pk)
