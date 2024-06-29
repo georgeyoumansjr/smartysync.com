@@ -6,12 +6,7 @@ django.setup()
 
 from datetime import datetime
 
-# Define imports and config dictionary
-import uuid
-import json
-import datetime
-import requests
-from dotenv import load_dotenv 
+
 from django.conf import settings
 
 from django.db import transaction
