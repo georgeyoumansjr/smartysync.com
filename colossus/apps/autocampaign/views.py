@@ -194,6 +194,10 @@ def confim_send(request,pk):
                     print(f'Name : {m.name}')
                     print(f'Subscriber Count : {m.subscribers_count}')
 
+                messages.error(request, f'No emails left to send campaign to. Switch the mailing list')
+                return redirect(reverse('autocampaign:autocampaign_detail', kwargs={'pk': pk}))
+
+
                 
 
             try:

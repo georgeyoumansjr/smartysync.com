@@ -231,6 +231,9 @@ else:
 GEOIP_PATH = os.path.join(BASE_DIR, 'bin/GeoLite2')
 
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+
 # ==============================================================================
 # THIRD-PARTY APPS SETTINGS
 # ==============================================================================
