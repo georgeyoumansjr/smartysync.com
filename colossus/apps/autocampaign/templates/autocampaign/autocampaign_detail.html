@@ -10,6 +10,14 @@
 {% block main %}
 <div class="container-fluid">
   <div class="row justify-content-center">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }} alert-dismissible fade show col col-md-9" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="{% trans 'Close' %}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
     <div class="col col-md-9"> 
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb alert-primary">
