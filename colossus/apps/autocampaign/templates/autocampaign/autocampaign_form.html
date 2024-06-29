@@ -28,18 +28,10 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb alert-primary">
       <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}" class="text-primary">{% trans 'Campaigns' %}</a></li>
-<!--       
-      {% if campaign %}
-        <li class="breadcrumb-item"><a href="{% url 'campaigns:campaign_edit' campaign.pk %}" class="text-primary">{{ campaign.name }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% spaceless %}
-          {% if title %}
-            {{ title }}
-          {% else %}
-            {% trans 'Edit campaign' %}
-          {% endif %}
-        {% endspaceless %}</li>
+      {% if autocampaign.pk %}
+        <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_edit' object.pk %}" class="text-primary">{{ object.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit campaign' %}</li>
       {% else %}
-       -->
         <li class="breadcrumb-item active" aria-current="page">{% trans 'Create new campaign' %}</li>
       {% endif %}
     </ol>
@@ -47,15 +39,11 @@
   <div class="card mb-3">
     <div class="card-body">
       <h2 class="card-title">
-        <!-- {% if campaign %}
-          {% if title %}
-            {{ title }}
-          {% else %}
-            {% trans 'Edit campaign' %}
-          {% endif %}
-        {% else %} -->
-          {% trans 'Create new campaign' %}
-        <!-- {% endif %} -->
+        {% if autocampaign.pk %}
+          {% trans 'Edit Auto Send campaign' %}
+        {% else %}
+          {% trans 'Create new Auto Send campaign' %}
+        {% endif %}
       </h2>
       <form method="post" novalidate>
         {% csrf_token %}
@@ -64,7 +52,13 @@
           <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
           <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         {% else %} -->
-          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Create Auto Send campaign' %}</button>
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">
+            {% if autocampaign.pk %}
+              {% trans 'Save changes' %}
+            {% else %}
+              {% trans 'Create Auto Send campaign' %}
+            {% endif %}
+          </button>
           <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         <!-- {% endif %} -->
       </form>

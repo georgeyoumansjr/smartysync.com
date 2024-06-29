@@ -87,6 +87,31 @@ class AutoCampaignCreateView(AutoCampaignMixin, CreateView):
     
 
 @method_decorator(login_required, name='dispatch')
+class AutoCampaignEditView(AutoCampaignMixin, UpdateView):
+    model = AutoCampaign
+    form_class = AutoCampaignForm
+    template_name = 'autocampaign/autocampaign_form.html'  # Use the same template as the create view
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.status != 'draft':
+            # Redirect to the detail view or raise a permission denied error
+            return redirect('autocampaign:autocampaign_detail', pk=self.object.pk)
+            # Alternatively, raise PermissionDenied
+            # raise PermissionDenied("You cannot edit a campaign that is not in draft status.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.updated_by = self.request.user  # Assuming you have an updated_by field
+        print(form.instance)
+        return super().form_valid(form)
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+@method_decorator(login_required, name='dispatch')
 class AutoCampaignDetailView(AutoCampaignMixin, DetailView):
     model = AutoCampaign
     context_object_name = 'autocampaign'

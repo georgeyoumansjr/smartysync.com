@@ -47,10 +47,11 @@
         <dd class="col-sm-9">{{ autocampaign.pdf_file }}</dd>
       </div>
 
-      <div class="m-2 p-2">
+      <div class="m-2 p-2  d-flex justify-content-start ">
         {% if autocampaign.status == "draft" %}
-            <a href="{% url 'autocampaign:autocampaign_confirm_send' autocampaign.pk %}" class="btn btn-primary rounded-pill" role="button">{% trans 'Send campaign' %}</a>
-        {% endif %}
+            <a href="{% url 'autocampaign:autocampaign_confirm_send' autocampaign.pk %}" class="mr-2 btn btn-primary rounded-pill" role="button">{% trans 'Send Campaign' %}</a>
+            <a href="{% url 'autocampaign:autocampaign_edit' autocampaign.pk %}" class="btn btn-secondary rounded-pill" role="button">{% trans 'Edit Campaign' %}</a>
+            {% endif %}
         {% if autocampaign.status == "sent" %}
             <a href="{% url 'campaigns:campaign_detail' autocampaign.campaign.pk %}" class="btn btn-secondary rounded-pill" role="button">{% trans 'Go To Main Campaign' %}</a>
         {% endif %}
