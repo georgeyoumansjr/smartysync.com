@@ -64,7 +64,7 @@
           <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
           <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         {% else %} -->
-          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Create/Send campaign' %}</button>
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Create Auto Send campaign' %}</button>
           <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
         <!-- {% endif %} -->
       </form>

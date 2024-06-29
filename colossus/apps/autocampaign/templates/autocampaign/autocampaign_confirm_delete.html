@@ -7,10 +7,8 @@
     <div class="col col-md-9">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb alert-primary">
-                <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto
-                        campaigns' %}</a></li>
-                <li class="breadcrumb-item"><a href="{{ autocampaign.get_absolute_url }}">{{ autocampaign.campaign
-                        }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto campaigns' %}</a></li>
+                <li class="breadcrumb-item"><a href="{{ autocampaign.get_absolute_url }}">{{ autocampaign.campaign }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{% trans 'Delete' %}</li>
             </ol>
         </nav>
@@ -23,8 +21,7 @@
                 </p>
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion'
-                        %}</button>
+                    <button type="submit" class="btn btn-danger rounded-pill" role="button">{% trans 'Confirm deletion' %}</button>
                     <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill"
                         role="button">{% trans 'Never mind' %}</a>
                 </form>
