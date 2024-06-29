@@ -25,8 +25,7 @@
     <div class="card mb-3">
       <div class="card-body">
         <h2 class="card-title">{% trans 'Are you sure?' %}</h2>
-        <p>You are about to send the campaign <strong>{{ autocampaign.campaign }}</strong> with mailing list <strong>{{
-            autocampaign.mailing_list }}</strong> to <strong>{{ autocampaign.mail_numbers }}</strong> recipients.</p>
+        <p>You are about to send the campaign <strong>{{ autocampaign.campaign }}</strong> with mailing list <strong>{{ autocampaign.mailing_list }}</strong> to <strong>{{ autocampaign.mail_numbers }}</strong> recipients.</p>
         <form method="post" novalidate>
           {% csrf_token %}
           {{ form|crispy }}
