@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_filters i18n static %}
+
+{% block title %}{% trans 'Create new campaign' %}{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'vendor/tinymce/4.7.13/tinymce.min.js' %}"></script>
+  <script>
+    $(function () {
+      /*{% comment %}
+      vendor/tinymce/tinymce.min.js
+      Initialize the rich text editor to compose email message
+      {% endcomment %}*/
+      tinymce.init({
+        selector: '#id_content',
+        menubar: false,
+        statusbar: false,
+        plugins: 'textcolor lists code link',
+        toolbar: 'undo redo |  formatselect | bold italic backcolor | link | alignleft aligncenter alignright alignjustify | bullist numlist | removeformat | code'
+      });
+
+    });
+  </script>
+{% endblock %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb alert-primary">
+      <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}" class="text-primary">{% trans 'Campaigns' %}</a></li>
+      {% if autocampaign.pk %}
+        <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_edit' object.pk %}" class="text-primary">{{ object.name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Edit campaign' %}</li>
+      {% else %}
+        <li class="breadcrumb-item active" aria-current="page">{% trans 'Create new campaign' %}</li>
+      {% endif %}
+    </ol>
+  </nav>
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2 class="card-title">
+        {% if autocampaign.pk %}
+          {% trans 'Edit Auto Send campaign' %}
+        {% else %}
+          {% trans 'Create new Auto Send campaign' %}
+        {% endif %}
+      </h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <!-- {% if campaign %}
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">{% trans 'Save changes' %}</button>
+          <a href="{{ campaign.get_absolute_url }}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
+        {% else %} -->
+          <button type="submit" class="btn btn-dark rounded-pill" role="button">
+            {% if autocampaign.pk %}
+              {% trans 'Save changes' %}
+            {% else %}
+              {% trans 'Create Auto Send campaign' %}
+            {% endif %}
+          </button>
+          <a href="{% url 'autocampaign:autocampaign_list' %}" class="btn btn-outline-warning rounded-pill" role="button">{% trans 'Never mind' %}</a>
+        <!-- {% endif %} -->
+      </form>
+    </div>
+  </div>
+{% endblock %}

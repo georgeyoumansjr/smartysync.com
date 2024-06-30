@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'colossus.apps.lists',
     'colossus.apps.notifications',
     'colossus.apps.subscribers',
+    'colossus.apps.autocampaign'
 ]
 
 SITE_ID = 1
@@ -228,6 +229,9 @@ else:
     MESSAGE_LEVEL = messages_constants.INFO
 
 GEOIP_PATH = os.path.join(BASE_DIR, 'bin/GeoLite2')
+
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
 # ==============================================================================

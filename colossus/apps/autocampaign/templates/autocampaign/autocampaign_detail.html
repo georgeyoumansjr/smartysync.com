@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% load i18n humanize %}
+
+
+{% block title %}{% trans 'Auto Send Campaigns' %}{% endblock %}
+
+{% block main %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    {% for message in messages %}
+      <div class="alert {{ message.tags }} alert-dismissible fade show col col-md-9" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="{% trans 'Close' %}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+    <div class="col col-md-9"> 
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb alert-primary">
+        <li class="breadcrumb-item"><a href="{% url 'autocampaign:autocampaign_list' %}">{% trans 'Auto Campaigns' %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ autocampaign.campaign }}</li>
+        </ol>
+      </nav>
+    </div> 
+  </div>
+  
+  <div class="row justify-content-center">
+    <div class="col col-md-9">
+
+
+      <div class="card mb-3 p-3">
+        
+
+        <dl class="row mb-0">
+          <dt class="col-sm-3">{% trans 'Status' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.status }}</dd>
+          {% if autocampaign.status == "sent" %}
+            <dt class="col-sm-3">{% trans 'Send Date and time' %}</dt>
+            <dd class="col-sm-9 d-flex align-items-center">
+                {{ autocampaign.send_date }} <small class="text-muted mx-3">({{ autocampaign.send_date|naturaltime }})</small>
+            </dd>
+          {% endif %}
+        <dt class="col-sm-3">{% trans 'Mailing List' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.mailing_list }}</dd>
+
+        <dt class="col-sm-3">{% trans 'Max Mails to be sent' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.mail_numbers }}</dd>
+
+        
+        <dt class="col-sm-3">{% trans 'PDF Name' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.pdf_file }}</dd>
+      </div>
+
+      <div class="m-2 p-2  d-flex justify-content-start ">
+        {% if autocampaign.status == "draft" %}
+            <a href="{% url 'autocampaign:autocampaign_confirm_send' autocampaign.pk %}" class="mr-2 btn btn-primary rounded-pill" role="button">{% trans 'Send Campaign' %}</a>
+            <a href="{% url 'autocampaign:autocampaign_edit' autocampaign.pk %}" class="btn btn-secondary rounded-pill" role="button">{% trans 'Edit Campaign' %}</a>
+            {% endif %}
+        {% if autocampaign.status == "sent" %}
+            <a href="{% url 'campaigns:campaign_detail' autocampaign.campaign.pk %}" class="btn btn-secondary rounded-pill" role="button">{% trans 'Go To Main Campaign' %}</a>
+        {% endif %}
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
