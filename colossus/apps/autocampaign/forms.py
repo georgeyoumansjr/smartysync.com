@@ -14,7 +14,7 @@ def get_pdf_files():
 
 
 class AutoCampaignForm(forms.ModelForm):
-    pdf_file = forms.ChoiceField(choices=[])
+    pdf_file = forms.ChoiceField(choices=[], required=False)
     
     class Meta:
         model = AutoCampaign
@@ -26,8 +26,10 @@ class AutoCampaignForm(forms.ModelForm):
         super().__init__(*args,**kwargs)
         self.fields['campaign'].queryset = Campaign.objects.filter(created_by=user.id, status= 1).order_by('name')
         self.fields['mailing_list'].queryset = MailingList.objects.filter(created_by=user.id).exclude(name__icontains="AUTO PT").order_by('name')
-        self.fields['pdf_file'].choices = get_pdf_files()
-
+        
+        pdf_choices = [("", "None")] + get_pdf_files()
+        self.fields['pdf_file'].choices = pdf_choices
+        self.fields['pdf_file'].initial = ""  # Ensure no PDF file is selected by default
 
 class ConfirmSendForm(forms.Form):
     confirm = forms.BooleanField(required=True, initial=False, label='I confirm that I want to send this campaign')
