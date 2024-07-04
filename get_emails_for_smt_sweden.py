@@ -118,7 +118,7 @@ def get_emails_from_email(batch_name):
 
                 # if not from the account ve want
                 # or not the subject we need, pass
-                if subject != 'email-read-test' and not subject.startswith("Element IQ - Sweden - Cutting Costs - Leads"):
+                if subject != 'email-read-test' and not subject.startswith("List of lead emails recieved Yesterday on Element IQ - Sweden"):
                     continue
 
 
@@ -175,9 +175,13 @@ def get_emails_from_email(batch_name):
                     body = msg.get_payload(decode=True).decode()
                     if content_type == "text/plain":
                         # print only text email parts
+        
                         print(body)
                         body = body.replace('\r','').replace('\n', '')
                         body = eval(body) # json.loads(body)
+                        if not 'data' in body:
+                            return []
+                        
                         try:
                             received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d %H:%M:%S.%f')
                         except:
@@ -189,6 +193,9 @@ def get_emails_from_email(batch_name):
                         
                         emails = body['data']['emails']
                         return emails
+                        
+                        
+                    
                 if content_type == "text/html":
                     """  
                     # if it's HTML, create a new HTML file and open it in browser
