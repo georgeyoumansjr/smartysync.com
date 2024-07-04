@@ -254,7 +254,7 @@ def send_campaign_from_email(username, batch_name):
         return False
     
     try:
-        campaign_name = f'FACEBOOK-{batch_name}-SWE-BATCH-AUTO'
+        campaign_name = f'FACEBOOK-{batch_name}-BATCH-AUTO'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
 
     except Campaign.DoesNotExist:
