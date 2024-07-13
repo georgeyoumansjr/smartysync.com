@@ -67,7 +67,7 @@ class AutoCampaign(models.Model):
     
     pdf_file = models.CharField(
         max_length=255,
-        choices=get_pdf_files(),
+        # choices=get_pdf_files(),
         verbose_name=_('PDF file'),
         null=True,
         blank=True
