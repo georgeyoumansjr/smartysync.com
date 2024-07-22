@@ -47,12 +47,22 @@
         <dt class="col-sm-3">{% trans 'Mailing List' %}</dt>
         <dd class="col-sm-9">{{ autocampaign.mailing_list }}</dd>
 
+        {% if autocampaign.status == "sent" %}
+        <dt class="col-sm-3">{% trans 'Mailing List sent' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.campaign.mailing_list }}</dd>
+
+        <dt class="col-sm-3">{% trans 'Mailing List mails number' %}</dt>
+        <dd class="col-sm-9">{{ autocampaign.campaign.recipients_count }}</dd>
+        {% endif %}
+
         <dt class="col-sm-3">{% trans 'Max Mails to be sent' %}</dt>
         <dd class="col-sm-9">{{ autocampaign.mail_numbers }}</dd>
 
         
         <dt class="col-sm-3">{% trans 'PDF Name' %}</dt>
         <dd class="col-sm-9">{{ autocampaign.pdf_file }}</dd>
+        
+
       </div>
 
       <div class="m-2 p-2  d-flex justify-content-start ">
@@ -62,6 +72,8 @@
             {% endif %}
         {% if autocampaign.status == "sent" %}
             <a href="{% url 'campaigns:campaign_detail' autocampaign.campaign.pk %}" class="btn btn-secondary rounded-pill" role="button">{% trans 'Go To Main Campaign' %}</a>
+            <a href="{% url 'lists:subscribers' autocampaign.campaign.mailing_list.pk %}" class="ml-4 btn btn-warning rounded-pill" role="button">{% trans 'Go To Mailing List' %}</a>
+
         {% endif %}
     </div>
     </div>
