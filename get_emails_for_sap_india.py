@@ -244,7 +244,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         return False
     
     try:
-        campaign_name = f'FACEBOOK-{batch_name}-BATCH-AUTO'
+        campaign_name = f'FACEBOOK-{batch_name}-INDIA-BATCH-AUTO'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
 
     except Campaign.DoesNotExist:
@@ -253,7 +253,8 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         return False
 
     try:
-        mailing_list_name = f'FACEBOOK-{batch_name}-BATCH-AUTO-CURRENT'
+        # mailing_list_name = f' BATCH INDIA CURRENT'
+        mailing_list_name = f'FACEBOOK-{batch_name}-INDIA-BATCH-AUTO-CURRENT'
         mailing_list = MailingList.objects.only('pk').get(created_by=user, name=mailing_list_name)
 
     except MailingList.DoesNotExist:
@@ -276,7 +277,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         # find the latest sap auto batch with less than 500 subscribers
         i = 1
         while True:
-            sap_mailing_list_name = f'FACEBOOK-{batch_name}-BATCH-AUTO-{i}'
+            sap_mailing_list_name = f'{batch_name} BATCH INDIA {i}'
             sap_mailing_list = MailingList.objects.get(created_by=user, name=sap_mailing_list_name)
 
             # if mailing list exists and has less than 500 subscribers, use that mailing list
@@ -398,7 +399,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
 
 if __name__ == "__main__":
     username = 'sap'
-    batch_name = username.upper() + "-INDIA"
+    batch_name = username.upper()
     
     print(batch_name)
     pdf_name = 'Introduction to React.pdf'
