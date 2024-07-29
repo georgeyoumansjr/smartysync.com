@@ -276,7 +276,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         # find the latest sap auto batch with less than 500 subscribers
         i = 1
         while True:
-            sap_mailing_list_name = f'FACEBOOK-{batch_name}-BATCH-AUTO-{i}'
+            sap_mailing_list_name = f'{batch_name} BATCH {i}'
             sap_mailing_list = MailingList.objects.get(created_by=user, name=sap_mailing_list_name)
 
             # if mailing list exists and has less than 500 subscribers, use that mailing list
