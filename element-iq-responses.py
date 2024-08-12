@@ -409,7 +409,7 @@ def main():
     try:
         status = send_campaign_from_email(username, batch_name, pdf_name)
     except Exception as e:
-        print(e, "e")
+        print(e)
         status = send_campaign_from_email(username, batch_name, pdf_name)
 
     if status:
