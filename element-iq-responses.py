@@ -5,7 +5,7 @@ import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "colossus.settings")
 django.setup()
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Define imports and config dictionary
 import uuid
@@ -145,9 +145,11 @@ def get_emails_from_email(batch_name):
                             except:
                                 received_at = datetime.datetime.strptime(body['data']['date'], '%Y-%m-%d')
 
-                            if received_at.date() + datetime.timedelta(days=1) != today.date():
+                            print(f"\ndate: {received_at.date() + datetime.timedelta(days=1)}\n")
+
+                            if (today.date() - received_at.date()) != timedelta(days=1):
                                 print('This is an old email.')
-                                logger.info("is an old email")
+                                logger.info("This is an old email.")
                                 return []
 
                             emails = body['data']['emails']
@@ -174,6 +176,7 @@ def get_emails_from_email(batch_name):
                     if content_type == "text/plain":
                         # print only text email parts
                         print(body)
+                        print("-----------------------------------------------------------------")
                         body = body.replace('\r', '').replace('\n', '')
                         body = eval(body)  # json.loads(body)
                         try:
@@ -186,6 +189,7 @@ def get_emails_from_email(batch_name):
                             return []
 
                         emails = body['data']['emails']
+                        print(f"++++++++++++++++++{emails}")
                         return emails
                 if content_type == "text/html":
                     """
@@ -211,7 +215,9 @@ def get_emails_from_email(batch_name):
 
 
 def send_campaign_from_email(username, batch_name, pdf_name):
+    print(f"********************************************")
     emails = get_emails_from_email(batch_name)
+    print(f"********************************************")
 
     if not emails:
         return True
@@ -227,7 +233,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     if 'coboaccess@gmail.com' not in emails:
         emails.append('coboaccess@gmail.com')
 
-    print(emails)
+    print(f"\n\nemails: {emails}\n\n")
 
     # test the adding next batch if current one has more than 500 emails
     # for i in range(400):
@@ -243,6 +249,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
     try:  # create the campaign manually
         campaign_name = f'USER-RESPONSES-{batch_name}'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
+        print(campaign)
 
     except Campaign.DoesNotExist:
         print('No campaign. Set the campaign first')
@@ -401,8 +408,9 @@ def main():
     pdf_name = ''
     try:
         status = send_campaign_from_email(username, batch_name, pdf_name)
-    except:
-        status = send_campaign_from_email(username, batch_name)
+    except Exception as e:
+        print(e, "e")
+        status = send_campaign_from_email(username, batch_name, pdf_name)
 
     if status:
         print('Successfuly sent the campaign')
