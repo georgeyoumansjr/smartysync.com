@@ -218,7 +218,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         return False
 
     try:  # create the campaign manually
-        campaign_name = f'USER-RESPONSES-{batch_name}'
+        campaign_name = f'{batch_name} - Book One Python India'
         campaign = Campaign.objects.get(created_by=user, name=campaign_name)
         print(campaign)
 
@@ -228,7 +228,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         logger.error('No campaign. Set the campaign first')
         return False
 
-    mailing_list_name = f'USER-RESPONSES-{batch_name}'
+    mailing_list_name = f'{batch_name} - Book One Python India'
     try:
         mailing_list = MailingList.objects.only('pk').get(created_by=user, name=mailing_list_name)
     except MailingList.DoesNotExist:
@@ -251,7 +251,7 @@ def send_campaign_from_email(username, batch_name, pdf_name):
         # find the latest sap auto batch with less than 500 subscribers
         i = 1
         while True:
-            sap_mailing_list_name = f'User Responses {batch_name} BATCH {i}'
+            sap_mailing_list_name = f'{batch_name} - Book One Python India AUTO {i}'
             sap_mailing_list = MailingList.objects.get(created_by=user, name=sap_mailing_list_name)
 
             # if mailing list exists and has less than 500 subscribers, use that mailing list
